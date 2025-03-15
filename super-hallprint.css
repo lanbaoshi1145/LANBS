@@ -97,3 +97,57 @@ div[id*=page-options-bottom]>a {
 #top-bar div[class*=top-bar] > ul > li > ul > li > a:is(:hover, :active, :focus, :focus-within), #top-bar div[class*=top-bar] > ul > li > ul > li > ul > li > a:is(:hover, :active, :focus, :focus-within) {
     background: transparent;
 }
+/* tabview */
+.yui-navset .yui-nav {
+    background: rgba(var(--dark-color-2));
+    -moz-column-gap: 4px;
+    column-gap: 4px;
+    box-shadow: 0 0.3125rem 0 rgba(var(--dark-color-2));
+}
+:is(.yui-navset,.yui-navset-top,.yui-navset-bottom) .yui-nav li a:before {
+    --clip-path: polygon(0 calc(100% - 0.25rem), 100% calc(100% - 0.25rem), 100% 100%, 0 100%);
+    width: 100%;
+    height: 100%;
+    left: 0;
+    content: " ";
+    z-index: 0;
+    will-change: background-color, clip-path;
+    -webkit-transition: background-color 50ms ease-in-out, clip-path .2s ease-in-out;
+    transition: background-color 50ms ease-in-out, clip-path .2s ease-in-out;
+    background-color: rgb(var(--dark-color-2));
+    pointer-events: none;
+    clip-path: var(--clip-path);
+    position: absolute;
+    top: 0;
+    bottom: auto;
+    right: auto;
+}
+:is(.yui-navset,.yui-navset-top,.yui-navset-bottom) .yui-nav li a em {
+    -webkit-transition: color .15s var(--ease-in-out), font-weight .15s var(--ease-in-out), font-variation-settings .15s var(--ease-in-out), font-weight .15s var(--ease-in-out);
+    transition: color .15s var(--ease-in-out), font-weight .15s var(--ease-in-out), font-variation-settings .15s var(--ease-in-out), font-weight .15s var(--ease-in-out);
+    border: unset !important;
+}
+.yui-navset .yui-nav a:hover, .yui-navset .yui-nav a:focus {
+    outline: inherit;
+    background: inherit;
+}
+
+.yui-navset .yui-nav a:hover, .yui-navset .yui-nav a:focus {
+    background: inherit;
+    -webkit-text-decoration: inherit;
+    -webkit-text-decoration: inherit;
+    text-decoration: inherit;
+}
+:is(.yui-navset,.yui-navset-top,.yui-navset-bottom) .yui-nav li:not(.selected) a:is(:hover,:active,:focus,:focus-within):before {
+    --clip-path: polygon(0 0, calc(100% + 1rem) -1rem, calc(100% + 1rem) calc(100% + 1rem), 0 calc(100% + 1rem));
+    background-color: rgb(var(--tabs-hover-bg));
+}
+:is(.yui-navset, .yui-navset-top, .yui-navset-bottom) .yui-nav .selected {
+    z-index: unset;
+    box-shadow: none;
+    translate: 0;
+}
+:is(.yui-navset,.yui-navset-top,.yui-navset-bottom) .yui-nav .selected a:before {
+    --clip-path: polygon(0 0, calc(100% + 1rem) -1rem, calc(100% + 1rem) calc(100% + 1rem), 0 calc(100% + 1rem));
+    background-color: rgb(var(--tabs-selected-bg));
+}
