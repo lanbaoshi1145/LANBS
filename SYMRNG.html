@@ -371,6 +371,38 @@ body{
 .pet-card-v2 .pcv-equip:active{transform:scale(.94)}
 .pet-card-v2 .pcv-equip:disabled{filter:grayscale(.75) brightness(.6);cursor:not-allowed}
 
+/* ═══ 🌈 炫彩宠物 ═══ */
+.pet-card-v2 .pcv-badge.sh{background:linear-gradient(180deg,#ffd86b,#c98a00);color:#241700;border-color:rgba(255,255,255,.5)}
+.pet-card-v2 .pcv-badge.rb{
+  background:linear-gradient(120deg,#ff0080,#ff8c00,#ffee00,#00ff88,#00d4ff,#8b3dff,#ff0080);
+  background-size:300% 100%;
+  color:#fff;border-color:rgba(255,255,255,.7);
+  animation:rbFlow 2.5s linear infinite;
+  text-shadow:0 0 8px rgba(0,0,0,.55);
+}
+@keyframes rbFlow{0%{background-position:0% 50%}100%{background-position:300% 50%}}
+@keyframes rbHue{to{filter:hue-rotate(360deg)}}
+@keyframes rbPulse{
+  0%,100%{box-shadow:0 0 22px -6px rgba(255,0,200,.7),inset 0 0 24px -14px rgba(0,255,200,.6)}
+  50%{box-shadow:0 0 32px -4px rgba(0,200,255,.85),inset 0 0 26px -12px rgba(255,220,0,.6)}
+}
+.pet-card-v2.rainbow{
+  border:2px solid transparent !important;
+  background:
+    linear-gradient(165deg,rgba(18,24,46,.94),rgba(8,12,26,.96)) padding-box,
+    linear-gradient(120deg,#ff0080,#ff8c00,#ffee00,#00ff88,#00d4ff,#8b3dff,#ff0080) border-box;
+  background-size:100% 100%,300% 100%;
+  animation:rbFlow 4s linear infinite, rbPulse 2.4s ease-in-out infinite;
+}
+.pet-card-v2.rainbow .pcv-quality{animation:rbHue 3.5s linear infinite}
+.pet-card-v2.rainbow .pcv-name{color:#fff;text-shadow:0 0 10px rgba(255,120,255,.85)}
+.pet-card-v2.rainbow .pcv-mult{color:#ffd86b;text-shadow:0 0 10px rgba(255,200,60,.6)}
+.pet-card-v2.rainbow.equipped{box-shadow:0 0 34px -4px rgba(255,0,200,.8) !important}
+.equip-slot.filled.rb{border-color:transparent;background:
+  linear-gradient(165deg,rgba(18,24,46,.94),rgba(8,12,26,.96)) padding-box,
+  linear-gradient(120deg,#ff0080,#ff8c00,#ffee00,#00ff88,#00d4ff,#8b3dff,#ff0080) border-box;
+  border:2px solid transparent;animation:rbFlow 4s linear infinite,rbPulse 2.4s ease-in-out infinite;}
+
 .bag-toolbar{
   display:flex;gap:8px;align-items:center;justify-content:center;
   margin-top:12px;padding:11px;border-radius:13px;
@@ -539,7 +571,7 @@ body{
 .overlay.on .overlay-box{transform:scale(1)}
 .ov-emoji{font-size:34px;line-height:1;margin-bottom:8px}
 .ov-title{font-size:16px;font-weight:900;letter-spacing:.05em;margin-bottom:6px}
-.ov-desc{font-size:11.5px;color:#8b98ad;margin-bottom:14px;line-height:1.5;min-height:17px}
+.ov-desc{font-size:11.5px;color:#8b98ad;margin-bottom:14px;line-height:1.5;min-height:17px;white-space:pre-line}
 .ov-input{width:100%;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:#fff;font-size:14px;font-family:inherit;letter-spacing:.1em;outline:none;transition:.2s;text-align:center;}
 .ov-input:focus{border-color:rgba(120,170,255,.7);background:rgba(255,255,255,.09)}
 .ov-btns{display:flex;gap:9px;margin-top:14px}
@@ -726,9 +758,124 @@ body{
   .pet-fab .pf-info{font-size:10.5px;padding:0 4px}
   .pet-fab .pf-btn{padding:9px 12px;font-size:11.5px}
 }
+
+/* ═══════════════════════════════════════════════════════
+   🕳️ 源质深渊
+   ═══════════════════════════════════════════════════════ */
+.abyss-progress{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
+  max-width:760px;margin:0 auto 12px;
+}
+.abyss-stat{
+  padding:11px 10px;border-radius:14px;text-align:center;
+  background:linear-gradient(165deg,rgba(168,85,247,.16),rgba(168,85,247,.03));
+  border:1px solid rgba(168,85,247,.32);
+}
+.abyss-stat span{display:block;font-size:10.5px;color:#a78bd4;font-weight:800;letter-spacing:.08em;}
+.abyss-stat b{display:block;font-size:20px;font-weight:900;color:#e9d5ff;margin-top:4px;font-variant-numeric:tabular-nums;text-shadow:0 0 16px rgba(168,85,247,.5);}
+
+.abyss-enemy{
+  max-width:760px;margin:0 auto 12px;padding:16px 14px;border-radius:18px;
+  background:
+    radial-gradient(400px 200px at 50% 0%,rgba(168,85,247,.20),transparent 70%),
+    linear-gradient(165deg,rgba(30,12,60,.72),rgba(12,4,28,.9));
+  border:1.5px solid rgba(168,85,247,.45);
+  box-shadow:0 0 40px -12px rgba(168,85,247,.5),inset 0 0 40px -20px rgba(168,85,247,.6);
+}
+.enemy-head{display:flex;align-items:center;gap:9px;margin-bottom:10px;}
+.enemy-emoji{font-size:30px;line-height:1;filter:drop-shadow(0 0 12px rgba(200,120,255,.9));}
+.enemy-name{font-size:14px;font-weight:900;color:#f0e0ff;letter-spacing:.04em;}
+.enemy-hp-bar{height:14px;border-radius:99px;background:rgba(0,0,0,.45);overflow:hidden;border:1px solid rgba(255,255,255,.08);}
+.enemy-hp-bar i{
+  display:block;height:100%;width:100%;
+  background:linear-gradient(90deg,#7b2cff,#e038ff,#ff4fb5);
+  border-radius:99px;transition:width .25s ease;
+  box-shadow:0 0 14px rgba(224,56,255,.8);
+}
+.enemy-hp-text{text-align:right;font-size:11px;color:#c4b1e8;margin-top:5px;font-weight:800;font-variant-numeric:tabular-nums;}
+
+.abyss-mods{display:flex;flex-wrap:wrap;gap:6px;max-width:760px;margin:0 auto 12px;justify-content:center;min-height:34px;}
+.abyss-mod{
+  display:flex;align-items:center;gap:5px;padding:7px 11px;border-radius:10px;
+  font-size:11px;font-weight:900;letter-spacing:.02em;
+  background:linear-gradient(165deg,rgba(168,85,247,.22),rgba(168,85,247,.06));
+  border:1px solid rgba(200,120,255,.5);color:#e9d5ff;
+  box-shadow:0 0 16px -6px rgba(168,85,247,.6);
+}
+.abyss-mod .am-desc{color:#b39ee0;font-weight:700;font-size:10px;margin-left:3px;}
+
+.abyss-floor-stats{
+  display:flex;gap:7px;justify-content:center;flex-wrap:wrap;
+  max-width:760px;margin:0 auto 12px;font-size:11.5px;font-weight:800;color:#c4b1e8;
+}
+.abyss-floor-stats > div{
+  padding:6px 12px;border-radius:9px;background:rgba(255,255,255,.05);
+  border:1px solid rgba(168,85,247,.28);
+}
+.abyss-floor-stats b{color:#f0e0ff;font-variant-numeric:tabular-nums;}
+
+.abyss-actions{display:flex;flex-direction:column;gap:9px;max-width:420px;margin:0 auto 14px;}
+.abyss-btn{
+  padding:15px;border-radius:15px;border:none;font-family:inherit;
+  font-size:14px;font-weight:900;letter-spacing:.14em;cursor:pointer;
+  transition:transform .1s,filter .2s;width:100%;
+}
+.abyss-btn:active{transform:scale(.97);}
+.abyss-btn.primary{
+  background:linear-gradient(180deg,#a855f7,#5b1cb8);color:#fff;
+  border:1px solid rgba(220,160,255,.5);
+  box-shadow:0 14px 36px -12px #a855f7,inset 0 1px 0 rgba(255,255,255,.25);
+}
+.abyss-btn.reroll{
+  background:linear-gradient(180deg,#ff9f43,#b85c00);color:#1a0d00;
+  border:1px solid rgba(255,200,120,.5);
+  box-shadow:0 10px 26px -12px #ff9f43;
+}
+.abyss-btn.auto{
+  background:linear-gradient(180deg,#22c98a,#0d8557);color:#03150e;
+}
+.abyss-btn.auto.on{
+  background:linear-gradient(180deg,#ff5f5f,#b81c1c);color:#fff;
+}
+.abyss-btn:disabled{filter:grayscale(.7) brightness(.55);cursor:not-allowed;}
+
+.abyss-upgrades{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:9px;max-width:760px;margin:0 auto;}
+.abyss-upg{
+  padding:12px 10px;border-radius:14px;text-align:center;
+  background:linear-gradient(165deg,rgba(255,255,255,.05),rgba(255,255,255,.012));
+  border:1px solid rgba(168,85,247,.3);
+  display:flex;flex-direction:column;gap:5px;align-items:center;
+}
+.abyss-upg .au-emoji{font-size:24px;line-height:1;}
+.abyss-upg .au-name{font-size:12px;font-weight:900;color:#e9d5ff;}
+.abyss-upg .au-lv{font-size:10.5px;color:#a78bd4;font-weight:800;}
+.abyss-upg .au-desc{font-size:10px;color:#8b7aad;line-height:1.45;min-height:28px;}
+.abyss-upg .au-btn{
+  width:100%;padding:8px 6px;border-radius:9px;border:none;font-family:inherit;
+  font-size:11px;font-weight:900;cursor:pointer;transition:.15s;
+  background:linear-gradient(180deg,#a855f7,#5b1cb8);color:#fff;
+}
+.abyss-upg .au-btn:active{transform:scale(.95);}
+.abyss-upg .au-btn:disabled{filter:grayscale(.7) brightness(.55);cursor:not-allowed;}
+.abyss-upg .au-btn.max{background:rgba(255,255,255,.1);color:#a78bd4;}
+
+.abyss-hit{
+  position:fixed;z-index:60;pointer-events:none;
+  font-size:24px;font-weight:900;color:#fff;
+  text-shadow:0 0 18px #e038ff,0 0 36px #a855f7;
+  animation:abyssHit 1s ease-out forwards;
+  font-variant-numeric:tabular-nums;
+}
+@keyframes abyssHit{
+  0%{transform:translate(-50%,0) scale(.5);opacity:0}
+  20%{transform:translate(-50%,-16px) scale(1.15);opacity:1}
+  100%{transform:translate(-50%,-90px) scale(1);opacity:0}
+}
+.abyss-hit.crit{color:#ffe066;text-shadow:0 0 20px #ff9f43,0 0 40px #ff5f5f;font-size:32px;}
+
 /* ═══ 版本号 ═══ */
 body::after{
-  content: "v7.2.2";
+  content: "v9.1.0";
   position: fixed;
   left: 8px;
   top: 8px;
@@ -771,6 +918,7 @@ body::after{
   <div class="page" id="pageInv"></div>
   <div class="page" id="pageTask"></div>
   <div class="page" id="pageReb"></div>
+  <div class="page" id="pageAbyss"></div>
   <div class="page" id="pageSet"></div>
 </div>
 
@@ -866,6 +1014,12 @@ const PET_STARS = [
 const MAX_STAR = 6;
 const PET_QUALITY_WEIGHTS = { N:5500, R:2500, SR:1200, SSR:600, UR:180, GOD:20 };
 
+/* 🌈 炫彩宠物参数 */
+const PET_SHINY_MULT   = 3;
+const PET_SHINY_TRAIT  = 2;
+const PET_RAINBOW_MULT = 20;
+const PET_RAINBOW_TRAIT= 5;
+
 const PET_TRAIT_NAMES = { coin:'金币', gem:'钻石', luck:'幸运', affix:'词条率', speed:'抽速' };
 const PET_SPECIES = [
   { id:'dog',     name:'小狗',       emoji:'🐶', minStar:1, w:2500,
@@ -916,12 +1070,39 @@ function getSpecies(id){ return PET_SPECIES.find(s => s.id === id) || PET_SPECIE
 function getQuality(id){ return PET_QUALITIES.find(q => q.id === id) || PET_QUALITIES[0]; }
 function getStarInfo(star){ return PET_STARS[Math.max(0, Math.min(PET_STARS.length - 1, star - 1))]; }
 
+function petTier(p){
+  if(!p) return 0;
+  if(p.rainbow) return 2;
+  if(p.shiny)   return 1;
+  return 0;
+}
+function petPrefix(p){
+  const t = petTier(p);
+  return t === 2 ? '🌈' : (t === 1 ? '✨' : '');
+}
+function petVisualClass(p){
+  const t = petTier(p);
+  return t === 2 ? ' rainbow' : (t === 1 ? ' shiny' : '');
+}
+function petBadgeHTML(p){
+  const t = petTier(p);
+  if(t === 2) return '<div class="pcv-badge rb">🌈</div>';
+  if(t === 1) return '<div class="pcv-badge sh">✨</div>';
+  return '';
+}
+function petTierMul(p){
+  const t = petTier(p);
+  return t === 2 ? PET_RAINBOW_TRAIT : (t === 1 ? PET_SHINY_TRAIT : 1);
+}
+
 function petMult(pet){
   if(!pet) return 1;
   const q = getQuality(pet.quality);
   const st = getStarInfo(pet.star);
   let m = q.mult * st.mult;
-  if(pet.shiny) m *= 3;
+  const t = petTier(pet);
+  if(t === 2)      m *= PET_RAINBOW_MULT;
+  else if(t === 1) m *= PET_SHINY_MULT;
   return m;
 }
 
@@ -932,9 +1113,9 @@ function getPetTraits(){
     if(!p) continue;
     const sp = getSpecies(p.species);
     const starMul = 1 + (p.star - 1) * 0.5;
-    const shinyMul = p.shiny ? 2 : 1;
+    const formMul = petTierMul(p);
     for(const tr of sp.traits){
-      total[tr.t] = (total[tr.t] || 0) + tr.v * starMul * shinyMul;
+      total[tr.t] = (total[tr.t] || 0) + tr.v * starMul * formMul;
     }
   }
   return total;
@@ -948,7 +1129,8 @@ function genPet(qualityId, speciesId){
     quality: qualityId,
     star: sp.minStar,
     exp: 0,
-    shiny: false
+    shiny: false,
+    rainbow: false
   };
 }
 function rollSpecies(){
@@ -965,7 +1147,7 @@ function petAbsorbExp(absorber, absorbed){
   if(!absorber || !absorbed) return 0;
   if(absorber.uid === absorbed.uid) return 0;
   if(absorber.star !== absorbed.star) return 0;
-  if(!!absorber.shiny !== !!absorbed.shiny) return 0;
+  if(petTier(absorber) !== petTier(absorbed)) return 0;
   const ai = PET_QUALITIES.findIndex(q => q.id === absorber.quality);
   const bi = PET_QUALITIES.findIndex(q => q.id === absorbed.quality);
   if(ai < 0 || bi < 0) return 0;
@@ -974,16 +1156,16 @@ function petAbsorbExp(absorber, absorbed){
   return Math.max(1, Math.floor(30 * (bi + 1) * ratio * ratio));
 }
 
-/* 一键选材料：主宠物必须已选 */
 function autoSelectLevelup(){
   const target = state.petLevelupTarget ? state.petInv.find(p => p.uid === state.petLevelupTarget) : null;
   if(!target) return 0;
 
   const ti = PET_QUALITIES.findIndex(q => q.id === target.quality);
+  const tt = petTier(target);
   const mats = state.petInv.filter(p =>
     p.uid !== target.uid &&
     p.star === target.star &&
-    !!p.shiny === !!target.shiny &&
+    petTier(p) === tt &&
     PET_QUALITIES.findIndex(q => q.id === p.quality) <= ti
   );
   if(!mats.length) return 0;
@@ -1077,49 +1259,35 @@ const TREE = [
   { id:'PY4', name:'保底 IV',     emoji:'🛡️', col:4, row:10, req:['PY3'], max:1, base:5e7, growth:1, desc:'保底降低至 90 抽' },
   { id:'PY5', name:'保底 V',      emoji:'🛡️', col:5, row:10, req:['PY4'], max:1, base:1.2e9, growth:1, desc:'保底降低至 70 抽' },
   { id:'PY6', name:'保底 VI',     emoji:'🛡️', col:5, row:11, req:['PY5'], max:1, base:3e10, growth:1, desc:'保底降低至 50 抽（终极）' },
-
-  /* ── 多重抽奖线（重生会清） ── */
   { id:'M1',  name:'多重抽奖 I',   emoji:'🎰', col:1, row:12, req:['root'], max:15, base:8000,   growth:1.75, desc:'每抽 +0.5% 概率追抽' },
   { id:'M2',  name:'多重抽奖 II',  emoji:'🎰', col:2, row:12, req:['M1'],   max:15, base:60000,  growth:1.80, desc:'每抽 +0.8% 概率追抽' },
   { id:'M3',  name:'多重抽奖 III', emoji:'🎰', col:3, row:12, req:['M2'],   max:15, base:600000, growth:1.85, desc:'每抽 +1.2% 概率追抽' },
   { id:'ME',  name:'多重精华',     emoji:'💠', col:4, row:12, req:['M3'],   max:10, base:8e6,    growth:1.90, desc:'每抽 +3% 概率追抽' },
-
-  /* ── 词条价值线（重生会清） ── */
   { id:'AF1', name:'词条价值 I',   emoji:'⚡', col:1, row:14, req:['root'], max:20, base:30000,  growth:1.80, desc:'词条价值倍率 +5% / 级' },
   { id:'AF2', name:'词条价值 II',  emoji:'⚡', col:2, row:14, req:['AF1'],  max:20, base:400000, growth:1.85, desc:'词条价值倍率 +10% / 级' },
   { id:'AF3', name:'词条价值 III', emoji:'⚡', col:3, row:14, req:['AF2'],  max:15, base:5e6,    growth:1.90, desc:'词条价值倍率 +20% / 级' },
-
-  /* ── 宠物强化线（重生会清） ── */
   { id:'P1',  name:'宠物亲和', emoji:'🐾', col:1, row:13, req:['root'], max:20, base:12000,  growth:1.75, desc:'宠物倍率 +5% / 级' },
   { id:'P2',  name:'宠物精通', emoji:'🐾', col:2, row:13, req:['P1'],   max:20, base:120000, growth:1.80, desc:'宠物倍率 +10% / 级' },
   { id:'P3',  name:'宠物专精', emoji:'🐾', col:3, row:13, req:['P2'],   max:15, base:1.5e6,  growth:1.85, desc:'宠物倍率 +25% / 级' }
-
 ];
 
-/* ═══════════ 🌟 永久树（重生不清空） ═══════════ */
 const PERMA_TREE = [
   { id:'PROOT', name:'永久核心',     emoji:'💎', col:6, row:4, req:[],        max:1,  base:0,    growth:1,    perma:true, desc:'永久树起点，重生不清空' },
-
   { id:'PP1',  name:'永久宠物 I',    emoji:'🐾', col:7, row:0, req:['PROOT'], max:20, base:5e7,  growth:1.80, perma:true, desc:'宠物倍率 +15% / 级（永久）' },
   { id:'PP2',  name:'永久宠物 II',   emoji:'🐾', col:8, row:0, req:['PP1'],   max:15, base:5e9,  growth:1.85, perma:true, desc:'宠物倍率 +30% / 级（永久）' },
   { id:'PP3',  name:'永久宠物 III',  emoji:'🐾', col:9, row:0, req:['PP2'],   max:10, base:5e12, growth:1.90, perma:true, desc:'宠物倍率 +60% / 级（永久）' },
-
   { id:'PR1',  name:'永久重生 I',    emoji:'🌟', col:7, row:1, req:['PROOT'], max:20, base:1e8,  growth:1.80, perma:true, desc:'重生金币加成 +20% / 级（永久）' },
   { id:'PR2',  name:'永久重生 II',   emoji:'🌟', col:8, row:1, req:['PR1'],   max:15, base:1e10, growth:1.85, perma:true, desc:'进阶重生加成 +40% / 级（永久）' },
   { id:'PR3',  name:'永久幸运',      emoji:'🍀', col:9, row:1, req:['PR2'],   max:15, base:1e12, growth:1.90, perma:true, desc:'幸运 +2 / 级（永久）' },
   { id:'PR4',  name:'永久超级加成', emoji:'🌌', col:8, row:3, req:['PR2'],   max:15, base:1e15, growth:1.92, perma:true, desc:'超级重生加成 +50% / 级（永久）' },
   { id:'PR5',  name:'永久重生折扣', emoji:'💸', col:9, row:3, req:['PR4'],   max:15, base:5e15, growth:1.95, perma:true, desc:'重生成本 -2% / 级（永久）' },
-
   { id:'PD1',  name:'永久骰子 I',    emoji:'🎲', col:7, row:2, req:['PROOT'], max:15, base:5e8,  growth:1.82, perma:true, desc:'所有骰子倍率 +10% / 级' },
   { id:'PD2',  name:'永久骰子 II',   emoji:'🎲', col:8, row:2, req:['PD1'],   max:15, base:5e10, growth:1.87, perma:true, desc:'所有骰子倍率 +20% / 级' },
-
   { id:'PM1',  name:'永久多重',      emoji:'🎰', col:7, row:3, req:['PROOT'], max:10, base:1e11, growth:1.90, perma:true, desc:'多重抽奖概率 +5% / 级' }
 ];
 
-/* ═══════════ 🌌 二阶永久树（真重生解锁） ═══════════ */
 const PERMA_TREE_2 = [
   { id:'P2ROOT', name:'源质核心',   emoji:'🌌', col:10, row:4, req:[],        max:1,  base:0,    growth:1,    perma2:true, desc:'真重生解锁的永久树' },
-
   { id:'P2C1',  name:'源质金币 I',  emoji:'💠', col:11, row:0, req:['P2ROOT'], max:30, base:1e18, growth:1.85, perma2:true, desc:'金币倍率 +50% / 级' },
   { id:'P2C2',  name:'源质金币 II', emoji:'💠', col:12, row:0, req:['P2C1'],   max:20, base:1e22, growth:1.90, perma2:true, desc:'金币倍率 +100% / 级' },
   { id:'P2L1',  name:'源质幸运 I',  emoji:'🌟', col:11, row:1, req:['P2ROOT'], max:25, base:5e18, growth:1.88, perma2:true, desc:'幸运 +20 / 级' },
@@ -1130,7 +1298,6 @@ const PERMA_TREE_2 = [
   { id:'P2PL',  name:'源质宠运',    emoji:'🍀', col:12, row:3, req:['P2D1'],   max:20, base:1e23, growth:1.92, perma2:true, desc:'宠物抽奖幸运 +100 / 级' }
 ];
 
-/* 普通树 + 永久树 + 二阶永久树的合集 */
 const ALL_NODES = TREE.concat(PERMA_TREE, PERMA_TREE_2);
 
 const REBIRTH_TIERS = [
@@ -1213,6 +1380,7 @@ const ACHIEVEMENTS = [
   { id:'pet_6star',     name:'究极进化',     emoji:'✨', desc:'获得一只 6 星宠物',           check:() => state.petInv.some(p => p.star >= 6) },
   { id:'pet_god',       name:'神之宠物',     emoji:'⚡', desc:'获得一只创世品质宠物',        check:() => state.petInv.some(p => p.quality === 'GOD') },
   { id:'pet_shiny',     name:'闪耀之心',     emoji:'💫', desc:'合成一只闪耀宠物',            check:() => state.petInv.some(p => p.shiny) },
+  { id:'pet_rainbow',   name:'炫彩之瞳',     emoji:'🌈', desc:'合成一只炫彩宠物（3 只闪耀合成）', check:() => state.petInv.some(p => p.rainbow) },
   { id:'pet_worm',      name:'蚕大蛇的诅咒', emoji:'🐛', desc:'抽到隐藏宠物蚕大蛇（有德凯奥特曼变身器）', check:() => state.petInv.some(p => p.species === 'worm') },
   { id:'rebirth_1',     name:'轮回初现',     emoji:'🌟', desc:'完成第一次重生',              check:() => state.rebirths >= 1 },
   { id:'rebirth_10',    name:'十世轮回',     emoji:'🔄', desc:'重生 10 次',                  check:() => state.rebirths >= 10 },
@@ -1228,13 +1396,60 @@ const ACHIEVEMENTS = [
   { id:'true_rebirth_5',     name:'轮回尽头', emoji:'♻️', desc:'完成 5 次真重生',                check:() => state.trueRebirths >= 5 },
   { id:'true_rebirth_10',    name:'万古长存', emoji:'🌌', desc:'完成 10 次真重生',               check:() => state.trueRebirths >= 10 },
   { id:'pet_draw_luck_1000', name:'驯兽宗师', emoji:'🐾', desc:'宠物抽奖幸运达到 1000',           check:() => getTotalPetDrawLuck() >= 1000 },
-  { id:'pet_draw_luck_10000',name:'万兽之主', emoji:'👑', desc:'宠物抽奖幸运达到 10000',          check:() => getTotalPetDrawLuck() >= 10000 }
+  { id:'pet_draw_luck_10000',name:'万兽之主', emoji:'👑', desc:'宠物抽奖幸运达到 10000',          check:() => getTotalPetDrawLuck() >= 10000 },
+  /* 🕳️ 源质深渊成就 */
+  { id:'abyss_1',       name:'深渊初探',   emoji:'🕳️', desc:'首次进入源质深渊',            check:() => state.abyssBest >= 1 },
+  { id:'abyss_10',      name:'十层深渊',   emoji:'💜', desc:'深渊抵达第 10 层',             check:() => state.abyssBest >= 10 },
+  { id:'abyss_30',      name:'深渊行者',   emoji:'🌀', desc:'深渊抵达第 30 层',             check:() => state.abyssBest >= 30 },
+  { id:'abyss_50',      name:'深渊征服者', emoji:'👑', desc:'深渊抵达第 50 层',             check:() => state.abyssBest >= 50 },
+  { id:'abyss_100',     name:'深渊主宰',   emoji:'🌌', desc:'深渊抵达第 100 层',            check:() => state.abyssBest >= 100 },
+  { id:'abyss_essence', name:'源质收集者', emoji:'💠', desc:'累计源质达到 1 万',            check:() => state.essence >= 10000 },
+  { id:'abyss_dmg_big', name:'深渊重击',   emoji:'💥', desc:'单次抽卡深渊伤害达到 1e15',    check:() => state.abyssFloorDamage >= 1e15 || state.abyssTotalDamage >= 1e15 }
 ];
 
-/* ═══════════ 🛒 新商城 ═══════════ */
-/* ═══════════ 💠 商品池 ═══════════ */
+/* ═══════════ 🕳️ 源质深渊 · 常量 ═══════════ */
+const ABYSS_MODS = [
+  { id:'no_dice',  name:'骰子失效', emoji:'🎲', desc:'骰子倍率无效 · 伤害 ×5',
+    apply:{ noDice:true, dmgMult:5 } },
+  { id:'no_affix', name:'词条失效', emoji:'✨', desc:'词条倍率无效 · 伤害 ×5',
+    apply:{ noAffix:true, dmgMult:5 } },
+  { id:'no_luck',  name:'幸运归零', emoji:'🍀', desc:'幸运固定为 1 · 伤害 ×8',
+    apply:{ noLuck:true, dmgMult:8 } },
+  { id:'no_pet',   name:'宠物失联', emoji:'🐾', desc:'宠物倍率无效 · 伤害 ×10',
+    apply:{ noPet:true, dmgMult:10 } },
+  { id:'max_rare', name:'稀有压制', emoji:'⬇️', desc:'稀有度上限 SR · 伤害 ×15',
+    apply:{ maxRarityIdx:2, dmgMult:15 } },
+  { id:'no_pity',  name:'保底封锁', emoji:'🛡️', desc:'保底失效 · 伤害 ×8',
+    apply:{ noPity:true, dmgMult:8 } },
+  { id:'fragile',  name:'脆弱之敌', emoji:'💔', desc:'敌人 HP 减半 · 伤害 ×0.5',
+    apply:{ hpMult:0.5, dmgMult:0.5 } },
+  { id:'crit',     name:'暴击深渊', emoji:'💥', desc:'额外 15% 概率造成 5 倍伤害',
+    apply:{ crit:0.15 } },
+  { id:'combo',    name:'连击风暴', emoji:'🔥', desc:'本层每抽伤害 +6%（上限 +400%）',
+    apply:{ combo:true } },
+  { id:'regen',    name:'敌人再生', emoji:'💚', desc:'敌人每 20 抽回复 15% HP',
+    apply:{ regen:true } },
+  { id:'glass',    name:'玻璃大炮', emoji:'🔮', desc:'伤害 ×25 · 每抽损失 2% 本层进度',
+    apply:{ dmgMult:25, hpDrain:0.02 } },
+  { id:'echo',     name:'回响深渊', emoji:'🔊', desc:'连击加成翻倍',
+    apply:{ combo:true, comboMul:2 } }
+];
+
+const ABYSS_UPGRADES = [
+  { id:'dmg',     name:'深渊伤害', emoji:'⚔️', baseCost:10, growth:1.35, max:40,
+    desc:'每次抽卡伤害 +20% / 级' },
+  { id:'reroll',  name:'变异重随', emoji:'🎲', baseCost:30, growth:3.0,  max:5,
+    desc:'每层重随次数 +1' },
+  { id:'essence', name:'源质亲和', emoji:'💠', baseCost:50, growth:1.8,  max:20,
+    desc:'源质获取 +10% / 级' },
+  { id:'crit',    name:'暴击强化', emoji:'💥', baseCost:40, growth:1.6,  max:20,
+    desc:'暴击率 +2% / 级' },
+  { id:'weaken',  name:'深渊凝视', emoji:'👁️', baseCost:20, growth:1.5,  max:10,
+    desc:'敌人开局 HP -3% / 级' }
+];
+
+/* ═══════════ 🛒 商品池 ═══════════ */
 const SHOP_POOL = [
-  /* ── 临时 Buff（限时） ── */
   { id:'luck_s',  emoji:'🍀', name:'小幸运符', desc:'幸运 +50%（3分钟）',      basePrice:800,   gemCost:3,  limit:3, weight:200,
     apply:() => addBuff({name:'小幸运符', emoji:'🍀', color:'#00ff88', luck: Math.max(0.5, getLuckMult() * 0.5), dur:180}) },
   { id:'luck_l',  emoji:'🍀', name:'大幸运符', desc:'幸运 +200%（3分钟）',     basePrice:6000,  gemCost:15, limit:1, weight:80,
@@ -1247,8 +1462,6 @@ const SHOP_POOL = [
     apply:() => addBuff({name:'超速引擎', emoji:'⚡', color:'#3fa9ff', speedMult:0.4, dur:180}) },
   { id:'affix',   emoji:'🌀', name:'词条卷轴', desc:'词条出现率 +50%（3分钟）', basePrice:3000,  gemCost:8,  limit:2, weight:100,
     apply:() => addBuff({name:'词条卷轴', emoji:'🌀', color:'#ff6bff', affixBonus:0.5, dur:180}) },
-
-  /* ── 一次性道具 ── */
   { id:'dice_gold', emoji:'🎲', name:'黄金钥匙', desc:'下次抽奖必触发黄金骰子', basePrice:2500, gemCost:7,  limit:1, weight:120,
     apply:() => { state.rollCount = state.rollCount - (state.rollCount % DICE_INTERVAL.gold) + (DICE_INTERVAL.gold - 1); toast('🎲 下次抽奖必触发黄金骰子！'); } },
   { id:'pity',    emoji:'🛡️', name:'保底加速', desc:'保底进度 +10',            basePrice:2000, gemCost:5,  limit:5, weight:150,
@@ -1259,8 +1472,6 @@ const SHOP_POOL = [
       state.gems += gain;
       toast('💎 +' + fmt(gain) + ' 钻石');
     } },
-
-  /* ── 赌博类 ── */
   { id:'box',     emoji:'🎁', name:'神秘礼盒', desc:'随机奖励（金币/钻石/宠物）', basePrice:3500, gemCost:10, limit:5, weight:120,
     apply:() => {
       const r = Math.random();
@@ -1270,8 +1481,6 @@ const SHOP_POOL = [
     } },
   { id:'egg',     emoji:'🥚', name:'宠物扭蛋', desc:'随机 1 只宠物（品级随机）', basePrice:5000, gemCost:12, limit:3, weight:80,
     apply:() => { state.petInv.push(genPet(rollPetQuality(), rollSpecies())); toast('🥚 获得 1 只宠物'); } },
-
-  /* ── 稀有商品（权重低） ── */
   { id:'affix_force', emoji:'✨', name:'词条神符', desc:'下次抽奖必带 1 个词条', basePrice:12000, gemCost:25, limit:1, weight:30,
     apply:() => { state.forceAffix = true; toast('✨ 下次抽奖必带词条！'); } },
   { id:'pet_luck', emoji:'🐾', name:'宠物秘药', desc:'宠物抽奖幸运 +200（一次性）', basePrice:15000, gemCost:30, limit:1, weight:25,
@@ -1279,9 +1488,6 @@ const SHOP_POOL = [
 ];
 
 function getShopCoinMult(){
-  /* 商城专用倍率：完全复制 getCoinMult 逻辑，
-     但宠物部分取「背包中倍率最强的 3 只」，
-     不受「卸下宠物」影响，防止玩家卸宠物再买 */
   let v = 1;
   v += treeLv('V1')  * 0.10;
   v += treeLv('V2')  * 0.20;
@@ -1293,18 +1499,16 @@ function getShopCoinMult(){
   v *= 1 + state.ascends    * (5    + ptreeLv('PR2') * 0.40);
   v *= 1 + state.transcends * (50   + ptreeLv('PR4') * 0.50);
 
-  /* 背包最强 3 只（按 petMult 排序） */
   const top3 = state.petInv.slice().sort((a, b) => petMult(b) - petMult(a)).slice(0, MAX_PETS);
   for(const p of top3) v *= petMult(p);
 
-  /* 用 top3 计算金币特质 */
   let coinTrait = 0;
   for(const p of top3){
     const sp = getSpecies(p.species);
     const starMul = 1 + (p.star - 1) * 0.5;
-    const shinyMul = p.shiny ? 2 : 1;
+    const formMul = petTierMul(p);
     for(const tr of sp.traits){
-      if(tr.t === 'coin') coinTrait += tr.v * starMul * shinyMul;
+      if(tr.t === 'coin') coinTrait += tr.v * starMul * formMul;
     }
   }
   v *= (1 + coinTrait);
@@ -1319,8 +1523,6 @@ function getShopCoinMult(){
 }
 
 function getShopLuckMult(){
-  /* 商城专用幸运：宠物部分取背包最强 3 只，
-     忽略装备状态和蚕大蛇诅咒，防止钻空子 */
   let v = 1;
   v += treeLv('L1')  * 0.03;
   v += treeLv('L2')  * 0.06;
@@ -1338,22 +1540,19 @@ function getShopLuckMult(){
   const ev = getEvent();
   if(ev.luck) v += ev.luck;
 
-  /* 背包最强 3 只的幸运特质 */
   const top3 = state.petInv.slice().sort((a, b) => petMult(b) - petMult(a)).slice(0, MAX_PETS);
   for(const p of top3){
     const sp = getSpecies(p.species);
     const starMul = 1 + (p.star - 1) * 0.5;
-    const shinyMul = p.shiny ? 2 : 1;
+    const formMul = petTierMul(p);
     for(const tr of sp.traits){
-      if(tr.t === 'luck') v += tr.v * starMul * shinyMul;
+      if(tr.t === 'luck') v += tr.v * starMul * formMul;
     }
   }
   return Math.max(1, v);
 }
 
 function getShopWealthMult(){
-  /* 综合财富倍率 = 金币倍率 × 幸运^0.3
-     幸运是间接收益（提升稀有度分布），所以用 0.3 次方温和加成 */
   const coinM = getShopCoinMult();
   const luckM = getShopLuckMult();
   return coinM * Math.pow(luckM, 0.3);
@@ -1447,6 +1646,18 @@ const state = {
   potionStock: [], daily: null, rechargeUnlocked: false,
   shopDate: '', shopSlots: [], shopBought: {}, forceAffix: false,
   event: 'none', eventUntil: 0,
+  /* 🕳️ 源质深渊 */
+  abyssFloor: 0,
+  abyssBest: 0,
+  abyssHp: 0,
+  abyssMaxHp: 0,
+  abyssMods: [],
+  abyssRerollLeft: 0,
+  abyssRolls: 0,
+  abyssFloorDamage: 0,
+  abyssTotalDamage: 0,
+  essence: 0,
+  abyssUpg: {},
   stats: {
     totalAffix: 0, totalDouble: 0,
     shinyCommon: 0, shinyCommonDouble: 0, chaoticCommon: 0,
@@ -1544,7 +1755,7 @@ function markDirty(){ saveDirty = true; }
 
 function getSaveData(){
   return {
-    v: 7, ts: Date.now(),
+    v: 9, ts: Date.now(),
     coins: state.coins, gems: state.gems,
     rolls: state.rolls, rollCount: state.rollCount, pity: state.pity,
     tree: state.tree,
@@ -1570,7 +1781,19 @@ function getSaveData(){
     stats: state.stats,
     unlockedAch: state.unlockedAch,
     sound: state.sound,
-    event: state.event, eventUntil: state.eventUntil
+    event: state.event, eventUntil: state.eventUntil,
+    /* 🕳️ 源质深渊 */
+    abyssFloor: state.abyssFloor,
+    abyssBest: state.abyssBest,
+    abyssHp: state.abyssHp,
+    abyssMaxHp: state.abyssMaxHp,
+    abyssMods: state.abyssMods,
+    abyssRerollLeft: state.abyssRerollLeft,
+    abyssRolls: state.abyssRolls,
+    abyssFloorDamage: state.abyssFloorDamage,
+    abyssTotalDamage: state.abyssTotalDamage,
+    essence: state.essence,
+    abyssUpg: state.abyssUpg
   };
 }
 
@@ -1619,7 +1842,8 @@ function applySaveData(d){
           quality: p.quality,
           star: Math.max(sp.minStar, Math.min(MAX_STAR, Math.floor(num(p.star, 1)))),
           exp: Math.max(0, Math.floor(num(p.exp, 0))),
-          shiny: !!p.shiny
+          shiny: !!p.shiny,
+          rainbow: !!p.rainbow
         };
       });
   } else {
@@ -1642,7 +1866,6 @@ function applySaveData(d){
     state.tree = t;
   }
 
-  /* ═══ 永久树 ═══ */
   if(d.ptree && typeof d.ptree === 'object'){
     const t = {};
     for(const k of Object.keys(d.ptree)){
@@ -1654,7 +1877,6 @@ function applySaveData(d){
     state.ptree = t;
   }
 
-  /* ═══ 二阶永久树 ═══ */
   if(d.ptree2 && typeof d.ptree2 === 'object'){
     const t = {};
     for(const k of Object.keys(d.ptree2)){
@@ -1715,6 +1937,27 @@ function applySaveData(d){
     }
     state.unlockedAch = u;
   }
+  /* 🕳️ 源质深渊 */
+  state.abyssFloor       = Math.max(0, Math.floor(num(d.abyssFloor, 0)));
+  state.abyssBest        = Math.max(0, Math.floor(num(d.abyssBest, 0)));
+  state.abyssHp          = Math.max(0, num(d.abyssHp, 0));
+  state.abyssMaxHp       = Math.max(0, num(d.abyssMaxHp, 0));
+  state.abyssRerollLeft  = Math.max(0, Math.floor(num(d.abyssRerollLeft, 0)));
+  state.abyssRolls       = Math.max(0, Math.floor(num(d.abyssRolls, 0)));
+  state.abyssFloorDamage = Math.max(0, num(d.abyssFloorDamage, 0));
+  state.abyssTotalDamage = Math.max(0, num(d.abyssTotalDamage, 0));
+  state.essence          = Math.max(0, num(d.essence, 0));
+  if(Array.isArray(d.abyssMods)){
+    state.abyssMods = d.abyssMods.filter(id => ABYSS_MODS.some(m => m.id === id));
+  } else state.abyssMods = [];
+  if(d.abyssUpg && typeof d.abyssUpg === 'object'){
+    const u = {};
+    for(const k of Object.keys(d.abyssUpg)){
+      if(ABYSS_UPGRADES.some(x => x.id === k)) u[k] = Math.max(0, Math.floor(num(d.abyssUpg[k], 0)));
+    }
+    state.abyssUpg = u;
+  } else state.abyssUpg = {};
+
   state.buffs = [];
   return true;
 }
@@ -1846,7 +2089,6 @@ function wipeSave(){
   });
 }
 
-/* ═══════════ 树操作（普通 + 永久 + 二阶 通用） ═══════════ */
 function treeLv(id){ return state.tree[id] || 0; }
 function ptreeLv(id){ return state.ptree[id] || 0; }
 function ptree2Lv(id){ return state.ptree2[id] || 0; }
@@ -1886,7 +2128,6 @@ function getPityMax(){
   return PITY_TABLE[Math.min(lv, 6)];
 }
 
-/* ═══════════ 效果计算 ═══════════ */
 function getPetPermaMult(){
   let v = 1;
   v += treeLv('P1') * 0.05;
@@ -1909,7 +2150,6 @@ function getMultiRollChance(){
   return Math.min(0.90, c);
 }
 
-/* ═══════════ 真重生 ═══════════ */
 function getTrueRebirthCost(){
   return Math.floor(TRUE_REBIRTH.baseCost * Math.pow(TRUE_REBIRTH.costGrowth, state.trueRebirths));
 }
@@ -1953,13 +2193,11 @@ function getLuckMult(){
   const ev = getEvent();
   if(ev.luck) v += ev.luck;
   v += getPetTraits().luck;
-  /* 🐛 蚕大蛇诅咒：直接把幸运砍到 1% */
   const hasWorm = state.petEquipped.some(uid => {
     const p = state.petInv.find(x => x.uid === uid);
     return p && p.species === 'worm';
   });
   if(hasWorm) v *= 0.01;
-
   return v;
 }
 function getCoinMult(){
@@ -2107,6 +2345,186 @@ function rollFull(){
     base = pickFrom(buildPool()).ref;
   }
   return { base, affixes: rollAffixes() };
+}
+
+/* ═══════════ 🕳️ 源质深渊核心逻辑 ═══════════ */
+function getAbyssMods(){
+  return (state.abyssMods || []).map(id => ABYSS_MODS.find(m => m.id === id)).filter(Boolean);
+}
+function getAbyssModifiers(){
+  const mods = getAbyssMods();
+  const out = {
+    noDice:false, noAffix:false, noLuck:false, noPet:false, noPity:false,
+    maxRarityIdx:-1, dmgMult:1, hpMult:1, crit:0, combo:false, comboMul:1,
+    regen:false, hpDrain:0
+  };
+  for(const m of mods){
+    const a = m.apply;
+    if(a.noDice) out.noDice = true;
+    if(a.noAffix) out.noAffix = true;
+    if(a.noLuck) out.noLuck = true;
+    if(a.noPet) out.noPet = true;
+    if(a.noPity) out.noPity = true;
+    if(a.maxRarityIdx !== undefined) out.maxRarityIdx = a.maxRarityIdx;
+    if(a.dmgMult) out.dmgMult *= a.dmgMult;
+    if(a.hpMult) out.hpMult *= a.hpMult;
+    if(a.crit) out.crit += a.crit;
+    if(a.combo){ out.combo = true; if(a.comboMul) out.comboMul = a.comboMul; }
+    if(a.regen) out.regen = true;
+    if(a.hpDrain) out.hpDrain += a.hpDrain;
+  }
+  return out;
+}
+function getAbyssDamageMult(){ return 1 + (state.abyssUpg.dmg || 0) * 0.20; }
+function getAbyssCritBonus(){ return (state.abyssUpg.crit || 0) * 0.02; }
+function getAbyssRerollMax(){ return 1 + (state.abyssUpg.reroll || 0); }
+function getAbyssWeakenMult(){ return 1 - Math.min(0.30, (state.abyssUpg.weaken || 0) * 0.03); }
+function getAbyssEssenceMult(){ return 1 + (state.abyssUpg.essence || 0) * 0.10; }
+function getAbyssModCount(floor){
+  if(floor < 5)  return 1;
+  if(floor < 12) return 2;
+  if(floor < 25) return 3;
+  return 4;
+}
+function computeAbyssMaxHp(floor, modsObj){
+  const mo = modsObj || getAbyssModifiers();
+  let hp = 100 * Math.pow(1.7, floor - 1);
+  hp *= mo.hpMult;
+  hp *= getAbyssWeakenMult();
+  return Math.max(1, Math.floor(hp));
+}
+function computeEssenceGain(floor){
+  const base  = 5 + Math.floor(floor * 1.5);
+  const bonus = Math.floor(Math.pow(1.10, floor));
+  return Math.max(1, Math.floor((base + bonus) * getAbyssEssenceMult()));
+}
+function rollAbyssMods(floor){
+  const n = getAbyssModCount(floor);
+  return shuffle(ABYSS_MODS).slice(0, n);
+}
+function initAbyssFloor(floor){
+  const mods = rollAbyssMods(floor);
+  state.abyssMods = mods.map(m => m.id);
+  const mo = getAbyssModifiers();
+  state.abyssMaxHp = computeAbyssMaxHp(floor, mo);
+  state.abyssHp = state.abyssMaxHp;
+  state.abyssRolls = 0;
+  state.abyssFloorDamage = 0;
+  state.abyssRerollLeft = getAbyssRerollMax();
+}
+function ensureAbyssInit(){
+  if(state.trueRebirths < 1) return;
+  if(state.abyssFloor <= 0){
+    state.abyssFloor = 1;
+    state.abyssBest = Math.max(state.abyssBest, 1);
+  }
+  if(state.abyssHp <= 0 || state.abyssMaxHp <= 0){
+    initAbyssFloor(state.abyssFloor);
+  }
+}
+function rerollAbyssMods(){
+  if(state.page !== 'abyss') return;
+  if(state.abyssRerollLeft <= 0){ toast('❌ 本层重随次数已用完'); beep(220,.12,'square',.04); return; }
+  state.abyssRerollLeft--;
+  const ratio = state.abyssMaxHp > 0 ? Math.max(0, state.abyssHp / state.abyssMaxHp) : 1;
+  const mods = rollAbyssMods(state.abyssFloor);
+  state.abyssMods = mods.map(m => m.id);
+  const newMax = computeAbyssMaxHp(state.abyssFloor, getAbyssModifiers());
+  state.abyssMaxHp = newMax;
+  state.abyssHp = Math.max(1, Math.floor(newMax * ratio));
+  beep(900, .12, 'sine', .05);
+  toast('🎲 变异已重随');
+  renderAbyssPage();
+  markDirty();
+}
+function onAbyssClear(){
+  const cleared = state.abyssFloor;
+  const gain = computeEssenceGain(cleared);
+  state.essence += gain;
+  state.abyssFloor++;
+  state.abyssBest = Math.max(state.abyssBest, state.abyssFloor);
+  initAbyssFloor(state.abyssFloor);
+
+  beep(1100, .22, 'sine', .06);
+  setTimeout(() => beep(1500, .3, 'sine', .055), 120);
+  setTimeout(() => beep(1900, .4, 'sine', .05), 260);
+  burst('#a855f7', 70);
+  burst('#e038ff', 50);
+  burst('#ffffff', 30);
+  shake(7);
+  toast('🕳️ 突破第 ' + cleared + ' 层！源质 +' + gain + '（当前第 ' + state.abyssFloor + ' 层）');
+  if(state.abyssFloor % 10 === 0){
+    setTimeout(() => toast('🔥 已抵达第 ' + state.abyssFloor + ' 层，变异数 ' + getAbyssModCount(state.abyssFloor)), 1600);
+  }
+  checkAchievements();
+}
+function showAbyssHit(dmg, isCrit){
+  const el = document.createElement('div');
+  el.className = 'abyss-hit' + (isCrit ? ' crit' : '');
+  el.textContent = (isCrit ? '暴击 ' : '') + fmt(dmg);
+  el.style.left = (window.innerWidth / 2) + 'px';
+  el.style.top  = (window.innerHeight * 0.42) + 'px';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1000);
+}
+function applyAbyssDamageFromRoll(idx, aMult, diceMult){
+  if(state.trueRebirths < 1) return;
+  if(state.abyssFloor <= 0) return;
+
+  if(state.abyssHp <= 0 || state.abyssMaxHp <= 0){
+    initAbyssFloor(state.abyssFloor || 1);
+  }
+
+  const mo = getAbyssModifiers();
+
+  let useIdx = idx;
+  if(mo.maxRarityIdx >= 0 && useIdx > mo.maxRarityIdx) useIdx = mo.maxRarityIdx;
+
+  let dmg = Math.pow(20, useIdx);
+  if(!mo.noAffix) dmg *= aMult;
+  if(!mo.noDice)  dmg *= diceMult;
+  if(!mo.noPet)   dmg *= (1 + getPetTraits().coin);
+  dmg *= mo.dmgMult;
+  dmg *= getAbyssDamageMult();
+
+  if(mo.combo){
+    const bonus = Math.min(4, state.abyssRolls * 0.06 * (mo.comboMul || 1));
+    dmg *= (1 + bonus);
+  }
+
+  const critChance = (mo.crit || 0) + getAbyssCritBonus();
+  let isCrit = false;
+  if(critChance > 0 && Math.random() < critChance){
+    dmg *= 5;
+    isCrit = true;
+  }
+
+  if(mo.hpDrain > 0){
+    state.abyssHp -= state.abyssMaxHp * mo.hpDrain;
+  }
+
+  state.abyssHp -= dmg;
+  state.abyssRolls++;
+  state.abyssFloorDamage += dmg;
+  state.abyssTotalDamage += dmg;
+
+  if(mo.regen && state.abyssRolls % 20 === 0 && state.abyssHp > 0){
+    state.abyssHp = Math.min(state.abyssMaxHp, state.abyssHp + state.abyssMaxHp * 0.15);
+    toast('💚 敌人再生！');
+  }
+
+  if(state.page === 'abyss'){
+    showAbyssHit(dmg, isCrit);
+  }
+
+  if(state.abyssHp <= 0){
+    onAbyssClear();
+  }
+
+  if(state.page === 'abyss'){
+    updateAbyssUI();
+  }
+  markDirty();
 }
 
 function saveAch(){
@@ -2301,14 +2719,6 @@ function trackDaily(type, amount){
   saveDaily();
 }
 
-function genPotionStock(){
-  const pool = shuffle(POTION_POOL).slice(0, 3);
-  return pool.map((tpl, i) => ({
-    uid: 'pot_' + Date.now() + '_' + i,
-    tpl,
-    price: Math.max(100, Math.floor(tpl.base * (0.85 + Math.random() * 0.35)))
-  }));
-}
 function buyPotion(uid){
   const idx = state.potionStock.findIndex(p => p.uid === uid);
   if(idx < 0) return;
@@ -2321,10 +2731,6 @@ function buyPotion(uid){
   state.coins -= item.price;
   applyPotion(item.tpl);
   state.potionStock.splice(idx, 1);
-  const used = state.potionStock.map(p => p.tpl.name);
-  const remain = POTION_POOL.filter(p => !used.includes(p.name));
-  const next = remain[Math.floor(Math.random() * remain.length)] || POTION_POOL[0];
-  state.potionStock.push({ uid: 'pot_' + Date.now() + '_new', tpl: next, price: Math.max(100, Math.floor(next.base * (0.85 + Math.random() * 0.35))) });
   updateHUD(); renderShopPage();
 }
 function applyPotion(tpl){
@@ -2827,7 +3233,6 @@ function bindTreeControls(){
   window.addEventListener('resize', () => { if(state.page === 'tree') resetTreeView(); });
 }
 
-/* ═══════════ 商城 ═══════════ */
 function renderShopPage(){
   refreshShop();
 
@@ -2879,7 +3284,7 @@ function renderShopPage(){
 
 function renderPetPage(){
   const sub = state.petTab || 'draw';
-  let h = '<div class="page-title"><h2>宠物</h2><p>种类 × 品质 × 星级 · 抽取 · 闪耀合成 · 品质升阶</p></div>';
+  let h = '<div class="page-title"><h2>宠物</h2><p>种类 × 品质 × 星级 · 抽取 · 闪耀/炫彩合成 · 品质升阶</p></div>';
   h += '<div class="subtabs">' +
     '<div class="subtab' + (sub==='draw'?' on':'') + '" data-pet="draw">🎰 抽取</div>' +
     '<div class="subtab' + (sub==='bag'?' on':'') + '" data-pet="bag">🎒 背包</div>' +
@@ -2900,9 +3305,10 @@ function renderPetPage(){
     if(p){
       const q = getQuality(p.quality);
       const sp = getSpecies(p.species);
-      h += '<div class="equip-slot filled" data-unequip="' + p.uid + '" style="--qc:' + q.color + '">' +
+      const t = petTier(p);
+      h += '<div class="equip-slot filled' + (t === 2 ? ' rb' : '') + '" data-unequip="' + p.uid + '" style="--qc:' + q.color + '">' +
         '<div class="es-emoji">' + sp.emoji + '</div>' +
-        '<div class="es-info">' + q.id + ' · ' + (p.shiny ? '✨' : '') + esc(sp.name) + '</div>' +
+        '<div class="es-info">' + q.id + ' · ' + petPrefix(p) + esc(sp.name) + '</div>' +
         '<div class="es-mult">x' + fmt(petMult(p)) + '</div>' +
       '</div>';
     }else{
@@ -2942,7 +3348,7 @@ function renderPetDraw(){
   let h = '<div class="card"><div class="card-head">🎰 抽取宠物</div>';
   h += '<div class="card-body">';
   h += '<div class="merchant"><div class="m-emoji">✨</div>' +
-    '<div>花费钻石抽取宠物。宠物种类决定 <b>最低星级</b> 和 <b>特质</b>，稀有种类更强。<br>收集 3 只 <b>相同种类、相同品质、相同星级</b> 且 <b>非闪耀</b> 的宠物，即可合成 1 只 <b>闪耀</b> 宠物。</div></div>';
+    '<div>花费钻石抽取宠物。宠物种类决定 <b>最低星级</b> 和 <b>特质</b>，稀有种类更强。<br>收集 3 只 <b>相同种类、相同品质、相同星级</b> 且 <b>非闪耀</b> 的宠物，即可合成 1 只 <b>✨闪耀</b> 宠物；3 只 ✨闪耀 可再合成 <b>🌈炫彩</b>。</div></div>';
 
   if(state.trueRebirths > 0 || luck > 0){
     h += '<div style="margin-bottom:12px;padding:10px 12px;border-radius:12px;background:linear-gradient(165deg,rgba(200,90,255,.15),rgba(200,90,255,.03));border:1px solid rgba(200,90,255,.4);font-size:12px;color:#e8c8ff;line-height:1.7">' +
@@ -2970,7 +3376,6 @@ function renderPetDraw(){
   h += '</div></div>';
 
   h += '<div class="card"><div class="card-head">📊 抽取概率</div><div class="card-body">';
-  const totalW = Object.values(PET_QUALITY_WEIGHTS).reduce((a,b) => a+b, 0);
   const luckMul = 1 + luck / 100;
   let probHTML = '';
   const keys = Object.keys(PET_QUALITY_WEIGHTS);
@@ -3006,7 +3411,7 @@ function renderPetBag(){
 
   const sorted = state.petInv.slice().sort((a, b) => {
     if(b.star !== a.star) return b.star - a.star;
-    if(!!b.shiny !== !!a.shiny) return b.shiny ? 1 : -1;
+    if(petTier(b) !== petTier(a)) return petTier(b) - petTier(a);
     return PET_QUALITIES.indexOf(getQuality(b.quality)) - PET_QUALITIES.indexOf(getQuality(a.quality));
   });
 
@@ -3022,13 +3427,13 @@ function renderPetBag(){
     const eqBtnAttr = (!eq && slotFull) ? 'disabled' : '';
 
     h += '<div class="pet-card-v2 ' + (eq ? 'equipped' : '') + ' ' + (sel ? 'selected' : '') +
-      (p.shiny ? ' shiny' : '') + '" ' +
+      petVisualClass(p) + '" ' +
       'data-pet-card="' + p.uid + '" data-pet-idx="' + selIdx + '" style="--qc:' + q.color + '">' +
       '<div class="pcv-sel">' + (sel ? (selIdx + 1) : '') + '</div>' +
       (eq ? '<div class="pcv-badge">装备中</div>' : '') +
-      (p.shiny ? '<div class="pcv-badge" style="background:linear-gradient(180deg,#ffd86b,#c98a00);color:#241700;border-color:rgba(255,255,255,.5)">✨</div>' : '') +
+      petBadgeHTML(p) +
       '<div class="pcv-emoji">' + sp.emoji + '</div>' +
-      '<div class="pcv-name">' + (p.shiny ? '✨' : '') + esc(sp.name) + '</div>' +
+      '<div class="pcv-name">' + petPrefix(p) + esc(sp.name) + '</div>' +
       '<div class="pcv-quality">' + q.name + '</div>' +
       '<div class="pcv-star">' + getStarInfo(p.star).label + '</div>' +
       '<div class="pcv-mult">x' + fmt(petMult(p)) + '</div>' +
@@ -3038,14 +3443,18 @@ function renderPetBag(){
   h += '</div>';
 
   const sel = state.petSelection.map(uid => state.petInv.find(p => p.uid === uid)).filter(Boolean);
-  const canMerge = sel.length === 3 &&
-                   sel.every(p => p) &&
-                   sel.every(p => !p.shiny) &&
-                   sel[0].species === sel[1].species && sel[1].species === sel[2].species &&
-                   sel[0].quality === sel[1].quality && sel[1].quality === sel[2].quality &&
-                   sel[0].star === sel[1].star && sel[1].star === sel[2].star;
+  const selTier = sel.length ? petTier(sel[0]) : -1;
+  const sameAll = sel.length === 3 &&
+                  sel.every(p => p.species === sel[0].species &&
+                                 p.quality === sel[0].quality &&
+                                 p.star === sel[0].star &&
+                                 petTier(p) === selTier);
+  const canMerge = sameAll && selTier === 0 || sameAll && selTier === 1;
+  const mergeLabel = selTier === 1 ? '🌈 炫彩合成'
+                   : (selTier === 2 ? '炫彩·最高形态' : '✨ 闪耀合成');
   const selInfo = sel.length
-    ? (getSpecies(sel[0].species).name + ' · ' + getQuality(sel[0].quality).name + ' ' + sel[0].star + '星 × ' + sel.length)
+    ? (getSpecies(sel[0].species).name + ' · ' + getQuality(sel[0].quality).name + ' ' + sel[0].star + '星' +
+       (selTier === 2 ? ' 🌈' : selTier === 1 ? ' ✨' : '') + ' × ' + sel.length)
     : '未选择';
 
   const canDecompose = sel.length > 0 && sel.every(p => !state.petEquipped.includes(p.uid));
@@ -3055,7 +3464,7 @@ function renderPetBag(){
 
   h += '<div class="bag-toolbar">' +
     '<div class="bt-info">已选 <b>' + sel.length + '/3</b> · ' + esc(selInfoFull) + '</div>' +
-    '<button class="bt-btn" data-pet-merge="1"' + (canMerge ? '' : ' disabled') + '>闪耀合成</button>' +
+    '<button class="bt-btn" data-pet-merge="1"' + (canMerge ? '' : ' disabled') + '>' + mergeLabel + '</button>' +
     '<button class="bt-btn" data-pet-decompose="1" style="background:linear-gradient(180deg,#ff9f43,#c26c00);color:#1a0d00"' +
       (canDecompose ? '' : ' disabled') + '>分解</button>' +
     '<button class="bt-btn" data-pet-clear="1" style="background:rgba(255,255,255,.1);color:#c2cde4"' +
@@ -3064,9 +3473,11 @@ function renderPetBag(){
 
   h += '<div class="set-info" style="margin-top:10px;font-size:11.5px">' +
     '<b>💡 操作说明：</b><br>' +
-    '· 点击宠物卡片：选中 / 取消选择（用于闪耀合成、分解）<br>' +
+    '· 点击宠物卡片：选中 / 取消选择（用于合成、分解）<br>' +
     '· 点击卡片下方按钮：装备 / 卸下<br>' +
-    '· 选择 3 只 <b>相同种类、相同品质、相同星级</b> 且 <b>非闪耀</b> 的宠物，可合成 1 只 <b>✨ 闪耀</b> 宠物<br>' +
+    '· 选择 3 只 <b>相同种类、相同品质、相同星级</b> 的普通宠物 → 合成 1 只 <b>✨闪耀</b> 宠物<br>' +
+    '· 选择 3 只 <b>相同种类、相同品质、相同星级</b> 的 <b>✨闪耀</b> 宠物 → 合成 1 只 <b>🌈炫彩</b> 宠物<br>' +
+    '· 🌈炫彩为最高形态，倍率 ×20、特质 ×5，无法继续合成<br>' +
     '· 选中宠物后点「分解」按钮可兑换金币（装备中的不能分解）' +
   '</div>';
 
@@ -3097,7 +3508,7 @@ function renderPetLevelup(){
         '<div style="font-size:26px">' + sp.emoji + '</div>' +
         '<div style="flex:1;min-width:0">' +
           '<div style="font-size:13px;font-weight:900;color:#fff">' +
-            (target.shiny ? '✨' : '') + esc(sp.name) + ' · ' + q.name +
+            petPrefix(target) + esc(sp.name) + ' · ' + q.name +
           '</div>' +
           '<div style="font-size:11px;color:#8b98ad;margin-top:2px">' +
             (nextQ
@@ -3115,13 +3526,13 @@ function renderPetLevelup(){
   }else{
     h += '<div class="merchant" style="margin-bottom:12px">' +
       '<div class="m-emoji">⬆️</div>' +
-      '<div>点击任意宠物作为 <b>主宠物</b>，然后选 <b>同星 · 品质 ≤ 主宠物 · 闪耀状态相同</b> 的宠物作为材料吸收。<br>材料品质越低提供的经验越少，升到越高品质需要的经验越多。</div>' +
+      '<div>点击任意宠物作为 <b>主宠物</b>，然后选 <b>同星 · 品质 ≤ 主宠物 · 形态相同（普通/✨/🌈）</b> 的宠物作为材料吸收。<br>材料品质越低提供的经验越少，升到越高品质需要的经验越多。</div>' +
     '</div>';
   }
 
   const sorted = state.petInv.slice().sort((a, b) => {
     if(b.star !== a.star) return b.star - a.star;
-    if(!!b.shiny !== !!a.shiny) return b.shiny ? 1 : -1;
+    if(petTier(b) !== petTier(a)) return petTier(b) - petTier(a);
     return PET_QUALITIES.indexOf(getQuality(b.quality)) - PET_QUALITIES.indexOf(getQuality(a.quality));
   });
 
@@ -3144,7 +3555,7 @@ function renderPetLevelup(){
         const ti = PET_QUALITIES.findIndex(x => x.id === tgt.quality);
         const pi = PET_QUALITIES.findIndex(x => x.id === p.quality);
         if(pi > ti) dim = true;
-        if(!!p.shiny !== !!tgt.shiny) dim = true;
+        if(petTier(p) !== petTier(tgt)) dim = true;
       }
     }
 
@@ -3153,13 +3564,13 @@ function renderPetLevelup(){
     const eqBtnAttr = (!eq && slotFull) ? 'disabled' : '';
 
     h += '<div class="pet-card-v2 ' + (eq ? 'equipped' : '') + ' ' + (sel ? 'selected' : '') +
-      (p.shiny ? ' shiny' : '') + (dim ? ' dim' : '') + '" ' +
+      petVisualClass(p) + (dim ? ' dim' : '') + '" ' +
       'data-pet-card="' + p.uid + '" data-pet-idx="' + selIdx + '" style="--qc:' + q.color + '">' +
       '<div class="pcv-sel">' + (sel ? (selIdx + 1) : '') + '</div>' +
       (eq ? '<div class="pcv-badge">装备中</div>' : '') +
-      (p.shiny ? '<div class="pcv-badge" style="background:linear-gradient(180deg,#ffd86b,#c98a00);color:#241700;border-color:rgba(255,255,255,.5)">✨</div>' : '') +
+      petBadgeHTML(p) +
       '<div class="pcv-emoji">' + sp.emoji + '</div>' +
-      '<div class="pcv-name">' + (p.shiny ? '✨' : '') + esc(sp.name) + '</div>' +
+      '<div class="pcv-name">' + petPrefix(p) + esc(sp.name) + '</div>' +
       '<div class="pcv-quality">' + q.name + '</div>' +
       '<div class="pcv-star">' + getStarInfo(p.star).label + '</div>' +
       '<div class="pcv-mult">x' + fmt(petMult(p)) + '</div>' +
@@ -3173,7 +3584,7 @@ function renderPetLevelup(){
     '· 点击任意宠物卡片：设为 <b>主宠物</b>（再点一次取消）<br>' +
     '· 选好主宠物后，底部出现 <b>⚡ 一键选材料</b> 按钮，自动选中所有符合条件的材料<br>' +
     '· 也可以手动点其他卡片加入 / 移出材料<br>' +
-    '· 材料要求：<b>同星 · 品质 ≤ 主宠物 · 闪耀状态相同</b><br>' +
+    '· 材料要求：<b>同星 · 品质 ≤ 主宠物 · 形态相同（普通/✨/🌈）</b><br>' +
     '· 材料品质越低经验越少，升到越高品质需要越多经验' +
   '</div>';
 
@@ -3228,15 +3639,39 @@ function renderPetInfo(){
   }
   h += '</div></div>';
 
+  h += '<div class="card"><div class="card-head">🌈 宠物形态</div><div class="card-body">';
+  h += '<div class="quality-card" style="--qc:#8b98ad">' +
+    '<div class="qc-badge" style="background:#8b98ad;color:#080b14">普</div>' +
+    '<div class="qc-info"><div class="qc-name">普通形态</div>' +
+    '<div class="qc-desc">基础形态，可直接抽取获得</div></div>' +
+    '<div class="qc-mult">倍率 ×1 · 特质 ×1</div></div>';
+  h += '<div class="quality-card" style="--qc:#ffd86b">' +
+    '<div class="qc-badge" style="background:linear-gradient(180deg,#ffd86b,#c98a00);color:#241700">✨</div>' +
+    '<div class="qc-info"><div class="qc-name">闪耀形态</div>' +
+    '<div class="qc-desc">3 只相同种类 / 品质 / 星级的普通宠物合成</div></div>' +
+    '<div class="qc-mult">倍率 ×' + PET_SHINY_MULT + ' · 特质 ×' + PET_SHINY_TRAIT + '</div></div>';
+  h += '<div class="quality-card" style="--qc:#ff4fb5">' +
+    '<div class="qc-badge" style="background:linear-gradient(120deg,#ff0080,#ff8c00,#ffee00,#00ff88,#00d4ff,#8b3dff);color:#fff">🌈</div>' +
+    '<div class="qc-info"><div class="qc-name">炫彩形态</div>' +
+    '<div class="qc-desc">3 只相同种类 / 品质 / 星级的 ✨闪耀宠物合成 · 最高形态</div></div>' +
+    '<div class="qc-mult">倍率 ×' + PET_RAINBOW_MULT + ' · 特质 ×' + PET_RAINBOW_TRAIT + '</div></div>';
+  h += '</div></div>';
+
   h += '<div class="card"><div class="card-head">💡 宠物规则</div><div class="card-body">';
   h += '<div class="set-info" style="margin:0">' +
-    '<b>基础倍率</b> = 品质倍率 × 星级倍率 × (闪耀 ? 3 : 1)<br>' +
+    '<b>基础倍率</b> = 品质倍率 × 星级倍率 × 形态倍率<br>' +
+    '· 普通 ×1 · ✨闪耀 ×' + PET_SHINY_MULT + ' · 🌈炫彩 ×' + PET_RAINBOW_MULT + '<br>' +
     '只影响金币收益，装备的宠物之间相乘叠加。<br><br>' +
     '<b>特质加成</b> = 各装备宠物的特质分别累加，作用到金币、钻石、幸运、词条率、抽速<br>' +
-    '· 单只特质值 × (1 + (星级-1) × 0.5)<br>' +
-    '· 闪耀版特质再 ×2<br><br>' +
+    '· 单只特质值 × (1 + (星级-1) × 0.5) × 形态特质倍率<br>' +
+    '· ✨闪耀 ×' + PET_SHINY_TRAIT + ' · 🌈炫彩 ×' + PET_RAINBOW_TRAIT + '<br><br>' +
+    '<b>闪耀合成</b>（背包）：<br>' +
+    '· 3 只 <b>相同种类 / 品质 / 星级</b> 的普通宠物 → 1 只 ✨闪耀宠物<br><br>' +
+    '<b>🌈 炫彩合成</b>（背包）：<br>' +
+    '· 3 只 <b>相同种类 / 品质 / 星级</b> 的 ✨闪耀宠物 → 1 只 🌈炫彩宠物<br>' +
+    '· 炫彩为最高形态，不能再参与任何合成<br><br>' +
     '<b>品质升阶</b>（背包 → 升阶）：<br>' +
-    '· 材料要求：同星 · 品质 ≤ 主宠物 · 闪耀状态相同<br>' +
+    '· 材料要求：同星 · 品质 ≤ 主宠物 · 形态相同（普通/✨/🌈）<br>' +
     '· 材料品质越低给的经验越少<br>' +
     '· 经验满了自动升一档，到创世封顶' +
   '</div>';
@@ -3419,7 +3854,7 @@ function renderTaskPage(){
 }
 
 function renderRebPage(){
-  let h = '<div class="page-title"><h2>重生</h2><p>三重轮回 · 真重生</p></div>';
+  let h = '<div class="page-title"><h2>重生</h2><p>三重轮回 · 真重生 · 源质深渊</p></div>';
   h += '<div class="rebirth-wrap">';
 
   for(const tier of REBIRTH_TIERS){
@@ -3454,7 +3889,6 @@ function renderRebPage(){
     h += '</div>';
   }
 
-  /* ═══ 真重生 ═══ */
   const trCost = getTrueRebirthCost();
   const trCan = state.coins >= trCost && state.transcends >= TRUE_REBIRTH.reqTranscends;
   h += '<div class="rb-tier" style="--rc1:rgba(200,80,255,.14);--rc2:rgba(200,80,255,.3);--rc3:rgba(200,80,255,.22);--rc4:#c85aff;--rc5:rgba(200,80,255,.6);--rc6:#e89bff;--rc7:#8a00c8">' +
@@ -3465,11 +3899,12 @@ function renderRebPage(){
     '</div>' +
     '<div class="rbt-desc">' +
       '重置：<b>金币 · 普通技能树 · 三种重生次数 · 全部宠物与装备</b><br>' +
-      '保留：<b>图鉴 · 永久树 · 二阶永久树 · 成就 · 宠物抽奖幸运</b><br>' +
+      '保留：<b>图鉴 · 永久树 · 二阶永久树 · 成就 · 宠物抽奖幸运 · 源质深渊进度</b><br>' +
       '获得：金币倍率 <b>×' + TRUE_REBIRTH.coinMultPer + '</b>（累积）· 幸运 <b>+' + TRUE_REBIRTH.luckPer + '</b> · ' +
       '宠物抽奖幸运 <b>+' + TRUE_REBIRTH.petLuckPer + '</b> · 宠物抽奖折扣 <b>-' +
       Math.round(TRUE_REBIRTH.petDrawDiscountPer * 100) + '%</b>（上限 ' +
-      Math.round(TRUE_REBIRTH.petDrawDiscountCap * 100) + '%）' +
+      Math.round(TRUE_REBIRTH.petDrawDiscountCap * 100) + '%）<br>' +
+      '<b style="color:#a855f7">🕳️ 解锁源质深渊</b>（无尽爬塔 · 永久升级）' +
     '</div>' +
     (state.transcends < TRUE_REBIRTH.reqTranscends
       ? '<div class="rbt-req">🔒 需要至少 ' + TRUE_REBIRTH.reqTranscends + ' 次超级重生（当前 ' + state.transcends + '）</div>'
@@ -3491,11 +3926,134 @@ function renderRebPage(){
     '宠物抽奖幸运：<b style="color:#00ff88">' + fmt(getTotalPetDrawLuck()) + '</b><br><br>' +
     '<span style="color:#ffc93c">💎 永久树 / 🌌 二阶永久树节点不受任何重生影响。</span><br>' +
     '<span style="color:#7c89a5">普通重生会清空金币与普通技能树等级，但保留宠物、装备、图鉴收集和所有重生次数。</span><br>' +
-    '<span style="color:#c85aff">☯️ 真重生会清空金币、普通技能树、三种重生次数、宠物与装备，但保留图鉴、永久树、成就与宠物抽奖幸运。</span>' +
+    '<span style="color:#c85aff">☯️ 真重生会清空金币、普通技能树、三种重生次数、宠物与装备，但保留图鉴、永久树、成就、源质深渊进度与宠物抽奖幸运。</span>' +
   '</div></div>';
 
   h += '</div>';
   $('#pageReb').innerHTML = h;
+}
+
+/* ═══════════ 🕳️ 源质深渊页面 ═══════════ */
+function renderAbyssPage(){
+  if(state.trueRebirths < 1){
+    $('#pageAbyss').innerHTML =
+      '<div class="page-title"><h2>源质深渊</h2><p>真重生解锁</p></div>' +
+      '<div class="empty">☯️ 完成一次真重生后解锁源质深渊<br>无尽爬塔 · 随机变异 · 源质永久升级</div>';
+    return;
+  }
+  ensureAbyssInit();
+
+  const mods = getAbyssMods();
+  const hpPct = state.abyssMaxHp > 0 ? Math.max(0, Math.min(100, state.abyssHp / state.abyssMaxHp * 100)) : 0;
+
+  let h = '<div class="page-title"><h2>源质深渊</h2><p>无尽爬塔 · 变异规则 · 源质永久升级</p></div>';
+
+  h += '<div class="abyss-progress">' +
+    '<div class="abyss-stat"><span>当前层</span><b>' + state.abyssFloor + '</b></div>' +
+    '<div class="abyss-stat"><span>最高层</span><b>' + state.abyssBest + '</b></div>' +
+    '<div class="abyss-stat"><span>源质</span><b>' + fmt(state.essence) + '</b></div>' +
+  '</div>';
+
+  h += '<div class="abyss-enemy">' +
+    '<div class="enemy-head">' +
+      '<span class="enemy-emoji">👹</span>' +
+      '<span class="enemy-name">深渊守卫 · 第 ' + state.abyssFloor + ' 层' +
+        (getAbyssModCount(state.abyssFloor) >= 4 ? ' <span style="color:#ff9bd8">[狂乱]</span>' : '') +
+      '</span>' +
+    '</div>' +
+    '<div class="enemy-hp-bar"><i id="enemyHpFill" style="width:' + hpPct + '%"></i></div>' +
+    '<div class="enemy-hp-text" id="enemyHpText">' + fmt(Math.max(0, state.abyssHp)) + ' / ' + fmt(state.abyssMaxHp) + '</div>' +
+  '</div>';
+
+  h += '<div class="abyss-mods" id="abyssMods">' +
+    mods.map(m => '<div class="abyss-mod">' + m.emoji + ' ' + esc(m.name) +
+      '<span class="am-desc">' + esc(m.desc) + '</span></div>').join('') +
+  '</div>';
+
+  h += '<div class="abyss-floor-stats">' +
+    '<div>本层伤害 <b id="abyssFloorDmg">' + fmt(state.abyssFloorDamage) + '</b></div>' +
+    '<div>本层抽数 <b id="abyssRolls">' + state.abyssRolls + '</b></div>' +
+    '<div>重随 <b id="abyssReroll">' + state.abyssRerollLeft + ' / ' + getAbyssRerollMax() + '</b></div>' +
+  '</div>';
+
+  h += '<div class="abyss-actions">' +
+    '<button class="abyss-btn primary" id="abyssRollBtn">抽 取 · 造 成 伤 害</button>' +
+    '<button class="abyss-btn auto' + (state.auto ? ' on' : '') + '" id="abyssAutoBtn">' +
+      (state.auto ? '自动抽取：开' : '自动抽取：关') + '</button>' +
+    '<button class="abyss-btn reroll" id="abyssRerollBtn"' +
+      (state.abyssRerollLeft > 0 ? '' : ' disabled') + '>🎲 重随变异（剩 ' + state.abyssRerollLeft + '）</button>' +
+  '</div>';
+
+  h += '<div class="card" style="max-width:760px;margin:0 auto 12px"><div class="card-head">💠 源质升级</div>' +
+    '<div class="card-body">';
+  h += '<div class="abyss-upgrades">';
+  for(const u of ABYSS_UPGRADES){
+    const lv = state.abyssUpg[u.id] || 0;
+    const maxed = lv >= u.max;
+    const cost = maxed ? 0 : Math.floor(u.baseCost * Math.pow(u.growth, lv));
+    const can = !maxed && state.essence >= cost;
+    h += '<div class="abyss-upg">' +
+      '<div class="au-emoji">' + u.emoji + '</div>' +
+      '<div class="au-name">' + esc(u.name) + '</div>' +
+      '<div class="au-lv">Lv.' + lv + ' / ' + u.max + '</div>' +
+      '<div class="au-desc">' + esc(u.desc) + '</div>' +
+      '<button class="au-btn' + (maxed ? ' max' : '') + '" data-abyss-upg="' + u.id + '"' +
+        (maxed || !can ? ' disabled' : '') + '>' +
+        (maxed ? '已满级' : '💠 ' + fmt(cost)) +
+      '</button>' +
+    '</div>';
+  }
+  h += '</div>';
+  h += '<div class="set-info" style="margin-top:12px;font-size:11.5px">' +
+    '· 深渊伤害 = 20<sup>稀有度</sup> × 词条 × 骰子 × 宠物加成 × 变异倍率 × 深渊升级<br>' +
+    '· 层数越高敌人 HP 增长越快，变异数量从 1 个逐渐增加到 4 个<br>' +
+    '· 重随变异会保留当前 HP 百分比<br>' +
+    '· 源质升级永久生效，不受任何重生影响' +
+  '</div>';
+  h += '</div></div>';
+
+  h += '<div class="card" style="max-width:760px;margin:0 auto"><div class="card-body" style="font-size:11.5px;color:#a78bd4;line-height:1.8">' +
+    '<b style="color:#e9d5ff">🕳️ 深渊规则</b><br>' +
+    '· 每次抽奖都会对深渊敌人造成伤害，稀有度越高伤害越高<br>' +
+    '· 当前层击杀后自动进入下一层，获得源质<br>' +
+    '· 变异会禁用某些加成，但提供大量伤害倍率作为补偿<br>' +
+    '· 自动抽取在深渊页同样生效，可挂机爬塔<br>' +
+    '· 深渊进度（层数、源质、升级）不受任何重生影响' +
+  '</div></div>';
+
+  $('#pageAbyss').innerHTML = h;
+
+  const rb = $('#abyssRollBtn');
+  if(rb) rb.addEventListener('click', doRoll);
+  const ab = $('#abyssAutoBtn');
+  if(ab) ab.addEventListener('click', () => {
+    state.auto = !state.auto;
+    ab.textContent = state.auto ? '自动抽取：开' : '自动抽取：关';
+    ab.classList.toggle('on', state.auto);
+    if(state.auto) lastRollTime = performance.now() - getAutoInterval();
+    beep(state.auto ? 720 : 380, .09, 'sine', .04);
+  });
+  const rr = $('#abyssRerollBtn');
+  if(rr) rr.addEventListener('click', rerollAbyssMods);
+}
+function updateAbyssUI(){
+  if(state.page !== 'abyss') return;
+  const hpPct = state.abyssMaxHp > 0 ? Math.max(0, Math.min(100, state.abyssHp / state.abyssMaxHp * 100)) : 0;
+  const fill = $('#enemyHpFill');
+  if(fill) fill.style.width = hpPct + '%';
+  const txt = $('#enemyHpText');
+  if(txt) txt.textContent = fmt(Math.max(0, state.abyssHp)) + ' / ' + fmt(state.abyssMaxHp);
+  const fd = $('#abyssFloorDmg');
+  if(fd) fd.textContent = fmt(state.abyssFloorDamage);
+  const ar = $('#abyssRolls');
+  if(ar) ar.textContent = state.abyssRolls;
+  const rl = $('#abyssReroll');
+  if(rl) rl.textContent = state.abyssRerollLeft + ' / ' + getAbyssRerollMax();
+  const rrBtn = $('#abyssRerollBtn');
+  if(rrBtn){
+    rrBtn.disabled = state.abyssRerollLeft <= 0;
+    rrBtn.textContent = '🎲 重随变异（剩 ' + state.abyssRerollLeft + '）';
+  }
 }
 
 function renderSetPage(){
@@ -3519,6 +4077,7 @@ function renderSetPage(){
   for(const k in state.ptree) if(k !== 'PROOT') ptreeSum += state.ptree[k];
   let ptree2Sum = 0;
   for(const k in state.ptree2) if(k !== 'P2ROOT') ptree2Sum += state.ptree2[k];
+  const rainbowCount = state.petInv.filter(p => p.rainbow).length;
   h += '<div class="card"><div class="card-head">📊 存档信息</div><div class="card-body">';
   h += '<div class="set-stat-grid">' +
     '<div class="set-stat"><div class="ss-lb">总抽数</div><div class="ss-vl">' + fmt(state.rolls) + '</div></div>' +
@@ -3530,9 +4089,12 @@ function renderSetPage(){
     '<div class="set-stat"><div class="ss-lb">金币倍率</div><div class="ss-vl">x' + fmt(getCoinMult()) + '</div></div>' +
     '<div class="set-stat"><div class="ss-lb">幸运倍率</div><div class="ss-vl">x' + getLuckMult().toFixed(2) + '</div></div>' +
     '<div class="set-stat"><div class="ss-lb">宠物数量</div><div class="ss-vl">' + state.petInv.length + '</div></div>' +
+    '<div class="set-stat"><div class="ss-lb">🌈炫彩宠物</div><div class="ss-vl">' + rainbowCount + '</div></div>' +
     '<div class="set-stat"><div class="ss-lb">永久树等级</div><div class="ss-vl">' + ptreeSum + '</div></div>' +
     '<div class="set-stat"><div class="ss-lb">二阶树等级</div><div class="ss-vl">' + ptree2Sum + '</div></div>' +
     '<div class="set-stat"><div class="ss-lb">宠物抽奖幸运</div><div class="ss-vl">' + fmt(getTotalPetDrawLuck()) + '</div></div>' +
+    '<div class="set-stat"><div class="ss-lb">🕳️ 深渊层数</div><div class="ss-vl">' + state.abyssBest + '</div></div>' +
+    '<div class="set-stat"><div class="ss-lb">💠 源质</div><div class="ss-vl">' + fmt(state.essence) + '</div></div>' +
   '</div></div></div>';
 
   h += '<div class="card"><div class="card-head">⚙️ 偏好设置</div><div class="card-body">';
@@ -3568,6 +4130,7 @@ const TOP_PAGES = [
   { id:'pet',  name:'宠物', emoji:'🐾' }
 ];
 const SIDE_PAGES = [
+  { id:'abyss', name:'深渊', emoji:'🕳️' },
   { id:'event', name:'活动', emoji:'🎉' },
   { id:'inv',   name:'图鉴', emoji:'📖' },
   { id:'task',  name:'任务', emoji:'📋' },
@@ -3579,12 +4142,22 @@ function buildNav(){
     '<div class="nav-btn' + (p.id === state.page ? ' on' : '') + '" data-page="' + p.id + '">' +
       '<span class="nb-emoji">' + p.emoji + '</span><span>' + p.name + '</span></div>'
   ).join('');
-  $('#sideNav').innerHTML = SIDE_PAGES.map(p =>
+
+  const sidePages = SIDE_PAGES.filter(p => {
+    if(p.id === 'abyss') return state.trueRebirths >= 1;
+    return true;
+  });
+  $('#sideNav').innerHTML = sidePages.map(p =>
     '<div class="side-btn' + (p.id === state.page ? ' on' : '') + '" data-page="' + p.id + '">' +
       '<span>' + p.emoji + '</span><small>' + p.name + '</small></div>'
   ).join('');
 }
 function switchPage(id){
+  if(id === 'abyss' && state.trueRebirths < 1){
+    toast('🌌 完成一次真重生后解锁源质深渊');
+    beep(220, .12, 'square', .04);
+    return;
+  }
   state.page = id;
   document.querySelectorAll('.page').forEach(el => el.classList.remove('on'));
   const pageEl = $('#page' + id.charAt(0).toUpperCase() + id.slice(1));
@@ -3605,6 +4178,7 @@ function renderPage(){
     case 'inv':  renderInvPage();  break;
     case 'task': renderTaskPage(); break;
     case 'reb':  renderRebPage();  break;
+    case 'abyss':renderAbyssPage();break;
     case 'set':  renderSetPage();  break;
   }
   updatePetFab();
@@ -3641,10 +4215,12 @@ function showDiceTag(key, mult){
 }
 function doRoll(){
   if(state.rolling) return;
-  if(state.page !== 'roll') return;
+  if(state.page !== 'roll' && state.page !== 'abyss') return;
   state.rolling = true;
   const btn = $('#rollBtn');
   if(btn) btn.disabled = true;
+  const abtn = $('#abyssRollBtn');
+  if(abtn) abtn.disabled = true;
   hideDiceTag();
   const el = $('#display');
   if(el){ el.classList.remove('pop'); el.classList.add('rolling'); }
@@ -3672,6 +4248,8 @@ function doRoll(){
     state.rolling = false;
     const btn2 = $('#rollBtn');
     if(btn2) btn2.disabled = false;
+    const abtn2 = $('#abyssRollBtn');
+    if(abtn2) abtn2.disabled = false;
   }, ROLL_ANIM);
 }
 function resolveRoll(result){
@@ -3767,14 +4345,19 @@ function resolveRoll(result){
   if(affixes.length && idx >= 3) toast('✦ 词条！' + fullName(base, affixes));
   if(diceKey === 'rainbow') toast('🌈 彩虹骰子！奖励 x' + fmt(diceMult) + '！');
 
+  /* 🕳️ 深渊伤害 */
+  applyAbyssDamageFromRoll(idx, aMult, diceMult);
+
   updateHUD();
   if(state.page === 'roll'){
     updatePityUI(); updateDiceHintUI(); renderHistUI();
+  }else if(state.page === 'abyss'){
+    updateAbyssUI();
   }
 }
 function autoLoop(){
   const now = performance.now();
-  if(state.auto && !state.rolling && state.page === 'roll' && now - lastRollTime >= getAutoInterval()){
+  if(state.auto && !state.rolling && (state.page === 'roll' || state.page === 'abyss') && now - lastRollTime >= getAutoInterval()){
     lastRollTime = now;
     doRoll();
   }
@@ -3855,7 +4438,6 @@ function drawPets(count){
   checkAchievements();
 }
 
-/* ═══════════ 宠物抽奖品质（受宠物抽奖幸运影响） ═══════════ */
 function rollPetQuality(){
   const luck = getTotalPetDrawLuck();
   const keys = Object.keys(PET_QUALITY_WEIGHTS);
@@ -3874,38 +4456,83 @@ function tryMergePets(){
     return;
   }
   const first = sel[0];
-  if(sel.some(p => p.shiny)){
-    toast('闪耀宠物不能参与合成');
+  const tier = petTier(first);
+
+  if(tier === 2){
+    toast('🌈 炫彩宠物已是最高形态，无法继续合成');
+    beep(220, .12, 'square', .04);
     return;
   }
   if(!sel.every(p => p.species === first.species && p.quality === first.quality && p.star === first.star)){
     toast('需要相同种类、品质和星级的宠物');
     return;
   }
+  if(!sel.every(p => petTier(p) === tier)){
+    toast(tier === 1 ? '✨闪耀宠物只能和 ✨闪耀宠物合成' : '普通宠物只能和普通宠物合成');
+    beep(220, .12, 'square', .04);
+    return;
+  }
+
   const sp = getSpecies(first.species);
-  openConfirm('✨', '闪耀合成', '将消耗 3 只 ' + getQuality(first.quality).name + ' ' +
-    first.star + '星 ' + sp.name + '，合成 1 只 ✨ 闪耀' + sp.name +
-    '（基础倍率 ×3，特质 ×2）。', () => {
+  const isRainbow = (tier === 1);
+
+  if(!isRainbow){
+    openConfirm('✨', '闪耀合成',
+      '将消耗 3 只 ' + getQuality(first.quality).name + ' ' + first.star + '星 ' + sp.name +
+      '，合成 1 只 ✨闪耀' + sp.name +
+      '（基础倍率 ×' + PET_SHINY_MULT + '，特质 ×' + PET_SHINY_TRAIT + '）。', () => {
+      const uids = sel.map(p => p.uid);
+      state.petInv = state.petInv.filter(p => !uids.includes(p.uid));
+      const newPet = genPet(first.quality, first.species);
+      newPet.star = first.star;
+      newPet.shiny = true;
+      state.petInv.push(newPet);
+      state.petSelection = [];
+      beep(800, .15, 'sine', .06);
+      setTimeout(() => beep(1200, .2, 'sine', .06), 100);
+      setTimeout(() => beep(1600, .3, 'sine', .055), 220);
+      burst('#ffd86b', 35);
+      burst('#ffffff', 20);
+      shake(6);
+      toast('✨ 闪耀合成成功！获得 ✨' + sp.name + '（' + getQuality(first.quality).name + ' ' + first.star + '★）');
+      updateHUD();
+      renderPetPage();
+      checkAchievements();
+    });
+    return;
+  }
+
+  openConfirm('🌈', '炫彩合成',
+    '将消耗 3 只 ✨闪耀' + sp.name + '（' + getQuality(first.quality).name + ' ' + first.star + '★）' +
+    '，合成 1 只 🌈炫彩' + sp.name + '。\n' +
+    '· 基础倍率 ×' + PET_RAINBOW_MULT + '（闪耀的 ' + (PET_RAINBOW_MULT / PET_SHINY_MULT).toFixed(1) + ' 倍）\n' +
+    '· 特质倍率 ×' + PET_RAINBOW_TRAIT + '\n' +
+    '· 炫彩为最高形态，不可继续合成', () => {
     const uids = sel.map(p => p.uid);
     state.petInv = state.petInv.filter(p => !uids.includes(p.uid));
     const newPet = genPet(first.quality, first.species);
-    newPet.shiny = true;
+    newPet.star = first.star;
+    newPet.rainbow = true;
     state.petInv.push(newPet);
     state.petSelection = [];
-    beep(800, .15, 'sine', .06);
-    setTimeout(() => beep(1200, .2, 'sine', .06), 100);
-    setTimeout(() => beep(1600, .3, 'sine', .055), 220);
-    burst('#ffd86b', 35);
-    burst('#ffffff', 20);
-    shake(6);
-    toast('✨ 闪耀合成成功！获得 ✨' + sp.name + '（' + getQuality(first.quality).name + '）');
+
+    [700, 950, 1250, 1600, 2100].forEach((f, i) =>
+      setTimeout(() => beep(f, .3, 'sine', .06), i * 110));
+    [['#ff0080', 40], ['#ffc93c', 40], ['#00ff88', 40], ['#00d4ff', 40], ['#8b3dff', 40]]
+      .forEach((c, i) => setTimeout(() => burst(c[0], c[1]), i * 70));
+    burst('#ffffff', 90);
+    shake(10);
+
+    toast('🌈 炫彩合成成功！获得 🌈炫彩' + sp.name + '（' + getQuality(first.quality).name + ' ' + first.star + '★）');
+    setTimeout(() => toast('🌈 炫彩宠物：倍率 ×' + PET_RAINBOW_MULT + ' · 特质 ×' + PET_RAINBOW_TRAIT), 1900);
+
     updateHUD();
     renderPetPage();
+    updatePetFab();
     checkAchievements();
   });
 }
 
-/* 分解系数 */
 const DECOMPOSE_RATE = 10000;
 
 function decomposePets(){
@@ -3923,7 +4550,7 @@ function decomposePets(){
   const names = sel.map(p => {
     const q = getQuality(p.quality);
     const sp = getSpecies(p.species);
-    return (p.shiny ? '✨' : '') + sp.name + ' · ' + q.name + ' ' + p.star + '★';
+    return petPrefix(p) + sp.name + ' · ' + q.name + ' ' + p.star + '★';
   }).join('、');
 
   openConfirm('💰', '分解宠物',
@@ -3950,13 +4577,14 @@ function decomposePets(){
 }
 
 function autoMergeAll(){
-  let totalMerged = 0;
+  let shinyCount = 0, rainbowCount = 0;
+
   let changed = true;
   while(changed){
     changed = false;
     const groups = {};
     for(const p of state.petInv){
-      if(p.shiny) continue;
+      if(petTier(p) !== 0) continue;
       const key = p.species + '|' + p.quality + '|' + p.star;
       if(!groups[key]) groups[key] = [];
       groups[key].push(p);
@@ -3969,27 +4597,57 @@ function autoMergeAll(){
         const uids = three.map(p => p.uid);
         state.petInv = state.petInv.filter(p => !uids.includes(p.uid));
         const newPet = genPet(first.quality, first.species);
+        newPet.star = first.star;
         newPet.shiny = true;
         state.petInv.push(newPet);
-        totalMerged++;
+        shinyCount++;
         changed = true;
       }
     }
   }
-  return totalMerged;
+
+  changed = true;
+  while(changed){
+    changed = false;
+    const groups = {};
+    for(const p of state.petInv){
+      if(petTier(p) !== 1) continue;
+      const key = p.species + '|' + p.quality + '|' + p.star;
+      if(!groups[key]) groups[key] = [];
+      groups[key].push(p);
+    }
+    for(const key of Object.keys(groups)){
+      const list = groups[key];
+      while(list.length >= 3){
+        const three = list.splice(0, 3);
+        const first = three[0];
+        const uids = three.map(p => p.uid);
+        state.petInv = state.petInv.filter(p => !uids.includes(p.uid));
+        const newPet = genPet(first.quality, first.species);
+        newPet.star = first.star;
+        newPet.rainbow = true;
+        state.petInv.push(newPet);
+        rainbowCount++;
+        changed = true;
+      }
+    }
+  }
+
+  return { shiny: shinyCount, rainbow: rainbowCount };
 }
 
 function countMergeable(){
-  const groups = {};
+  const g = { 0:{}, 1:{} };
   for(const p of state.petInv){
-    if(p.shiny) continue;
+    const t = petTier(p);
+    if(t >= 2) continue;
     const key = p.species + '|' + p.quality + '|' + p.star;
-    if(!groups[key]) groups[key] = 0;
-    groups[key]++;
+    g[t][key] = (g[t][key] || 0) + 1;
   }
-  let total = 0;
-  for(const k in groups) total += Math.floor(groups[k] / 3);
-  return total;
+  let shiny = 0, rainbow = 0;
+  for(const k in g[0]) shiny += Math.floor(g[0][k] / 3);
+  for(const k in g[1]) rainbow += Math.floor(g[1][k] / 3);
+  return { shiny: shiny, rainbow: rainbow };
 }
 
 function updatePetFab(){
@@ -3999,11 +4657,11 @@ function updatePetFab(){
   const subTab = state.petTab || 'draw';
 
   if(subTab === 'bag'){
-    const possible = countMergeable();
-    const hasSel = state.petSelection.length > 0;
-    let html = '<div class="pf-info">可合成 <b>' + possible + '</b> 只闪耀</div>';
-    html += '<button class="pf-btn primary" data-pet-auto-merge="1"' + (possible ? '' : ' disabled') + '>一键合成</button>';
-    if(hasSel) html += '<button class="pf-btn secondary" data-pet-clear="1">清空</button>';
+    const mc = countMergeable();
+    const total = mc.shiny + mc.rainbow;
+    let html = '<div class="pf-info">可合成 <b>' + mc.shiny + '</b> ✨ · <b>' + mc.rainbow + '</b> 🌈</div>';
+    html += '<button class="pf-btn primary" data-pet-auto-merge="1"' + (total ? '' : ' disabled') + '>一键合成</button>';
+    if(state.petSelection.length > 0) html += '<button class="pf-btn secondary" data-pet-clear="1">清空</button>';
     fab.innerHTML = html;
     fab.classList.add('show');
     return;
@@ -4046,7 +4704,7 @@ function toggleEquipPet(uid){
     state.petEquipped.push(uid);
     beep(760, .1, 'sine', .045);
     const p = state.petInv.find(x => x.uid === uid);
-    if(p) toast('已装备 ' + (p.shiny ? '✨' : '') + getSpecies(p.species).name);
+    if(p) toast('已装备 ' + petPrefix(p) + getSpecies(p.species).name);
   }
   updateHUD();
   renderPetPage();
@@ -4082,7 +4740,6 @@ function doRebirth(tierId){
   });
 }
 
-/* ═══════════ 真重生 ═══════════ */
 function doTrueRebirth(){
   const cost = getTrueRebirthCost();
   if(state.transcends < TRUE_REBIRTH.reqTranscends){
@@ -4094,9 +4751,10 @@ function doTrueRebirth(){
 
   openConfirm('☯️', '真重生',
     '⚠️ 将重置：金币、普通技能树、三种重生次数（重生/进阶/超级）、全部宠物与装备。\n' +
-    '✅ 保留：图鉴、永久树、二阶永久树、成就、宠物抽奖幸运。\n' +
+    '✅ 保留：图鉴、永久树、二阶永久树、成就、宠物抽奖幸运、源质深渊进度。\n' +
     '🎁 获得：金币倍率 ×' + TRUE_REBIRTH.coinMultPer + '（累积）、幸运 +' + TRUE_REBIRTH.luckPer +
-    '、宠物抽奖幸运 +' + TRUE_REBIRTH.petLuckPer + '、宠物抽奖折扣 -15%。\n\n' +
+    '、宠物抽奖幸运 +' + TRUE_REBIRTH.petLuckPer + '、宠物抽奖折扣 -15%。\n' +
+    '🕳️ 解锁源质深渊（如未解锁）。\n\n' +
     '确定执行第 ' + (state.trueRebirths + 1) + ' 次真重生吗？',
     () => {
       state.coins = 0;
@@ -4112,6 +4770,14 @@ function doTrueRebirth(){
       state.trueRebirths++;
       state.petDrawLuck += TRUE_REBIRTH.petLuckPer;
 
+      /* 首次真重生解锁深渊 */
+      if(state.abyssFloor <= 0){
+        state.abyssFloor = 1;
+        state.abyssBest = Math.max(state.abyssBest, 1);
+        initAbyssFloor(1);
+        setTimeout(() => toast('🕳️ 源质深渊已解锁！侧边栏进入'), 2200);
+      }
+
       const sounds = [300, 500, 800, 1200, 1800, 2400, 3000];
       sounds.forEach((f, i) => setTimeout(() => beep(f, .35, 'sine', .07), i * 130));
       burst('#ff00e6', 130);
@@ -4122,6 +4788,7 @@ function doTrueRebirth(){
       toast('☯️ 逆转乾坤！完成第 ' + state.trueRebirths + ' 次真重生');
       setTimeout(() => toast('🐾 宠物抽奖幸运 +' + TRUE_REBIRTH.petLuckPer + ' · 当前 ' + fmt(state.petDrawLuck)), 1800);
 
+      buildNav();
       updateHUD();
       renderRebPage();
       checkAchievements();
@@ -4230,6 +4897,30 @@ document.addEventListener('click', e => {
 
   const el = e.target.closest('button');
   if(el){
+    /* 🕳️ 源质深渊升级 */
+    if(el.dataset.abyssUpg){
+      const u = ABYSS_UPGRADES.find(x => x.id === el.dataset.abyssUpg);
+      if(!u) return;
+      const lv = state.abyssUpg[u.id] || 0;
+      if(lv >= u.max) return;
+      const cost = Math.floor(u.baseCost * Math.pow(u.growth, lv));
+      if(state.essence < cost){ toast('❌ 源质不足，需要 💠' + fmt(cost)); beep(220,.12,'square',.04); return; }
+      state.essence -= cost;
+      state.abyssUpg[u.id] = lv + 1;
+      beep(1200, .15, 'sine', .06);
+      setTimeout(() => beep(1600, .2, 'sine', .05), 100);
+      burst('#a855f7', 30);
+      toast('💠 ' + u.name + ' 升至 Lv.' + (lv + 1));
+      if(u.id === 'weaken'){
+        const ratio = state.abyssMaxHp > 0 ? state.abyssHp / state.abyssMaxHp : 1;
+        state.abyssMaxHp = computeAbyssMaxHp(state.abyssFloor);
+        state.abyssHp = Math.max(1, Math.floor(state.abyssMaxHp * ratio));
+      }
+      updateHUD();
+      renderAbyssPage();
+      markDirty();
+      return;
+    }
     if(el.dataset.shopCoins){
       const it = SHOP_COINS.find(x => x.id === el.dataset.shopCoins);
       if(!it || state.coins < it.price) return;
@@ -4260,19 +4951,28 @@ document.addEventListener('click', e => {
     if(el.dataset.petDecompose){ decomposePets(); return; }
     if(el.dataset.petClear){ state.petSelection = []; renderPetPage(); updatePetFab(); return; }
     if(el.dataset.petAutoMerge){
-      const n = countMergeable();
-      if(!n){ toast('没有可合成的宠物'); return; }
-      openConfirm('✨', '一键合成', '将自动合成所有可以合成的组合，共可获得 ' + n +
-        ' 只闪耀宠物（闪耀宠物不能再参与合成）。确定吗？', () => {
-        const merged = autoMergeAll();
+      const mc = countMergeable();
+      const total = mc.shiny + mc.rainbow;
+      if(!total){ toast('没有可合成的宠物'); return; }
+      openConfirm('✨', '一键合成',
+        '将自动合成所有可合成的组合：\n' +
+        '· 普通 → ✨闪耀：' + mc.shiny + ' 只\n' +
+        '· ✨闪耀 → 🌈炫彩：' + mc.rainbow + ' 只\n' +
+        '（炫彩为最高形态，不再参与合成）\n\n确定吗？', () => {
+        const r = autoMergeAll();
         state.petSelection = [];
         beep(800, .15, 'sine', .06);
         setTimeout(() => beep(1200, .2, 'sine', .06), 100);
         setTimeout(() => beep(1600, .3, 'sine', .055), 220);
+        if(r.rainbow){
+          [['#ff0080',35],['#ffc93c',35],['#00ff88',35],['#00d4ff',35],['#8b3dff',35]]
+            .forEach((c, i) => setTimeout(() => burst(c[0], c[1]), i * 80));
+          setTimeout(() => beep(2100, .35, 'sine', .055), 400);
+        }
         burst('#ffd86b', 45);
         burst('#ffffff', 25);
-        shake(8);
-        toast('✨ 一键合成完成！共获得 ' + merged + ' 只闪耀宠物');
+        shake(8 + (r.rainbow ? 3 : 0));
+        toast('✨ 一键合成完成！闪耀 ×' + r.shiny + ' · 炫彩 ×' + r.rainbow);
         updateHUD();
         renderPetPage();
         updatePetFab();
@@ -4329,7 +5029,7 @@ document.addEventListener('click', e => {
       if(!state.petLevelupTarget){
         state.petLevelupTarget = uid;
         state.petLevelupMaterials = [];
-        toast('已选主宠物：' + (p.shiny ? '✨' : '') + getSpecies(p.species).name + ' ' + getQuality(p.quality).name);
+        toast('已选主宠物：' + petPrefix(p) + getSpecies(p.species).name + ' ' + getQuality(p.quality).name);
       }else if(state.petLevelupTarget === uid){
         state.petLevelupTarget = null;
         state.petLevelupMaterials = [];
@@ -4340,7 +5040,7 @@ document.addEventListener('click', e => {
         const ti = PET_QUALITIES.findIndex(x => x.id === target.quality);
         const pi = PET_QUALITIES.findIndex(x => x.id === p.quality);
         if(pi > ti){ toast('材料品质不能高于主宠物'); beep(220, .12, 'square', .04); return; }
-        if(!!p.shiny !== !!target.shiny){ toast('闪耀宠物只能吸收闪耀宠物'); beep(220, .12, 'square', .04); return; }
+        if(petTier(p) !== petTier(target)){ toast('材料形态必须与主宠物相同'); beep(220, .12, 'square', .04); return; }
         const idx = state.petLevelupMaterials.indexOf(uid);
         if(idx >= 0) state.petLevelupMaterials.splice(idx, 1);
         else state.petLevelupMaterials.push(uid);
@@ -4371,14 +5071,17 @@ window.addEventListener('keydown', e => {
     if(e.key === 'Escape') closeConfirm();
     return;
   }
-  if(state.page === 'roll'){
+  if(state.page === 'roll' || state.page === 'abyss'){
     if(e.target.tagName === 'BUTTON' && (e.code === 'Space' || e.key === ' ')) return;
     if(e.code === 'Space' || e.key === ' '){
       e.preventDefault();
       if(!state.auto) doRoll();
     }
     if(e.key === 'a' || e.key === 'A'){
-      if(!e.repeat){ const b = $('#autoBtn'); if(b) b.click(); }
+      if(!e.repeat){
+        const b = state.page === 'roll' ? $('#autoBtn') : $('#abyssAutoBtn');
+        if(b) b.click();
+      }
     }
   }
 });
@@ -4405,6 +5108,20 @@ else beep(660, .08, 'sine', .03);
 markDirty();
 
 window.symrng = {
+  _state: state,
+  _diag: function(){
+    return {
+      petDrawLuck: state.petDrawLuck,
+      trueRebirths: state.trueRebirths,
+      total: getTotalPetDrawLuck(),
+      p2pl: state.ptree2 ? state.ptree2.P2PL : 'no ptree2',
+      constPetLuckPer: TRUE_REBIRTH.petLuckPer,
+      rainbowPets: state.petInv.filter(p => p.rainbow).length,
+      abyssFloor: state.abyssFloor,
+      abyssBest: state.abyssBest,
+      essence: state.essence
+    };
+  },
   buffWorm: function(mult){
     mult = (typeof mult === 'number' && mult > 0) ? mult : 10;
     const worm = PET_SPECIES.find(s => s.id === 'worm');
@@ -4444,12 +5161,44 @@ window.symrng = {
       ' → 抽中概率约 ' + pct + '%（约 ' + Math.round(total / worm.w) + ' 抽一只）',
       'color:#8faa3a;font-weight:900;font-size:13px');
     return { weight: worm.w, total: total, pct: pct };
+  },
+  giveShiny: function(species, quality, star, n){
+    species = species || 'dog';
+    quality = quality || 'N';
+    star = Math.max(1, Math.min(MAX_STAR, star || 1));
+    n = Math.max(1, Math.floor(n) || 3);
+    for(let i = 0; i < n; i++){
+      const p = genPet(quality, species);
+      p.star = star;
+      p.shiny = true;
+      state.petInv.push(p);
+    }
+    updateHUD(); renderPetPage(); updatePetFab();
+    console.log('%c✨ 已生成 ' + n + ' 只闪耀宠物（' + species + ' / ' + quality + ' / ' + star + '★）',
+      'color:#ffd86b;font-weight:900');
+  },
+  giveEssence: function(n){
+    n = Number(n);
+    if(!isFinite(n)) return console.warn('❌ 用法：symrng.giveEssence(1000)');
+    state.essence = Math.max(0, state.essence + n);
+    updateHUD();
+    if(state.page === 'abyss') renderAbyssPage();
+    console.log('%c💠 源质 +' + fmt(n) + ' → ' + fmt(state.essence), 'color:#a855f7;font-weight:900');
+    return state.essence;
+  },
+  abyssInfo: function(){
+    const mo = getAbyssModifiers();
+    console.log('%c🕳️ 深渊信息', 'color:#a855f7;font-weight:900;font-size:13px');
+    console.log('  当前层: ' + state.abyssFloor + ' · 最高: ' + state.abyssBest);
+    console.log('  HP: ' + state.abyssHp + ' / ' + state.abyssMaxHp);
+    console.log('  变异: ' + getAbyssMods().map(m => m.name).join('、'));
+    console.log('  源质: ' + state.essence);
+    return { floor: state.abyssFloor, best: state.abyssBest, hp: state.abyssHp, maxHp: state.abyssMaxHp, essence: state.essence };
   }
 };
 
 /* ══════════════════════════════════════════════════════════════
    🛠️  沙杨马 RNG · 可视化后台面板
-   打开：控制台输入  symrng.admin()   或按  L + B + S
    ══════════════════════════════════════════════════════════════ */
 (function(){
 'use strict';
@@ -4523,6 +5272,7 @@ const CSS = `
 #saRoot .sa-btn.r{background:linear-gradient(180deg,#ff5f5f,#b81c1c);}
 #saRoot .sa-btn.s{background:rgba(255,255,255,.1);color:#c2cde4;}
 #saRoot .sa-btn.s:hover{background:rgba(255,255,255,.18);}
+#saRoot .sa-btn.p{background:linear-gradient(180deg,#a855f7,#5b1cb8);}
 #saRoot .sa-note{font-size:10.5px;color:#7c89a5;line-height:1.6;margin-top:8px;
   padding-top:8px;border-top:1px dashed rgba(255,255,255,.08);}
 #saRoot .sa-out{font-size:11px;font-family:ui-monospace,Menlo,Consolas,monospace;
@@ -4563,6 +5313,7 @@ function build(){
       '<div class="sa-tab on" data-tab="val">💰 数值</div>' +
       '<div class="sa-tab" data-tab="tree">🌳 技能树</div>' +
       '<div class="sa-tab" data-tab="pet">🐾 宠物</div>' +
+      '<div class="sa-tab" data-tab="abyss">🕳️ 深渊</div>' +
       '<div class="sa-tab" data-tab="misc">🎮 玩法</div>' +
       '<div class="sa-tab" data-tab="save">💾 存档</div>' +
     '</div>' +
@@ -4612,7 +5363,6 @@ function build(){
           '<button class="sa-btn y" data-act="diceGold">下次黄金</button>' +
           '<button class="sa-btn y" data-act="diceDiamond">下次钻石</button>' +
         '</div>' +
-        '<div class="sa-note">骰子计数设为 9 → 下一抽必触发黄金骰子；设为 49 → 下一抽触发钻石骰子。</div>' +
       '</div>' +
 
       '<div class="sa-sec">' +
@@ -4637,6 +5387,7 @@ function build(){
           '<span class="sa-lb">真重生</span>' +
           '<input type="text" id="saTrueReb" placeholder="0">' +
           '<button class="sa-btn" data-act="setTrueReb">设为</button>' +
+          '<button class="sa-btn y" data-act="unlockAbyss">解锁深渊</button>' +
         '</div>' +
         '<div class="sa-row">' +
           '<span class="sa-lb">宠物抽奖幸运</span>' +
@@ -4664,7 +5415,6 @@ function build(){
           '<button class="sa-btn r" data-act="ptreeZero">永久树清零</button>' +
           '<button class="sa-btn y" data-act="ptree2Max">二阶树满级</button>' +
         '</div>' +
-        '<div class="sa-note">「全部满级」包含永久树和二阶树；「永久树满级」只升永久树。</div>' +
       '</div>' +
       '<div class="sa-sec">' +
         '<div class="sa-st">单节点修改</div>' +
@@ -4697,9 +5447,16 @@ function build(){
           '<select id="saStar">' + starOpts + '</select>' +
         '</div>' +
         '<div class="sa-row">' +
+          '<span class="sa-lb">形态</span>' +
+          '<select id="saForm">' +
+            '<option value="0">普通</option>' +
+            '<option value="1">✨ 闪耀</option>' +
+            '<option value="2">🌈 炫彩</option>' +
+          '</select>' +
+        '</div>' +
+        '<div class="sa-row">' +
           '<span class="sa-lb">数量</span>' +
           '<input type="text" id="saPetN" value="1">' +
-          '<label class="sa-chk"><input type="checkbox" id="saShiny"> ✨闪耀</label>' +
           '<button class="sa-btn g" data-act="spawnPet">生成</button>' +
         '</div>' +
       '</div>' +
@@ -4711,11 +5468,43 @@ function build(){
           '<button class="sa-btn y" data-act="allGod">全部创世</button>' +
         '</div>' +
         '<div class="sa-row">' +
+          '<button class="sa-btn y" data-act="quickRainbow">生成 3 只同规格闪耀</button>' +
+        '</div>' +
+        '<div class="sa-row">' +
           '<button class="sa-btn" data-act="equipBest">装备最强 3 只</button>' +
           '<button class="sa-btn s" data-act="equipClear">清空装备</button>' +
           '<button class="sa-btn r" data-act="petClear">清空全部</button>' +
         '</div>' +
         '<div class="sa-out" id="saPetOut"></div>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="sa-pane" data-pane="abyss">' +
+      '<div class="sa-sec">' +
+        '<div class="sa-st">源质深渊 · 快速操作</div>' +
+        '<div class="sa-row">' +
+          '<span class="sa-lb">层数</span>' +
+          '<input type="text" id="saAbyssFloor" placeholder="1">' +
+          '<button class="sa-btn p" data-act="abyssSetFloor">设为</button>' +
+          '<button class="sa-btn y" data-act="abyssNext">+1 层</button>' +
+          '<button class="sa-btn y" data-act="abyssNext10">+10 层</button>' +
+        '</div>' +
+        '<div class="sa-row">' +
+          '<span class="sa-lb">源质</span>' +
+          '<input type="text" id="saEssence" placeholder="0">' +
+          '<button class="sa-btn p" data-act="abyssSetEssence">设为</button>' +
+          '<button class="sa-btn y" data-act="abyssAddEssence">+1 万</button>' +
+          '<button class="sa-btn g" data-act="abyssMaxEssence">拉满</button>' +
+        '</div>' +
+        '<div class="sa-row">' +
+          '<button class="sa-btn r" data-act="abyssKill">秒杀当前层</button>' +
+          '<button class="sa-btn y" data-act="abyssReroll">重随变异</button>' +
+          '<button class="sa-btn g" data-act="abyssUpgMax">源质升级满级</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="sa-sec">' +
+        '<div class="sa-st">深渊实时信息</div>' +
+        '<div class="sa-out" id="saAbyssOut"></div>' +
       '</div>' +
     '</div>' +
 
@@ -4749,7 +5538,6 @@ function build(){
           '<button class="sa-btn g" data-act="buffAdd">添加</button>' +
           '<button class="sa-btn r" data-act="buffClear">清空</button>' +
         '</div>' +
-        '<div class="sa-note">金币倍率填 1000 表示 ×1000；间隔倍率填 0.05 表示自动间隔缩到 5%；词条率填 0.5 表示 +50%。</div>' +
       '</div>' +
       '<div class="sa-sec">' +
         '<div class="sa-st">开关</div>' +
@@ -4824,33 +5612,42 @@ function refresh(){
     '当前活动  ' + getEvent().emoji + ' ' + getEvent().name;
 
   const po = q('#saPetOut');
-  if(po) po.textContent =
-    '宠物总数 ' + state.petInv.length +
-    ' · 已装备 ' + state.petEquipped.length +
-    ' · 可合成闪耀 ' + countMergeable() + ' 组\n' +
-    '已收集稀有度 ' + RARITIES.filter(r => state.inv[r.id] > 0).length + '/' + RARITIES.length +
-    ' · 成就 ' + Object.keys(state.unlockedAch).length + '/' + ACHIEVEMENTS.length;
+  if(po){
+    const mc = countMergeable();
+    po.textContent =
+      '宠物总数 ' + state.petInv.length +
+      ' · 已装备 ' + state.petEquipped.length +
+      ' · 普通 ' + state.petInv.filter(p => petTier(p) === 0).length +
+      ' / ✨' + state.petInv.filter(p => petTier(p) === 1).length +
+      ' / 🌈' + state.petInv.filter(p => petTier(p) === 2).length + '\n' +
+      '可合成 → ✨ ' + mc.shiny + ' 组 · 🌈 ' + mc.rainbow + ' 组\n' +
+      '已收集稀有度 ' + RARITIES.filter(r => state.inv[r.id] > 0).length + '/' + RARITIES.length +
+      ' · 成就 ' + Object.keys(state.unlockedAch).length + '/' + ACHIEVEMENTS.length;
+  }
+
+  const ao = q('#saAbyssOut');
+  if(ao){
+    const mods = getAbyssMods();
+    ao.textContent =
+      '当前层 ' + state.abyssFloor + ' · 最高 ' + state.abyssBest + '\n' +
+      'HP ' + fmt(Math.max(0, state.abyssHp)) + ' / ' + fmt(state.abyssMaxHp) + '\n' +
+      '变异 ' + (mods.length ? mods.map(m => m.emoji + m.name).join('、') : '无') + '\n' +
+      '源质 ' + fmt(state.essence) + '\n' +
+      '升级 ' + ABYSS_UPGRADES.map(u => u.name + ' Lv.' + (state.abyssUpg[u.id] || 0)).join(' · ');
+  }
 
   const svo = q('#saSaveOut');
   if(svo) svo.textContent = JSON.stringify({
     coins: state.coins,
     gems: state.gems,
     rolls: state.rolls,
-    rollCount: state.rollCount,
-    pity: state.pity,
-    rebirths: state.rebirths,
-    ascends: state.ascends,
-    transcends: state.transcends,
     trueRebirths: state.trueRebirths,
-    petDrawLuck: state.petDrawLuck,
     pets: state.petInv.length,
-    equipped: state.petEquipped.length,
+    rainbow: state.petInv.filter(p => p.rainbow).length,
     achievements: Object.keys(state.unlockedAch).length + '/' + ACHIEVEMENTS.length,
-    coinMult: getCoinMult(),
-    luckMult: getLuckMult(),
-    autoInterval: getAutoInterval(),
-    multiRollChance: getMultiRollChance(),
-    petPermaMult: getPetPermaMult(),
+    abyssFloor: state.abyssFloor,
+    abyssBest: state.abyssBest,
+    essence: state.essence,
     ptreeLevels: ptreeSum,
     ptree2Levels: ptree2Sum
   }, null, 1);
@@ -4873,7 +5670,6 @@ function apply(){
 
 function act(a){
   switch(a){
-
     case 'close': close(); return;
 
     case 'setCoins': {
@@ -4933,8 +5729,17 @@ function act(a){
       break;
     case 'setTrueReb': state.trueRebirths = Math.max(0, vInt('#saTrueReb', 0)); break;
     case 'setPetLuck': state.petDrawLuck = Math.max(0, vInt('#saPetLuck', 0)); break;
+    case 'unlockAbyss':
+      state.trueRebirths = Math.max(1, state.trueRebirths);
+      if(state.abyssFloor <= 0){
+        state.abyssFloor = 1;
+        state.abyssBest = Math.max(state.abyssBest, 1);
+        initAbyssFloor(1);
+      }
+      buildNav();
+      toast('🕳️ 源质深渊已解锁');
+      break;
 
-    /* ===== 技能树 ===== */
     case 'treeMax':
       for(const n of ALL_NODES){
         if(n.id === 'root' || n.id === 'PROOT' || n.id === 'P2ROOT') continue;
@@ -4981,27 +5786,42 @@ function act(a){
       break;
     }
 
-    /* ===== 宠物 ===== */
     case 'spawnPet': {
       const spId  = q('#saSp')   ? q('#saSp').value   : 'dog';
       const qId   = q('#saQ')    ? q('#saQ').value    : 'N';
       const star  = q('#saStar') ? (parseInt(q('#saStar').value, 10) || 1) : 1;
-      const shiny = q('#saShiny') ? q('#saShiny').checked : false;
+      const form  = q('#saForm') ? (parseInt(q('#saForm').value, 10) || 0) : 0;
       let n = vInt('#saPetN', 1);
       n = Math.max(1, Math.min(100, n));
       const sp = getSpecies(spId);
       for(let i = 0; i < n; i++){
         const p = genPet(qId, spId);
         p.star  = Math.max(sp.minStar, Math.min(MAX_STAR, star));
-        p.shiny = !!shiny;
+        p.shiny = form === 1;
+        p.rainbow = form === 2;
         state.petInv.push(p);
       }
-      toast('✅ 已生成 ' + n + ' 只宠物');
+      const formTxt = form === 2 ? '🌈炫彩' : form === 1 ? '✨闪耀' : '普通';
+      toast('✅ 已生成 ' + n + ' 只 ' + formTxt + '宠物');
       break;
     }
     case 'all6':     for(const p of state.petInv) p.star = MAX_STAR; break;
-    case 'allShiny': for(const p of state.petInv) p.shiny = true; break;
+    case 'allShiny': for(const p of state.petInv){ if(!p.rainbow) p.shiny = true; } break;
     case 'allGod':   for(const p of state.petInv){ p.quality = 'GOD'; p.exp = 0; } break;
+    case 'quickRainbow': {
+      const spId = q('#saSp') ? q('#saSp').value : 'dog';
+      const qId  = q('#saQ')  ? q('#saQ').value  : 'N';
+      const star = q('#saStar') ? (parseInt(q('#saStar').value, 10) || 1) : 1;
+      const sp = getSpecies(spId);
+      for(let i = 0; i < 3; i++){
+        const p = genPet(qId, spId);
+        p.star = Math.max(sp.minStar, Math.min(MAX_STAR, star));
+        p.shiny = true;
+        state.petInv.push(p);
+      }
+      toast('✨ 已生成 3 只同规格闪耀宠物，去背包合成炫彩吧');
+      break;
+    }
     case 'equipBest': {
       const s = state.petInv.slice().sort((x, y) => petMult(y) - petMult(x));
       state.petEquipped = s.slice(0, MAX_PETS).map(p => p.uid);
@@ -5016,7 +5836,63 @@ function act(a){
       state.petLevelupMaterials = [];
       break;
 
-    /* ===== 玩法 ===== */
+    case 'abyssSetFloor': {
+      const v = vInt('#saAbyssFloor', -1);
+      if(v < 1){ toast('❌ 层数需 ≥ 1'); return; }
+      state.abyssFloor = v;
+      state.abyssBest = Math.max(state.abyssBest, v);
+      initAbyssFloor(v);
+      toast('🕳️ 已跳转至第 ' + v + ' 层');
+      break;
+    }
+    case 'abyssNext': {
+      if(state.abyssFloor < 1){ state.abyssFloor = 1; }
+      state.abyssFloor += 1;
+      state.abyssBest = Math.max(state.abyssBest, state.abyssFloor);
+      initAbyssFloor(state.abyssFloor);
+      toast('🕳️ 已进入第 ' + state.abyssFloor + ' 层');
+      break;
+    }
+    case 'abyssNext10': {
+      if(state.abyssFloor < 1){ state.abyssFloor = 1; }
+      state.abyssFloor += 10;
+      state.abyssBest = Math.max(state.abyssBest, state.abyssFloor);
+      initAbyssFloor(state.abyssFloor);
+      toast('🕳️ 已进入第 ' + state.abyssFloor + ' 层');
+      break;
+    }
+    case 'abyssSetEssence': {
+      const v = vNum('#saEssence');
+      if(isNaN(v)) return toast('❌ 请输入有效数字');
+      state.essence = Math.max(0, v); break;
+    }
+    case 'abyssAddEssence':
+      state.essence += 10000; break;
+    case 'abyssMaxEssence':
+      state.essence = 1e12; break;
+    case 'abyssKill': {
+      if(state.abyssFloor < 1){ toast('❌ 还没解锁深渊'); return; }
+      state.abyssHp = 0;
+      onAbyssClear();
+      break;
+    }
+    case 'abyssReroll': {
+      if(state.abyssFloor < 1){ toast('❌ 还没解锁深渊'); return; }
+      state.abyssRerollLeft = Math.max(1, getAbyssRerollMax());
+      rerollAbyssMods();
+      break;
+    }
+    case 'abyssUpgMax': {
+      for(const u of ABYSS_UPGRADES) state.abyssUpg[u.id] = u.max;
+      if(state.abyssFloor >= 1){
+        const ratio = state.abyssMaxHp > 0 ? state.abyssHp / state.abyssMaxHp : 1;
+        state.abyssMaxHp = computeAbyssMaxHp(state.abyssFloor);
+        state.abyssHp = Math.max(1, Math.floor(state.abyssMaxHp * ratio));
+      }
+      toast('💠 源质升级全部满级');
+      break;
+    }
+
     case 'achAll': {
       const now = Date.now();
       let c = 0;
@@ -5073,6 +5949,11 @@ function act(a){
         btn.textContent = state.auto ? '自动抽取：开' : '自动抽取：关';
         btn.classList.toggle('on', state.auto);
       }
+      const abtn = document.getElementById('abyssAutoBtn');
+      if(abtn){
+        abtn.textContent = state.auto ? '自动抽取：开' : '自动抽取：关';
+        abtn.classList.toggle('on', state.auto);
+      }
       if(state.auto) lastRollTime = performance.now() - getAutoInterval();
       toast('🤖 自动抽取：' + (state.auto ? '开' : '关'));
       break;
@@ -5083,7 +5964,6 @@ function act(a){
       toast('🔓 充值系统已解锁');
       break;
 
-    /* ===== 存档 ===== */
     case 'saveNow': saveGame(); toast('💾 已保存'); break;
     case 'expSave': exportSave(); break;
     case 'impSave': importSaveFromFile(); break;
@@ -5221,10 +6101,14 @@ if(!window.symrng.addCoins){
 
 try{
   console.log(
-    '%c🐴 沙杨马 RNG · 可视化后台\n' +
-    '%csymrng.admin()  →  打开后台面板（或按 L+B+S）',
+    '%c🐴 沙杨马 RNG · 可视化后台 v8\n' +
+    '%csymrng.admin()  →  打开后台面板（或按 L+B+S）\n' +
+    '%csymrng.giveEssence(10000)  →  直接获得源质\n' +
+    '%csymrng.abyssInfo()  →  查看深渊状态',
     'color:#8ff0c4;font-size:14px;font-weight:900',
-    'color:#9fc4ff;font-size:12px'
+    'color:#9fc4ff;font-size:12px',
+    'color:#a855f7;font-size:12px',
+    'color:#ff9bd8;font-size:12px'
   );
 }catch(e){}
 
