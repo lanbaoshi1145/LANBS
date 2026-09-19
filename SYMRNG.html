@@ -867,7 +867,13 @@ const PET_SPECIES = [
   { id:'eternal', name:'万古之主',   emoji:'♾️', minStar:6, w:1,
     traits:[{t:'coin', v:5}, {t:'gem', v:5}, {t:'luck', v:15}, {t:'affix', v:0.25}, {t:'speed', v:0.25}] },
   { id:'worm',    name:'蚕大蛇',     emoji:'🐛', minStar:1, w:1, hidden:true,
-    traits:[{t:'luck', v:-5}, {t:'affix', v:-0.15}, {t:'speed', v:-0.2}] }
+    traits:[
+      {t:'luck',  v:-15},
+      {t:'affix', v:-0.6},
+      {t:'speed', v:-0.7},
+      {t:'coin',  v:-0.85},
+      {t:'gem',   v:-0.85}
+    ] }
 ];
 
 const PET_DRAW_COST_1 = 200;
@@ -1702,6 +1708,13 @@ function getLuckMult(){
   const ev = getEvent();
   if(ev.luck) v += ev.luck;
   v += getPetTraits().luck;
+  /* 🐛 蚕大蛇诅咒：直接把幸运砍到 1% */
+  const hasWorm = state.petEquipped.some(uid => {
+    const p = state.petInv.find(x => x.uid === uid);
+    return p && p.species === 'worm';
+  });
+  if(hasWorm) v *= 0.01;
+
   return v;
 }
 function getCoinMult(){
@@ -1739,7 +1752,7 @@ function getAutoInterval(){
   let m = 1;
   for(const b of state.buffs) if(b.speedMult) m *= b.speedMult;
   const ptSpeed = getPetTraits().speed;
-  if(ptSpeed > 0) m *= Math.max(0.1, 1 - ptSpeed);
+  if(ptSpeed !== 0) m *= Math.max(0.1, Math.min(3, 1 - ptSpeed));
   return Math.max(30, base * m);
 }
 function getDiceInfo(){
