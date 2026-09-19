@@ -39,6 +39,8 @@ body{
 .chip.gem .v{color:var(--gem);text-shadow:0 0 12px rgba(46,230,255,.5)}
 .chip.rb .v{color:#ff9bd8;text-shadow:0 0 12px rgba(255,155,216,.5)}
 .chip.abyss .v{color:#c85aff;text-shadow:0 0 12px rgba(200,90,255,.6)}
+.chip.vip .v{color:#ffd86b;text-shadow:0 0 12px rgba(255,200,60,.6)}
+.chip.svip .v{color:#ff6bff;text-shadow:0 0 12px rgba(255,107,255,.6)}
 
 .buffs{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:10px;min-height:0}
 .buff{
@@ -644,6 +646,12 @@ body{
 .side-btn.on small{color:#9fc4ff;}
 .side-btn:active{transform:scale(.92);}
 .side-btn.locked{opacity:.45;filter:grayscale(.85)}
+.side-btn.vip-nav{background:linear-gradient(165deg,rgba(255,200,60,.22),rgba(255,200,60,.05));border-color:rgba(255,200,60,.55);box-shadow:0 0 22px -6px rgba(255,200,60,.55)}
+.side-btn.vip-nav small{color:#ffd86b}
+.side-btn.vip-nav.on{background:linear-gradient(165deg,rgba(255,200,60,.35),rgba(255,200,60,.1));box-shadow:0 0 26px -5px rgba(255,200,60,.7)}
+.side-btn.vip-nav.svip-nav{background:linear-gradient(165deg,rgba(255,107,255,.22),rgba(255,107,255,.05));border-color:rgba(255,107,255,.55);box-shadow:0 0 22px -6px rgba(255,107,255,.55)}
+.side-btn.vip-nav.svip-nav small{color:#ff9bff}
+.side-btn.vip-nav.svip-nav.on{background:linear-gradient(165deg,rgba(255,107,255,.35),rgba(255,107,255,.1));box-shadow:0 0 26px -5px rgba(255,107,255,.7)}
 .side-btn.locked small{color:#5a6580}
 .side-btn.locked.on{opacity:.6}
 
@@ -898,9 +906,64 @@ body{
 }
 .abyss-hit.crit{color:#ffe066;text-shadow:0 0 20px #ff9f43,0 0 40px #ff5f5f;font-size:32px;}
 
+/* ═══ 👑 VIP 专属 ═══ */
+.vip-hero{max-width:760px;margin:0 auto 16px;padding:22px 20px;border-radius:22px;text-align:center;
+  background:radial-gradient(500px 260px at 50% 0%,rgba(255,200,60,.18),transparent 70%),linear-gradient(165deg,rgba(255,255,255,.07),rgba(255,255,255,.012)),#0d1425;
+  border:1px solid rgba(255,200,60,.35);transition:.4s;}
+.vip-hero.svip{border-color:rgba(255,107,255,.4);
+  background:radial-gradient(500px 260px at 50% 0%,rgba(255,107,255,.18),transparent 70%),linear-gradient(165deg,rgba(255,255,255,.07),rgba(255,255,255,.012)),#0d1425;}
+.vip-hero .vh-emoji{font-size:48px;line-height:1;margin-bottom:10px;filter:drop-shadow(0 0 20px #ffc93c)}
+.vip-hero.svip .vh-emoji{filter:drop-shadow(0 0 20px #ff6bff)}
+.vip-hero .vh-name{font-size:22px;font-weight:900;letter-spacing:.12em;color:#ffc93c;text-shadow:0 0 24px #ffc93c}
+.vip-hero.svip .vh-name{color:#ff6bff;text-shadow:0 0 24px #ff6bff}
+.vip-hero .vh-sub{font-size:11.5px;color:#8b98ad;letter-spacing:.1em;margin-top:6px;font-weight:800}
+.vip-priv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:9px;max-width:760px;margin:0 auto 16px}
+.vip-priv{padding:12px 13px;border-radius:14px;background:linear-gradient(165deg,rgba(255,255,255,.05),rgba(255,255,255,.012));border:1px solid rgba(255,200,60,.28);display:flex;align-items:center;gap:10px}
+.vip-priv .vp-emoji{font-size:22px;line-height:1;flex:none}
+.vip-priv .vp-info{flex:1;min-width:0}
+.vip-priv .vp-lb{font-size:10.5px;color:#8b98ad;font-weight:800;letter-spacing:.04em}
+.vip-priv .vp-vl{font-size:14px;font-weight:900;color:#ffd86b;margin-top:2px;font-variant-numeric:tabular-nums}
+.vip-tree-wrap{max-width:760px;margin:0 auto 16px}
+.vip-tree-title{font-size:12.5px;font-weight:900;color:#ffd86b;letter-spacing:.08em;text-align:center;margin-bottom:12px}
+.vip-tree-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px 14px;position:relative;padding:20px 8px}
+.vip-node{position:relative;padding:16px 8px 12px;border-radius:14px;background:linear-gradient(165deg,rgba(40,32,16,.85),rgba(20,14,6,.92));border:1.5px dashed rgba(255,200,60,.35);display:flex;flex-direction:column;gap:5px;align-items:center;text-align:center;min-height:100px;cursor:not-allowed;transition:.2s}
+.vip-node .vn-emoji{font-size:26px;line-height:1;opacity:.55;filter:grayscale(.4)}
+.vip-node .vn-name{font-size:12px;font-weight:900;color:#c8b88a;letter-spacing:.03em}
+.vip-node .vn-lock{font-size:10px;color:#7a6a4a;font-weight:800;letter-spacing:.05em;margin-top:2px}
+.vip-node .vn-placeholder{position:absolute;top:8px;right:8px;font-size:9px;font-weight:900;padding:2px 6px;border-radius:5px;background:rgba(255,200,60,.18);color:#ffd86b;letter-spacing:.05em}
+.vip-node.center{grid-column:2;grid-row:2;background:linear-gradient(165deg,rgba(80,60,20,.9),rgba(40,28,10,.95));border:1.5px solid rgba(255,200,60,.75);box-shadow:0 0 30px -8px rgba(255,200,60,.5);cursor:default}
+.vip-node.center .vn-emoji{opacity:1;filter:none}
+.vip-node.center .vn-name{color:#ffd86b}
+.vip-note{max-width:760px;margin:0 auto;padding:12px 14px;border-radius:12px;background:rgba(0,0,0,.3);border:1px dashed rgba(255,255,255,.1);font-size:11.5px;color:#8b98ad;line-height:1.7;text-align:center}
+
+.svip-extras{
+  display:flex;flex-direction:column;gap:5px;width:100%;max-width:320px;margin-top:8px;
+}
+.svip-extra-item{
+  display:flex;align-items:center;gap:8px;padding:8px 11px;border-radius:10px;
+  background:linear-gradient(165deg,rgba(255,107,255,.14),rgba(255,107,255,.03));
+  border:1px solid rgba(255,107,255,.4);
+  font-size:11.5px;font-weight:800;
+  animation:svipExtraPop .35s ease-out;
+}
+@keyframes svipExtraPop{
+  0%{opacity:0;transform:translateY(6px) scale(.92)}
+  100%{opacity:1;transform:none}
+}
+.svip-extra-item .sei-badge{
+  font-size:10px;padding:2px 6px;border-radius:5px;font-weight:900;
+  background:var(--c,#8b98ad);color:#080b14;flex:none;
+}
+.svip-extra-item .sei-name{
+  flex:1;min-width:0;color:var(--c,#fff);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.svip-extra-item .sei-gain{
+  color:#ffd86b;font-variant-numeric:tabular-nums;flex:none;font-size:10.5px;
+}
+
 /* ═══ 版本号 ═══ */
 body::after{
-  content: "v9.5.0";
+  content: "v9.9.1";
   position: fixed;
   left: 8px;
   top: 8px;
@@ -931,6 +994,7 @@ body::after{
     <div class="chip"><span>💵</span><span class="v" id="hMult">x1.00</span></div>
     <div class="chip rb"><span>🌟</span><span class="v" id="hRb">0·0·0</span></div>
     <div class="chip"><span>🎲</span><span class="v" id="hRolls">0</span></div>
+    <div class="chip" id="hVipChip" style="display:none"><span id="hVipIcon">👑</span><span class="v" id="hVipName">VIP</span></div>
     <div class="chip abyss" id="hAbyssChip" style="display:none"><span>🕳️</span><span class="v" id="hAbyss">1</span></div>
   </div>
 
@@ -945,6 +1009,7 @@ body::after{
   <div class="page" id="pageTask"></div>
   <div class="page" id="pageReb"></div>
   <div class="page" id="pageAbyss"></div>
+  <div class="page" id="pageVip"></div>
   <div class="page" id="pageSet"></div>
 </div>
 
@@ -1523,6 +1588,10 @@ const SHOP_POOL = [
 
 /* ═══════════ 💠 源质充值 ═══════════ */
 const RECHARGE_PACKS = [
+  { id:'vip', emoji:'👑', name:'VIP', desc:'永久：幸运 +30 · 抽速 +15% · 词条率 +2% · 骰子倍率 ×2 · 每日源质 +50',
+    essenceCost:250, limit:1, vip:true },
+  { id:'svip', emoji:'💎', name:'SVIP', desc:'永久：幸运 +80 · 抽速 +30% · 词条率 +5% · 骰子倍率 ×4 · 骰子触发额外抽 · 深渊伤害 ×1.2 · 每日源质 +150',
+    essenceCost:1500, limit:1, svip:true, needVip:true },
   { id:'starter', emoji:'🎁', name:'首充大礼包', desc:'金币 + 钻石 + 彩虹充能',
     essenceCost:30, originCost:100, limit:1,
     reward:() => {
@@ -1579,6 +1648,20 @@ const GAMBLE_TYPES = [
   { id:'dice',    name:'骰子', emoji:'🎲', desc:'押中 1~6 · 赢 6 倍',           mult:6, picks:['1','2','3','4','5','6'] },
   { id:'allin',   name:'孤注一掷', emoji:'💥', desc:'10% 概率赢 10 倍，否则全输', mult:10, picks:['全押'] }
 ];
+
+/* ═══════════ 👑 VIP 特权表 ═══════════ */
+const VIP_PRIVILEGES = {
+  dailyEssence: { vip: 50,  svip: 150, default: 0,   label:'每日源质' },
+  abyssDamage:  { vip: 1,   svip: 1.2, default: 1,   label:'深渊伤害' }
+};
+function vipLevel(){ return state.vip || 0; }
+function vipValue(key){
+  const cfg = VIP_PRIVILEGES[key];
+  if(!cfg) return 0;
+  const lvl = vipLevel();
+  if(lvl === 0) return cfg.default;
+  return lvl === 2 ? cfg.svip : cfg.vip;
+}
 
 function getShopCoinMult(){
   let v = 1;
@@ -1761,7 +1844,12 @@ const state = {
   specialCodes: {},
   shopMainTab: 'main',
   gambleHistory: [],
-  rechargeBought: {}
+  rechargeBought: {},
+  /* 👑 VIP / SVIP */
+  vip: 0,             // 0 无 / 1 VIP / 2 SVIP
+  vipDailyClaim: 0,   // 上次领取时间戳
+  vipTree: {},         // VIP 升级树占位
+  svipExtrasQueue: [],
 };
 RARITIES.forEach(r => state.inv[r.id] = 0);
 try{
@@ -1885,6 +1973,10 @@ function getSaveData(){
     shopMainTab: state.shopMainTab,
     gambleHistory: (state.gambleHistory || []).slice(0, 20),
     rechargeBought: state.rechargeBought,
+    /* 👑 VIP / SVIP */
+    vip: state.vip,
+    vipDailyClaim: state.vipDailyClaim,
+    vipTree: state.vipTree,
     /* 🕳️ 源质深渊 */
     abyssFloor: state.abyssFloor,
     abyssBest: state.abyssBest,
@@ -2069,6 +2161,12 @@ function applySaveData(d){
     }
     state.abyssUpg = u;
   } else state.abyssUpg = {};
+
+  /* 👑 VIP / SVIP */
+  state.vip           = Math.max(0, Math.min(2, Math.floor(num(d.vip, 0))));
+  state.vipDailyClaim = Math.max(0, Math.floor(num(d.vipDailyClaim, 0)));
+  if(d.vipTree && typeof d.vipTree === 'object') state.vipTree = d.vipTree;
+  else state.vipTree = {};
 
   state.buffs = [];
   return true;
@@ -2304,6 +2402,8 @@ function getLuckMult(){
   for(const b of state.buffs) if(b.luck) v += b.luck;
   const ev = getEvent();
   if(ev.luck) v += ev.luck;
+  if(state.vip === 1) v += 30;
+  else if(state.vip === 2) v += 80;
   v += getPetTraits().luck;
   const hasWorm = state.petEquipped.some(uid => {
     const p = state.petInv.find(x => x.uid === uid);
@@ -2349,6 +2449,8 @@ function getAutoInterval(){
   for(const b of state.buffs) if(b.speedMult) m *= b.speedMult;
   const ptSpeed = getPetTraits().speed;
   if(ptSpeed !== 0) m *= Math.max(0.1, Math.min(3, 1 - ptSpeed));
+  if(state.vip === 1) base *= 0.85;
+  else if(state.vip === 2) base *= 0.70;
   return Math.max(30, base * m);
 }
 function getDiceInfo(){
@@ -2356,7 +2458,10 @@ function getDiceInfo(){
   const evMult = ev.diceMult || 1;
   const pMult = 1 + ptreeLv('PD1') * 0.10 + ptreeLv('PD2') * 0.20;
   const p2Mult = 1 + ptree2Lv('P2D1') * 0.50;
-  const total = pMult * p2Mult;
+  let vipMult = 1;
+  if(state.vip === 1) vipMult = 2;
+  else if(state.vip === 2) vipMult = 4;
+  const total = pMult * p2Mult * vipMult;
   return {
     gold:    (2.5 + treeLv('D1') * 0.5 + treeLv('D2') * 1.0 + treeLv('D3') * 2.5) * evMult * total,
     diamond: (10  + treeLv('DD2') * 10 + treeLv('DD3') * 25) * evMult * total,
@@ -2395,6 +2500,8 @@ function getAffixBonus(){
   for(const b of state.buffs) if(b.affixBonus) v += b.affixBonus;
   const ev = getEvent();
   if(ev.affixBonus) v += ev.affixBonus;
+  if(state.vip === 1) v += 0.02;
+  else if(state.vip === 2) v += 0.05;
   v += getPetTraits().affix;
   return v;
 }
@@ -2598,6 +2705,7 @@ function applyAbyssDamageFromRoll(idx, aMult, diceMult){
   if(!mo.noPet)   dmg *= (1 + getPetTraits().coin);
   dmg *= mo.dmgMult;
   dmg *= getAbyssDamageMult();
+  dmg *= vipValue('abyssDamage');
 
   if(mo.combo){
     const bonus = Math.min(4, state.abyssRolls * 0.06 * (mo.comboMul || 1));
@@ -2881,6 +2989,19 @@ function updateHUD(){
     }
   }
 
+  /* 👑 VIP chip */
+  const vipChip = $('#hVipChip');
+  if(vipChip){
+    if(state.vip >= 1){
+      vipChip.style.display = '';
+      vipChip.classList.toggle('vip', state.vip === 1);
+      vipChip.classList.toggle('svip', state.vip === 2);
+      const vi = $('#hVipIcon'), vn = $('#hVipName');
+      if(vi) vi.textContent = state.vip === 2 ? '💎' : '👑';
+      if(vn) vn.textContent = state.vip === 2 ? 'SVIP' : 'VIP';
+    } else vipChip.style.display = 'none';
+  }
+
   checkAchievements();
   markDirty();
 }
@@ -2888,11 +3009,14 @@ function updateHUD(){
 function renderRollPage(){
   $('#pageRoll').innerHTML = `
     <div class="roll-area">
-      <div class="display" id="display">
-        <div class="dice-tag" id="diceTag"></div>
-        <div class="d-badge" id="dBadge">???</div>
-        <div class="d-name" id="dName">准备就绪</div>
-        <div class="d-sub" id="dSub">点击下方按钮开始抽取</div>
+      <div class="display-wrap" style="display:flex;flex-direction:column;align-items:center;flex:none">
+        <div class="display" id="display">
+          <div class="dice-tag" id="diceTag"></div>
+          <div class="d-badge" id="dBadge">???</div>
+          <div class="d-name" id="dName">准备就绪</div>
+          <div class="d-sub" id="dSub">点击下方按钮开始抽取</div>
+        </div>
+        <div class="svip-extras" id="svipExtras" style="display:none"></div>
       </div>
       <div class="roll-side">
        <div class="dice-list" id="diceList"></div>
@@ -3425,6 +3549,54 @@ function renderShopRecharge(){
   h += '<div style="text-align:center;margin-bottom:12px;font-size:12px;color:#a78bd4;font-weight:800;letter-spacing:.05em">' +
     '当前源质：<b style="color:#e9d5ff;font-size:15px">💠 ' + fmt(state.essence) + '</b></div>';
 
+  /* 👑 VIP / SVIP 特权卡 */
+  if(vipLevel() >= 1){
+    const isS = vipLevel() === 2;
+    const main = isS ? '#ff6bff' : '#ffd86b';
+    const soft = isS ? 'rgba(255,107,255,.14)' : 'rgba(255,200,60,.14)';
+    const line = isS ? 'rgba(255,107,255,.45)' : 'rgba(255,200,60,.45)';
+    const canClaim = canClaimVipDaily();
+    const amt = vipValue('dailyEssence');
+    const privs = [
+      { e:'🍀', lb:'幸运',       vl:isS ? '+80' : '+30' },
+      { e:'⚡', lb:'自动抽速',   vl:isS ? '-30%' : '-15%' },
+      { e:'✦',  lb:'词条出现率', vl:isS ? '+5%' : '+2%' },
+      { e:'🎲', lb:'骰子倍率',   vl:isS ? '×4' : '×2' },
+      { e:'💠', lb:'每日源质',   vl:'+' + amt },
+      { e:'🕳️', lb:'深渊伤害',   vl:'×' + vipValue('abyssDamage').toFixed(1) }
+    ];
+    if(isS) privs.push({ e:'💎', lb:'骰子额外抽', vl:'已激活' });
+
+    h += '<div class="card" style="max-width:1100px;margin:0 auto 12px;border:1px solid ' + line +
+      ';box-shadow:0 0 34px -12px ' + main + '">' +
+      '<div class="card-head" style="background:' + soft + ';color:' + main + '">' +
+        '<span style="font-size:16px">' + (isS ? '💎' : '👑') + '</span>' +
+        '<span>' + (isS ? 'SVIP' : 'VIP') + ' 特权 · 永久生效</span>' +
+        '<span style="margin-left:auto;font-size:10.5px;color:#8b98ad;font-weight:800">任何重生不清空</span>' +
+      '</div>' +
+      '<div class="card-body">';
+    h += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px">';
+    for(const pv of privs){
+      h += '<div style="display:flex;align-items:center;gap:8px;padding:9px 11px;border-radius:11px;' +
+        'background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07)">' +
+        '<span style="font-size:18px;line-height:1">' + pv.e + '</span>' +
+        '<div style="flex:1;min-width:0">' +
+          '<div style="font-size:10px;color:#8b98ad;font-weight:800;letter-spacing:.04em">' + esc(pv.lb) + '</div>' +
+          '<div style="font-size:13px;font-weight:900;color:' + main + ';margin-top:2px;font-variant-numeric:tabular-nums">' + esc(pv.vl) + '</div>' +
+        '</div></div>';
+    }
+    h += '</div>';
+    h += '<button id="vipClaimBtn" data-vipclaim="1" onclick="claimVipDaily()" ' +
+      (canClaim ? '' : 'disabled ') +
+      'style="width:100%;margin-top:11px;padding:13px;border:none;border-radius:13px;cursor:' +
+      (canClaim ? 'pointer' : 'not-allowed') + ';font-family:inherit;font-weight:900;letter-spacing:.08em;font-size:13px;' +
+      'background:' + (canClaim ? 'linear-gradient(180deg,' + main + ',' + (isS ? '#a81ca8' : '#b8860b') + ')' : 'rgba(255,255,255,.08)') +
+      ';color:' + (canClaim ? '#0a0d18' : '#7c89a5') +
+      ';box-shadow:' + (canClaim ? '0 10px 26px -12px ' + main : 'none') + '">' +
+      (canClaim ? '🎁 领取今日源质 +' + amt : '✅ 今日已领取') + '</button>';
+    h += '</div></div>';
+  }
+
   h += '<div class="shop-grid">';
   for(const p of RECHARGE_PACKS){
     const bought = (state.rechargeBought && state.rechargeBought[p.id]) || 0;
@@ -3519,6 +3691,9 @@ function renderShopGamble(){
 function buyRechargePack(id){
   const p = RECHARGE_PACKS.find(x => x.id === id);
   if(!p) return;
+  if(p.needVip && state.vip < 1){
+    toast('❌ 需要先购买 VIP'); beep(220,.12,'square',.04); return;
+  }
   const bought = (state.rechargeBought && state.rechargeBought[id]) || 0;
   if(bought >= p.limit){ toast('❌ 已达购买上限'); beep(220,.12,'square',.04); return; }
   if(state.essence < p.essenceCost){ toast('❌ 源质不足，需要 💠' + fmt(p.essenceCost)); beep(220,.12,'square',.04); return; }
@@ -3527,7 +3702,10 @@ function buyRechargePack(id){
   if(!state.rechargeBought) state.rechargeBought = {};
   state.rechargeBought[id] = bought + 1;
 
-  const result = p.reward();
+  let result = '';
+  if(p.vip){ state.vip = 1; result = '👑 VIP 特权已永久激活'; }
+  else if(p.svip){ state.vip = 2; result = '💎 SVIP 特权已永久激活'; }
+  else result = p.reward();
   toast('✅ ' + p.name + ' 到账！' + result);
   beep(1200, .2, 'sine', .06);
   setTimeout(() => beep(1600, .3, 'sine', .05), 120);
@@ -3535,9 +3713,27 @@ function buyRechargePack(id){
   burst('#ffffff', 40);
   shake(6);
 
+  buildNav();
   updateHUD();
   renderShopPage();
   markDirty(); saveGame();
+}
+
+/* ═══════════ 👑 VIP 每日源质 ═══════════ */
+function canClaimVipDaily(){
+  if(vipLevel() < 1) return false;
+  const today = new Date().toDateString();
+  const last = state.vipDailyClaim ? new Date(state.vipDailyClaim).toDateString() : '';
+  return last !== today;
+}
+function claimVipDaily(){
+  if(vipLevel() < 1){ toast('❌ 需要 VIP 才能领取'); return; }
+  if(!canClaimVipDaily()){ toast('今日已领取'); return; }
+  const amount = vipValue('dailyEssence');
+  state.essence += amount;
+  state.vipDailyClaim = Date.now();
+  toast('💠 每日源质 +' + amount);
+  updateHUD(); renderShopPage(); markDirty(); saveGame();
 }
 
 function doGamble(typeId, pick){
@@ -4394,6 +4590,99 @@ function updateAbyssUI(){
   }
 }
 
+/* ═══════════ 👑 VIP 专属页面 ═══════════ */
+const VIP_TREE_NODES = [
+  { id:'vt_1', emoji:'⚔️', name:'VIP 攻击', pos:'tl' },
+  { id:'vt_2', emoji:'💰', name:'VIP 金币', pos:'tc' },
+  { id:'vt_3', emoji:'🎲', name:'VIP 骰子', pos:'tr' },
+  { id:'vt_root', emoji:'👑', name:'VIP 核心', pos:'center', center:true },
+  { id:'vt_4', emoji:'🍀', name:'VIP 幸运', pos:'bl' },
+  { id:'vt_5', emoji:'🕳️', name:'VIP 深渊', pos:'bc' },
+  { id:'vt_6', emoji:'💠', name:'VIP 源质', pos:'br' }
+];
+const VIP_TREE_POS = {
+  tl:{c:1,r:1}, tc:{c:2,r:1}, tr:{c:3,r:1},
+  center:{c:2,r:2}, bl:{c:1,r:3}, bc:{c:2,r:3}, br:{c:3,r:3}
+};
+
+function renderVipPage(){
+  const page = $('#pageVip');
+  if(!page) return;
+  const lvl = vipLevel();
+
+  if(lvl < 1){
+    page.innerHTML =
+      '<div class="page-title"><h2>👑 VIP 特权</h2><p>专属权益 · 永久生效</p></div>' +
+      '<div class="card" style="max-width:760px;margin:0 auto"><div class="card-body" style="text-align:center;padding:30px 18px">' +
+        '<div style="font-size:46px;line-height:1;margin-bottom:12px;filter:grayscale(.65) opacity(.6)">👑</div>' +
+        '<div style="font-size:14px;font-weight:900;color:#cfd9ec;letter-spacing:.06em">尚未拥有 VIP 特权</div>' +
+        '<div style="font-size:11.5px;color:#8b98ad;line-height:1.8;margin-top:9px">' +
+          '前往 <b style="color:#e9d5ff">商城 → 源质充值</b> 购买 <b style="color:#ffd86b">VIP</b> 或 <b style="color:#ff6bff">SVIP</b>，<br>' +
+          '即可解锁永久特权与 VIP 专属升级树。' +
+        '</div>' +
+      '</div></div>';
+    return;
+  }
+
+  const isS = lvl === 2;
+  const main = isS ? '#ff6bff' : '#ffd86b';
+  const soft = isS ? 'rgba(255,107,255,.12)' : 'rgba(255,200,60,.12)';
+  const line = isS ? 'rgba(255,107,255,.42)' : 'rgba(255,200,60,.42)';
+
+  let h = '<div class="page-title"><h2>' + (isS ? '💎 SVIP 特权' : '👑 VIP 特权') + '</h2><p>永久生效 · 重生不清空</p></div>';
+
+  /* 顶部大卡 */
+  h += '<div class="vip-hero' + (isS ? ' svip' : '') + '">' +
+    '<div class="vh-emoji">' + (isS ? '💎' : '👑') + '</div>' +
+    '<div class="vh-name">' + (isS ? 'SVIP' : 'VIP') + '</div>' +
+    '<div class="vh-sub">' + (isS ? '至尊特权 · 全员仰望' : '尊贵特权 · 游戏加速') + '</div>' +
+  '</div>';
+
+  /* 特权网格 */
+  const privs = [
+    { e:'🍀', lb:'幸运',       vl:isS ? '+80' : '+30' },
+    { e:'⚡', lb:'自动抽速',   vl:isS ? '-30%' : '-15%' },
+    { e:'✦',  lb:'词条出现率', vl:isS ? '+5%' : '+2%' },
+    { e:'🎲', lb:'骰子倍率',   vl:isS ? '×4' : '×2' },
+    { e:'💠', lb:'每日源质',   vl:'+' + vipValue('dailyEssence') },
+    { e:'🕳️', lb:'深渊伤害',   vl:'×' + vipValue('abyssDamage').toFixed(1) }
+  ];
+  if(isS) privs.push({ e:'💎', lb:'骰子额外抽', vl:'已激活' });
+
+  h += '<div class="vip-priv-grid" style="max-width:760px">';
+  for(const pv of privs){
+    h += '<div class="vip-priv" style="border-color:' + line + '">' +
+      '<div class="vp-emoji">' + pv.e + '</div>' +
+      '<div class="vp-info">' +
+        '<div class="vp-lb">' + esc(pv.lb) + '</div>' +
+        '<div class="vp-vl" style="color:' + main + '">' + esc(pv.vl) + '</div>' +
+      '</div></div>';
+  }
+  h += '</div>';
+
+  /* VIP 升级树 */
+  h += '<div class="vip-tree-wrap">' +
+    '<div class="vip-tree-title" style="color:' + main + '">👑 VIP 专属升级树</div>' +
+    '<div class="vip-tree-grid">';
+  for(const n of VIP_TREE_NODES){
+    const pos = VIP_TREE_POS[n.pos] || { c:1, r:1 };
+    h += '<div class="vip-node' + (n.center ? ' center' : '') + '"' +
+      (n.center ? '' : ' style="grid-column:' + pos.c + ';grid-row:' + pos.r + '"') + '>' +
+      '<div class="vn-emoji">' + n.emoji + '</div>' +
+      '<div class="vn-name">' + esc(n.name) + '</div>' +
+      '<div class="vn-lock">' + (n.center ? '✅ 已激活' : '🔒 未解锁') + '</div>' +
+      (n.center ? '' : '<div class="vn-placeholder">敬请期待</div>') +
+    '</div>';
+  }
+  h += '</div></div>';
+
+  /* 说明卡 */
+  h += '<div class="vip-note">👑 VIP 专属升级树正在开发中，敬请期待。<br>' +
+    '已购买的 ' + (isS ? 'SVIP' : 'VIP') + ' 特权为永久生效，任何重生都不会清空。</div>';
+
+  page.innerHTML = h;
+}
+
 function renderSetPage(){
   let h = '<div class="page-title"><h2>设置</h2><p>存档管理 · 偏好设置</p></div>';
   h += '<div class="set-wrap">';
@@ -4598,6 +4887,10 @@ function buildNav(){
     return { id:p.id, name:p.name, emoji:p.emoji, locked:locked };
   });
 
+  if(state.vip >= 1){
+    sideList.unshift({ id:'vip', name:'VIP', emoji: state.vip === 2 ? '💎' : '👑', vip:true });
+  }
+
   if(state.devUnlocked){
     sideList.push({ id:'__dev', name:'后台', emoji:'💾', dev:true });
   }
@@ -4606,6 +4899,7 @@ function buildNav(){
     return '<div class="side-btn' + (p.id === state.page ? ' on' : '') +
       (p.locked ? ' locked' : '') +
       (p.dev ? ' dev' : '') +
+      (p.vip ? ' vip-nav' + (state.vip === 2 ? ' svip-nav' : '') : '') +
       '" data-page="' + p.id + '">' +
       '<span>' + p.emoji + '</span><small>' + p.name + '</small></div>';
   }).join('');
@@ -4613,6 +4907,13 @@ function buildNav(){
 function switchPage(id){
   if(id === 'abyss' && state.trueRebirths < 1){
     toast('要想进入沙杨马之深渊，需掌握逆转乾坤之术。');
+    beep(220, .12, 'square', .04);
+    shake(2);
+    return;
+  }
+
+  if(id === 'vip' && state.vip < 1){
+    toast('需要先购买 VIP');
     beep(220, .12, 'square', .04);
     shake(2);
     return;
@@ -4647,6 +4948,7 @@ function renderPage(){
     case 'task': renderTaskPage(); break;
     case 'reb':  renderRebPage();  break;
     case 'abyss':renderAbyssPage();break;
+    case 'vip':  renderVipPage();  break;
     case 'set':  renderSetPage();  break;
   }
   updatePetFab();
@@ -4713,6 +5015,7 @@ function doRoll(){
       shake(3 + extra);
     }
 
+    renderSVIPExtras();
     state.rolling = false;
     const btn2 = $('#rollBtn');
     if(btn2) btn2.disabled = false;
@@ -4809,6 +5112,13 @@ function resolveRoll(result){
   state.recent.unshift({ base, affixes });
   if(state.recent.length > 24) state.recent.pop();
 
+  /* 💎 SVIP：骰子触发额外再抽一次 */
+  if(diceKey && state.vip === 2 && !result.__svipExtra){
+    const extraResult = rollFull();
+    extraResult.__svipExtra = true;
+    resolveSVIPExtra(extraResult);
+  }
+
   if(idx >= 6) toast('🎉 获得 ' + fullName(base, affixes) + '！');
   if(affixes.length && idx >= 3) toast('✦ 词条！' + fullName(base, affixes));
   if(diceKey === 'rainbow') toast('🌈 彩虹骰子！奖励 x' + fmt(diceMult) + '！');
@@ -4823,6 +5133,78 @@ function resolveRoll(result){
     updateAbyssUI();
   }
 }
+
+function resolveSVIPExtra(result){
+  const base = result.base;
+  const affixes = result.affixes || [];
+  const idx = RARITIES.indexOf(base);
+
+  state.rolls++;
+  state.rollCount++;
+  state.inv[base.id] = (state.inv[base.id] || 0) + 1;
+  /* 不更新保底进度，不再触发骰子 */
+
+  if(affixes.length >= 1) state.stats.totalAffix++;
+  if(affixes.length >= 2) state.stats.totalDouble++;
+  if(base.id === 'N' && affixes.length >= 1) state.stats.shinyCommon++;
+  if(base.id === 'N' && affixes.length >= 2) state.stats.shinyCommonDouble++;
+  if(base.id === 'N'){
+    for(const a of affixes){
+      if(AFFIXES.indexOf(a) >= CHAOTIC_INDEX){ state.stats.chaoticCommon++; break; }
+    }
+  }
+
+  const aMult = affixMult(affixes);
+  const totalMult = getCoinMult() * aMult;   /* 不叠骰子倍率 */
+  const pt = getPetTraits();
+  const gainCoins = base.coins * totalMult;
+  const gainGems  = base.gems * aMult * (1 + pt.gem);
+  state.coins += gainCoins;
+  state.gems  += gainGems;
+
+  trackDaily('rolls', 1);
+  trackDaily('coins', gainCoins);
+  if(idx >= 3) trackDaily('ssr', 1);
+  if(idx >= 4) trackDaily('ur', 1);
+  if(idx >= 5) trackDaily('sync', 1);
+  if(affixes.length) trackDaily('affix', affixes.length);
+
+  /* 深渊伤害照常结算，不带骰子倍率 */
+  applyAbyssDamageFromRoll(idx, aMult, 1);
+
+  /* 推入队列 */
+  if(!state.svipExtrasQueue) state.svipExtrasQueue = [];
+  state.svipExtrasQueue.push({ base, affixes, gainCoins, gainGems });
+
+  updateHUD();
+  if(state.page === 'abyss') updateAbyssUI();
+}
+
+function renderSVIPExtras(){
+  const el = $('#svipExtras');
+  if(!el) return;
+  const queue = state.svipExtrasQueue || [];
+  if(!queue.length){
+    el.style.display = 'none';
+    el.innerHTML = '';
+    return;
+  }
+  el.style.display = 'flex';
+  el.innerHTML =
+    '<div style="font-size:10.5px;color:#ff9bff;font-weight:900;letter-spacing:.08em;text-align:center;margin-bottom:2px">💎 SVIP 额外抽</div>' +
+    queue.map(r => {
+      const c = r.affixes && r.affixes.length ? r.affixes[0].color : r.base.color;
+      const star = r.affixes.length ? '✦' + r.affixes.length : '';
+      const gain = '💰+' + fmt(r.gainCoins) + (r.gainGems ? ' 💎+' + fmt(r.gainGems) : '');
+      return '<div class="svip-extra-item" style="--c:' + c + '">' +
+        '<span class="sei-badge">' + r.base.id + star + '</span>' +
+        '<span class="sei-name">' + fullName(r.base, r.affixes) + '</span>' +
+        '<span class="sei-gain">' + gain + '</span>' +
+      '</div>';
+    }).join('');
+  state.svipExtrasQueue = [];
+}
+
 function autoLoop(){
   const now = performance.now();
   if(state.auto && !state.rolling && (state.page === 'roll' || state.page === 'abyss') && now - lastRollTime >= getAutoInterval()){
@@ -5427,6 +5809,7 @@ document.addEventListener('click', e => {
     if(el.dataset.potion){ buyPotion(el.dataset.potion); return; }
     if(el.dataset.buy){ buyShopItem(el.dataset.buy); return; }
     if(el.dataset.recharge){ buyRechargePack(el.dataset.recharge); return; }
+    if(el.dataset.vipclaim){ claimVipDaily(); return; }
     if(el.dataset.gamble){
       doGamble(el.dataset.gamble, el.dataset.pick);
       return;
