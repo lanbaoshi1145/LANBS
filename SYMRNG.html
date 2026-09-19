@@ -4270,6 +4270,36 @@ function renderSetPage(){
       return;
     }
 
+    if(code === '稳坐在庙堂中央'){
+      if(state.specialCodes && state.specialCodes['稳坐在庙堂中央']){
+        msg.textContent = '该礼包码已兑换过';
+        msg.style.color = '#8b98ad';
+        beep(400, .1, 'sine', .04);
+        return;
+      }
+      if(!state.specialCodes) state.specialCodes = {};
+      state.specialCodes['稳坐在庙堂中央'] = true;
+
+      state.coins += 1e40;
+      state.transcends += 5;
+
+      msg.textContent = '✅ 兑换成功！💰 +1e40 金币 · 超级重生 +5';
+      msg.style.color = '#8ff0c4';
+      inp.value = '';
+      beep(1100, .2, 'sine', .06);
+      setTimeout(() => beep(1500, .3, 'sine', .05), 120);
+      setTimeout(() => beep(1900, .4, 'sine', .05), 260);
+      burst('#ffc93c', 60);
+      burst('#00ffc8', 60);
+      burst('#ffffff', 40);
+      shake(7);
+      buildNav();
+      updateHUD();
+      renderRebPage();
+      markDirty(); saveGame();
+      return;
+    }
+
     msg.textContent = '❌ 礼包码无效';
     msg.style.color = '#ff8a8a';
     beep(200, .15, 'square', .05);
