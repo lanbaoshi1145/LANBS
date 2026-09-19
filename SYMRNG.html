@@ -1928,6 +1928,11 @@ function resize(){ W = canvas.width = window.innerWidth; H = canvas.height = win
 window.addEventListener('resize', resize);
 resize();
 function burst(color, count, cx, cy){
+  /* 已达上限：直接丢弃，保护性能 */
+  const room = MAX_PARTICLES - particles.length;
+  if(room <= 0) return;
+  if(count > room) count = room;
+
   let x = cx, y = cy;
   if(x === undefined){
     const el = $('#diceHint');
@@ -1937,24 +1942,50 @@ function burst(color, count, cx, cy){
   for(let i = 0; i < count; i++){
     const a = Math.random() * Math.PI * 2;
     const sp = 1.5 + Math.random() * 8;
-    particles.push({ x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 1.5, life: 1, decay: .008 + Math.random() * .022, size: 1.5 + Math.random() * 4.5, color });
+    particles.push({
+      x, y,
+      vx: Math.cos(a) * sp,
+      vy: Math.sin(a) * sp - 1.5,
+      life: 1,
+      decay: .008 + Math.random() * .022,
+      size: 1.5 + Math.random() * 4.5,
+      color
+    });
   }
 }
+const MAX_PARTICLES = 350;
+
 function fxLoop(){
   ctx.clearRect(0, 0, W, H);
+  if(!particles.length){ requestAnimationFrame(fxLoop); return; }
+
   ctx.globalCompositeOperation = 'lighter';
+
+  /* 更新 + 按颜色分组 */
+  const groups = {};
   for(let i = particles.length - 1; i >= 0; i--){
     const p = particles[i];
     p.x += p.vx; p.y += p.vy; p.vy += .12;
     p.vx *= .992; p.vy *= .992;
     p.life -= p.decay;
     if(p.life <= 0){ particles.splice(i, 1); continue; }
-    ctx.globalAlpha = Math.max(0, p.life);
-    ctx.fillStyle = p.color;
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
-    ctx.fill();
+    let g = groups[p.color];
+    if(!g){ g = groups[p.color] = []; }
+    g.push(p);
   }
+
+  /* 每个颜色一批，用 fillRect 代替 arc */
+  for(const color in groups){
+    const arr = groups[color];
+    ctx.fillStyle = color;
+    for(let j = 0; j < arr.length; j++){
+      const p = arr[j];
+      ctx.globalAlpha = p.life;
+      const s = p.size * p.life;
+      ctx.fillRect(p.x - s, p.y - s, s * 2, s * 2);
+    }
+  }
+
   ctx.globalAlpha = 1;
   ctx.globalCompositeOperation = 'source-over';
   requestAnimationFrame(fxLoop);
@@ -2744,9 +2775,16 @@ function renderPetBag(){
     ? (getSpecies(sel[0].species).name + ' · ' + getQuality(sel[0].quality).name + ' ' + sel[0].star + '星 × ' + sel.length)
     : '未选择';
 
+  const canDecompose = sel.length > 0 && sel.every(p => !state.petEquipped.includes(p.uid));
+  let previewCoins = 0;
+  for(const p of sel) previewCoins += Math.floor(petMult(p) * getCoinMult() * DECOMPOSE_RATE);
+  const selInfoFull = selInfo + (sel.length ? ' · 💰' + fmt(previewCoins) : '');
+
   h += '<div class="bag-toolbar">' +
-    '<div class="bt-info">已选 <b>' + sel.length + '/3</b> · ' + esc(selInfo) + '</div>' +
+    '<div class="bt-info">已选 <b>' + sel.length + '/3</b> · ' + esc(selInfoFull) + '</div>' +
     '<button class="bt-btn" data-pet-merge="1"' + (canMerge ? '' : ' disabled') + '>闪耀合成</button>' +
+    '<button class="bt-btn" data-pet-decompose="1" style="background:linear-gradient(180deg,#ff9f43,#c26c00);color:#1a0d00"' +
+      (canDecompose ? '' : ' disabled') + '>分解</button>' +
     '<button class="bt-btn" data-pet-clear="1" style="background:rgba(255,255,255,.1);color:#c2cde4"' +
       (sel.length ? '' : ' disabled') + '>清空</button>' +
   '</div>';
@@ -3485,7 +3523,7 @@ function drawPets(count){
       toast('🐛 诅咒降临！你抽到了 蚕大蛇……');
       beep(180, .5, 'sawtooth', .05);
       setTimeout(() => beep(120, .6, 'sawtooth', .05), 220);
-      burst('#7c8f3a', 60);
+      burst('#7c8f3a', 25);
       shake(7);
     }, 400);
   }
@@ -3497,8 +3535,8 @@ function drawPets(count){
     return q.mult > getQuality(best.quality).mult ? p : best;
   }, results[0]);
   const bestColor = getQuality(bestQ.quality).color;
-  burst(bestColor, 60);
-  if(count === 10) setTimeout(() => burst('#ff4fb5', 80), 200);
+  burst(bestColor, 30);
+  if(count === 10) setTimeout(() => burst('#ff4fb5', 35), 200);
 
   const best = results.reduce((b, p) => {
     const q = getQuality(p.quality);
@@ -3540,14 +3578,58 @@ function tryMergePets(){
     beep(800, .15, 'sine', .06);
     setTimeout(() => beep(1200, .2, 'sine', .06), 100);
     setTimeout(() => beep(1600, .3, 'sine', .055), 220);
-    burst('#ffd86b', 80);
-    burst('#ffffff', 40);
+    burst('#ffd86b', 35);
+    burst('#ffffff', 20);
     shake(6);
     toast('✨ 闪耀合成成功！获得 ✨' + sp.name + '（' + getQuality(first.quality).name + '）');
     updateHUD();
     renderPetPage();
     checkAchievements();
   });
+}
+
+/* 分解系数：宠物倍率 × 金币倍率 × 这个数 = 分解获得金币 */
+const DECOMPOSE_RATE = 10000;
+
+function decomposePets(){
+  const sel = state.petSelection.map(uid => state.petInv.find(p => p.uid === uid)).filter(Boolean);
+  if(!sel.length){ toast('请先选择要分解的宠物'); return; }
+
+  const equipped = sel.filter(p => state.petEquipped.includes(p.uid));
+  if(equipped.length){ toast('装备中的宠物不能分解，请先卸下'); beep(220, .12, 'square', .04); return; }
+
+  let totalCoins = 0;
+  for(const p of sel){
+    totalCoins += Math.floor(petMult(p) * getCoinMult() * DECOMPOSE_RATE);
+  }
+
+  const names = sel.map(p => {
+    const q = getQuality(p.quality);
+    const sp = getSpecies(p.species);
+    return (p.shiny ? '✨' : '') + sp.name + ' · ' + q.name + ' ' + p.star + '★';
+  }).join('、');
+
+  openConfirm('💰', '分解宠物',
+    '将分解 ' + sel.length + ' 只宠物（' + names + '），获得 💰' + fmt(totalCoins) + ' 金币。',
+    () => {
+      const uids = sel.map(p => p.uid);
+      state.petInv = state.petInv.filter(p => !uids.includes(p.uid));
+      state.coins += totalCoins;
+      state.petSelection = [];
+
+      beep(700, .1, 'sine', .05);
+      setTimeout(() => beep(1000, .15, 'sine', .045), 90);
+      burst('#ff9f43', 35);
+      burst('#ffc93c', 25);
+      shake(3);
+      toast('💰 分解成功！获得 ' + fmt(totalCoins) + ' 金币');
+
+      updateHUD();
+      renderPetPage();
+      updatePetFab();
+      checkAchievements();
+    }
+  );
 }
 
 function autoMergeAll(){
@@ -3810,6 +3892,7 @@ document.addEventListener('click', e => {
     if(el.dataset.potion){ buyPotion(el.dataset.potion); return; }
     if(el.dataset.petDraw){ drawPets(parseInt(el.dataset.petDraw, 10)); return; }
     if(el.dataset.petMerge){ tryMergePets(); return; }
+    if(el.dataset.petDecompose){ decomposePets(); return; }
     if(el.dataset.petClear){ state.petSelection = []; renderPetPage(); updatePetFab(); return; }
     if(el.dataset.petAutoMerge){
       const n = countMergeable();
@@ -3821,8 +3904,8 @@ document.addEventListener('click', e => {
         beep(800, .15, 'sine', .06);
         setTimeout(() => beep(1200, .2, 'sine', .06), 100);
         setTimeout(() => beep(1600, .3, 'sine', .055), 220);
-        burst('#ffd86b', 100);
-        burst('#ffffff', 50);
+        burst('#ffd86b', 45);
+        burst('#ffffff', 25);
         shake(8);
         toast('✨ 一键合成完成！共获得 ' + merged + ' 只闪耀宠物');
         updateHUD();
