@@ -207,6 +207,13 @@ body{
 .tnode.perma-node.avail{border-color:rgba(255,210,90,.9);background:linear-gradient(160deg,rgba(140,105,25,.5),rgba(50,35,10,.9));box-shadow:0 6px 20px -4px rgba(255,190,60,.6);}
 .tnode.perma-node.owned{border-color:rgba(255,220,110,.8);background:linear-gradient(160deg,rgba(150,115,30,.55),rgba(55,40,12,.9));}
 
+/* ═══ 二阶永久节点样式 ═══ */
+.tnode.perma2-node{border-color:rgba(200,90,255,.65);background:linear-gradient(160deg,rgba(100,30,150,.55),rgba(35,10,55,.9));}
+.tnode.perma2-node.maxed{border-color:rgba(230,140,255,.95);box-shadow:0 6px 24px -4px rgba(200,80,255,.75),inset 0 0 22px -12px #c85aff;}
+.tnode.perma2-node .tn-name{color:#e8c8ff;}
+.tnode.perma2-node.avail{border-color:rgba(200,110,255,.9);background:linear-gradient(160deg,rgba(120,45,160,.5),rgba(45,15,65,.9));box-shadow:0 6px 20px -4px rgba(200,90,255,.6);}
+.tnode.perma2-node.owned{border-color:rgba(210,130,255,.8);background:linear-gradient(160deg,rgba(130,55,170,.55),rgba(50,20,70,.9));}
+
 #nodeTip{
   position:fixed;z-index:180;pointer-events:none;
   max-width:280px;min-width:200px;
@@ -719,8 +726,27 @@ body{
   .pet-fab .pf-info{font-size:10.5px;padding:0 4px}
   .pet-fab .pf-btn{padding:9px 12px;font-size:11.5px}
 }
+/* ═══ 版本号 ═══ */
+body::after{
+  content: "v7.2.2";
+  position: fixed;
+  left: 8px;
+  top: 8px;
+  z-index: 31;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  line-height: 1;
+  color: #5a6580;
+  background: rgba(10,15,30,.7);
+  border: 1px solid rgba(255,255,255,.06);
+  padding: 4px 8px;
+  border-radius: 8px;
+  pointer-events: none;
+  user-select: none;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+}
 </style>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lanbaoshi1145/LANBS@main/version.css?v=0919006">
 </head>
 <body>
 <canvas id="fx"></canvas>
@@ -925,10 +951,6 @@ function genPet(qualityId, speciesId){
     shiny: false
   };
 }
-function rollPetQuality(){
-  const list = Object.keys(PET_QUALITY_WEIGHTS).map(k => ({ ref:k, w:PET_QUALITY_WEIGHTS[k] }));
-  return pickFrom(list).ref;
-}
 function rollSpecies(){
   return pickFrom(PET_SPECIES.map(s => ({ ref:s.id, w:s.w }))).ref;
 }
@@ -1070,7 +1092,7 @@ const TREE = [
   /* ── 宠物强化线（重生会清） ── */
   { id:'P1',  name:'宠物亲和', emoji:'🐾', col:1, row:13, req:['root'], max:20, base:12000,  growth:1.75, desc:'宠物倍率 +5% / 级' },
   { id:'P2',  name:'宠物精通', emoji:'🐾', col:2, row:13, req:['P1'],   max:20, base:120000, growth:1.80, desc:'宠物倍率 +10% / 级' },
-  { id:'P3',  name:'宠物专精', emoji:'🐾', col:3, row:13, req:['P2'],   max:15, base:1.5e6,  growth:1.85, desc:'宠物倍率 +25% / 级' },
+  { id:'P3',  name:'宠物专精', emoji:'🐾', col:3, row:13, req:['P2'],   max:15, base:1.5e6,  growth:1.85, desc:'宠物倍率 +25% / 级' }
 
 ];
 
@@ -1094,8 +1116,22 @@ const PERMA_TREE = [
   { id:'PM1',  name:'永久多重',      emoji:'🎰', col:7, row:3, req:['PROOT'], max:10, base:1e11, growth:1.90, perma:true, desc:'多重抽奖概率 +5% / 级' }
 ];
 
-/* 普通树 + 永久树的合集，供渲染/查找使用 */
-const ALL_NODES = TREE.concat(PERMA_TREE);
+/* ═══════════ 🌌 二阶永久树（真重生解锁） ═══════════ */
+const PERMA_TREE_2 = [
+  { id:'P2ROOT', name:'源质核心',   emoji:'🌌', col:10, row:4, req:[],        max:1,  base:0,    growth:1,    perma2:true, desc:'真重生解锁的永久树' },
+
+  { id:'P2C1',  name:'源质金币 I',  emoji:'💠', col:11, row:0, req:['P2ROOT'], max:30, base:1e18, growth:1.85, perma2:true, desc:'金币倍率 +50% / 级' },
+  { id:'P2C2',  name:'源质金币 II', emoji:'💠', col:12, row:0, req:['P2C1'],   max:20, base:1e22, growth:1.90, perma2:true, desc:'金币倍率 +100% / 级' },
+  { id:'P2L1',  name:'源质幸运 I',  emoji:'🌟', col:11, row:1, req:['P2ROOT'], max:25, base:5e18, growth:1.88, perma2:true, desc:'幸运 +20 / 级' },
+  { id:'P2L2',  name:'源质幸运 II', emoji:'🌟', col:12, row:1, req:['P2L1'],   max:20, base:5e22, growth:1.92, perma2:true, desc:'幸运 +50 / 级' },
+  { id:'P2P1',  name:'源质宠物',    emoji:'🐾', col:11, row:2, req:['P2ROOT'], max:20, base:1e20, growth:1.90, perma2:true, desc:'宠物倍率 +150% / 级' },
+  { id:'P2D1',  name:'源质骰子',    emoji:'🎲', col:12, row:2, req:['P2ROOT'], max:20, base:1e21, growth:1.90, perma2:true, desc:'所有骰子倍率 +50% / 级' },
+  { id:'P2M1',  name:'源质多重',    emoji:'🎰', col:11, row:3, req:['P2ROOT'], max:15, base:1e24, growth:1.92, perma2:true, desc:'多重抽奖 +8% / 级' },
+  { id:'P2PL',  name:'源质宠运',    emoji:'🍀', col:12, row:3, req:['P2D1'],   max:20, base:1e23, growth:1.92, perma2:true, desc:'宠物抽奖幸运 +100 / 级' }
+];
+
+/* 普通树 + 永久树 + 二阶永久树的合集 */
+const ALL_NODES = TREE.concat(PERMA_TREE, PERMA_TREE_2);
 
 const REBIRTH_TIERS = [
   { id:'rebirth', name:'重生', emoji:'🌟', color:'#ffc93c',
@@ -1135,6 +1171,17 @@ const DICE_DEFS = {
 };
 const PITY_TABLE = [null, 200, 150, 120, 90, 70, 50];
 const DICE_INTERVAL = { gold:10, diamond:50, emerald:150, rainbow:200 };
+
+const TRUE_REBIRTH = {
+  baseCost: 1e32,
+  costGrowth: 500,
+  coinMultPer: 6,
+  luckPer: 100,
+  petLuckPer: 500,
+  petDrawDiscountPer: 0.15,
+  petDrawDiscountCap: 0.90,
+  reqTranscends: 5
+};
 
 const ACHIEVEMENTS = [
   { id:'first_roll',    name:'初出茅庐',     emoji:'🎲', desc:'进行第一次抽取',              check:() => state.rolls >= 1 },
@@ -1176,67 +1223,199 @@ const ACHIEVEMENTS = [
   { id:'mult_10000',    name:'财富之神',     emoji:'💰', desc:'金币倍率达到 x10000',         check:() => getCoinMult() >= 10000 },
   { id:'speed_100',     name:'光速抽卡',     emoji:'⚡', desc:'自动间隔低于 100ms',          check:() => getAutoInterval() <= 100 },
   { id:'perma_1',       name:'永久之路',     emoji:'💎', desc:'解锁任意一个永久树节点',      check:() => Object.keys(state.ptree).some(k => k !== 'PROOT' && state.ptree[k] > 0) },
-  { id:'perma_10',      name:'永恒之力',     emoji:'🌌', desc:'永久树累计 10 级',            check:() => { let s=0; for(const k in state.ptree){ if(k!=='PROOT') s+=state.ptree[k]; } return s>=10; } }
+  { id:'perma_10',      name:'永恒之力',     emoji:'🌌', desc:'永久树累计 10 级',            check:() => { let s=0; for(const k in state.ptree){ if(k!=='PROOT') s+=state.ptree[k]; } return s>=10; } },
+  { id:'true_rebirth_1',     name:'逆转乾坤', emoji:'☯️', desc:'完成第一次真重生',              check:() => state.trueRebirths >= 1 },
+  { id:'true_rebirth_5',     name:'轮回尽头', emoji:'♻️', desc:'完成 5 次真重生',                check:() => state.trueRebirths >= 5 },
+  { id:'true_rebirth_10',    name:'万古长存', emoji:'🌌', desc:'完成 10 次真重生',               check:() => state.trueRebirths >= 10 },
+  { id:'pet_draw_luck_1000', name:'驯兽宗师', emoji:'🐾', desc:'宠物抽奖幸运达到 1000',           check:() => getTotalPetDrawLuck() >= 1000 },
+  { id:'pet_draw_luck_10000',name:'万兽之主', emoji:'👑', desc:'宠物抽奖幸运达到 10000',          check:() => getTotalPetDrawLuck() >= 10000 }
 ];
 
-const SHOP_COINS = [
-  { id:'sc1', emoji:'🍀', name:'幸运小药水', desc:'幸运 +0.5（60秒）', price:1500,
-    apply:() => addBuff({name:'幸运小药水', emoji:'🍀', color:'#00ff88', luck:0.5, dur:60}) },
-  { id:'sc2', emoji:'🍀', name:'高级幸运药水', desc:'幸运 +1.5（90秒）', price:12000,
-    apply:() => addBuff({name:'高级幸运药水', emoji:'🍀', color:'#00ff88', luck:1.5, dur:90}) },
-  { id:'sc3', emoji:'💰', name:'金币药水', desc:'金币倍率 x2（60秒）', price:8000,
-    apply:() => addBuff({name:'金币药水', emoji:'💰', color:'#ffc93c', coinMult:2, dur:60}) },
-  { id:'sc4', emoji:'💰', name:'超级金币药水', desc:'金币倍率 x6（90秒）', price:150000,
-    apply:() => addBuff({name:'超级金币药水', emoji:'💰', color:'#ffc93c', coinMult:6, dur:90}) },
-  { id:'sc5', emoji:'⚡', name:'速度药水', desc:'自动间隔 -40%（60秒）', price:5000,
-    apply:() => addBuff({name:'速度药水', emoji:'⚡', color:'#3fa9ff', speedMult:0.6, dur:60}) },
-  { id:'sc6', emoji:'⚡', name:'超级速度药水', desc:'自动间隔 -70%（90秒）', price:80000,
-    apply:() => addBuff({name:'超级速度药水', emoji:'⚡', color:'#3fa9ff', speedMult:0.3, dur:90}) },
-  { id:'sc7', emoji:'🌀', name:'词条药水', desc:'词条出现率 +15%（90秒）', price:350000,
-    apply:() => addBuff({name:'词条药水', emoji:'🌀', color:'#ff6bff', affixBonus:0.15, dur:90}) }
-];
-const SHOP_GEMS = [
-  { id:'sg1', emoji:'💰', name:'金币大礼包', desc:'获得当前金币倍率 x 100,000 金币', price:20,
-    apply:() => { const g = getCoinMult() * 100000; state.coins += g; toast('💰 +' + fmt(g) + ' 金币'); } },
-  { id:'sg2', emoji:'💎', name:'宝石结晶', desc:'立即获得 200 钻石', price:50,
-    apply:() => { state.gems += 200; toast('💎 +200 钻石'); } },
-  { id:'sg3', emoji:'🍀', name:'幸运水晶', desc:'幸运 +5（120秒）', price:80,
-    apply:() => addBuff({name:'幸运水晶', emoji:'🍀', color:'#00ff88', luck:5, dur:120}) },
-  { id:'sg4', emoji:'🔄', name:'保底重置', desc:'重置保底进度到 0', price:30,
-    apply:() => { state.pity = 0; toast('🔄 保底进度已重置'); } },
-  { id:'sg5', emoji:'⚡', name:'时空加速器', desc:'自动间隔 -80%（120秒）', price:60,
-    apply:() => addBuff({name:'时空加速器', emoji:'⚡', color:'#3fa9ff', speedMult:0.2, dur:120}) },
-  { id:'sg6', emoji:'✨', name:'宠物扭蛋券', desc:'随机获得 3 只稀有品质宠物', price:300,
+/* ═══════════ 🛒 新商城 ═══════════ */
+/* ═══════════ 💠 商品池 ═══════════ */
+const SHOP_POOL = [
+  /* ── 临时 Buff（限时） ── */
+  { id:'luck_s',  emoji:'🍀', name:'小幸运符', desc:'幸运 +50%（3分钟）',      basePrice:800,   gemCost:3,  limit:3, weight:200,
+    apply:() => addBuff({name:'小幸运符', emoji:'🍀', color:'#00ff88', luck: Math.max(0.5, getLuckMult() * 0.5), dur:180}) },
+  { id:'luck_l',  emoji:'🍀', name:'大幸运符', desc:'幸运 +200%（3分钟）',     basePrice:6000,  gemCost:15, limit:1, weight:80,
+    apply:() => addBuff({name:'大幸运符', emoji:'🍀', color:'#00ff88', luck: Math.max(2, getLuckMult() * 2), dur:180}) },
+  { id:'coin_s',  emoji:'💰', name:'金币爆发', desc:'金币倍率 ×3（2分钟）',    basePrice:1200,  gemCost:4,  limit:2, weight:180,
+    apply:() => addBuff({name:'金币爆发', emoji:'💰', color:'#ffc93c', coinMult:3, dur:120}) },
+  { id:'coin_l',  emoji:'💰', name:'金币狂潮', desc:'金币倍率 ×8（2分钟）',    basePrice:9000,  gemCost:20, limit:1, weight:60,
+    apply:() => addBuff({name:'金币狂潮', emoji:'💰', color:'#ffc93c', coinMult:8, dur:120}) },
+  { id:'speed',   emoji:'⚡', name:'超速引擎', desc:'自动间隔 -60%（3分钟）',  basePrice:1500,  gemCost:5,  limit:2, weight:150,
+    apply:() => addBuff({name:'超速引擎', emoji:'⚡', color:'#3fa9ff', speedMult:0.4, dur:180}) },
+  { id:'affix',   emoji:'🌀', name:'词条卷轴', desc:'词条出现率 +50%（3分钟）', basePrice:3000,  gemCost:8,  limit:2, weight:100,
+    apply:() => addBuff({name:'词条卷轴', emoji:'🌀', color:'#ff6bff', affixBonus:0.5, dur:180}) },
+
+  /* ── 一次性道具 ── */
+  { id:'dice_gold', emoji:'🎲', name:'黄金钥匙', desc:'下次抽奖必触发黄金骰子', basePrice:2500, gemCost:7,  limit:1, weight:120,
+    apply:() => { state.rollCount = state.rollCount - (state.rollCount % DICE_INTERVAL.gold) + (DICE_INTERVAL.gold - 1); toast('🎲 下次抽奖必触发黄金骰子！'); } },
+  { id:'pity',    emoji:'🛡️', name:'保底加速', desc:'保底进度 +10',            basePrice:2000, gemCost:5,  limit:5, weight:150,
+    apply:() => { state.pity += 10; toast('🛡️ 保底进度 +10'); } },
+  { id:'gems',    emoji:'💎', name:'钻石放大器', desc:'花少量钻石兑换大量钻石（净赚 4 倍）', basePrice:4000, gemCost:10, limit:3, weight:100,
     apply:() => {
-      for(let i = 0; i < 3; i++){
-        state.petInv.push(genPet('R', rollSpecies()));
-      }
-      toast('✨ 获得 3 只稀有品质宠物');
-    } }
+      const gain = Math.floor(50 * Math.pow(getShopWealthMult(), 0.2));
+      state.gems += gain;
+      toast('💎 +' + fmt(gain) + ' 钻石');
+    } },
+
+  /* ── 赌博类 ── */
+  { id:'box',     emoji:'🎁', name:'神秘礼盒', desc:'随机奖励（金币/钻石/宠物）', basePrice:3500, gemCost:10, limit:5, weight:120,
+    apply:() => {
+      const r = Math.random();
+      if(r < 0.50){ const g = getCoinMult() * 5000; state.coins += g; toast('🎁 开出 💰' + fmt(g)); }
+      else if(r < 0.85){ const g = Math.floor(20 + Math.random() * 80); state.gems += g; toast('🎁 开出 💎' + g); }
+      else { state.petInv.push(genPet(rollPetQuality(), rollSpecies())); toast('🎁 开出宠物！'); }
+    } },
+  { id:'egg',     emoji:'🥚', name:'宠物扭蛋', desc:'随机 1 只宠物（品级随机）', basePrice:5000, gemCost:12, limit:3, weight:80,
+    apply:() => { state.petInv.push(genPet(rollPetQuality(), rollSpecies())); toast('🥚 获得 1 只宠物'); } },
+
+  /* ── 稀有商品（权重低） ── */
+  { id:'affix_force', emoji:'✨', name:'词条神符', desc:'下次抽奖必带 1 个词条', basePrice:12000, gemCost:25, limit:1, weight:30,
+    apply:() => { state.forceAffix = true; toast('✨ 下次抽奖必带词条！'); } },
+  { id:'pet_luck', emoji:'🐾', name:'宠物秘药', desc:'宠物抽奖幸运 +200（一次性）', basePrice:15000, gemCost:30, limit:1, weight:25,
+    apply:() => { state.petDrawLuck += 200; toast('🐾 宠物抽奖幸运 +200'); } }
 ];
-const SHOP_PACKS = [
-  { id:'pk1', emoji:'🎁', name:'新手礼包', desc:'100 钻石 + 50,000 金币', coins:50000, gems:100, tag:'¥6' },
-  { id:'pk2', emoji:'🎁', name:'超值礼包', desc:'1,000 钻石 + 1,000,000 金币', coins:1e6, gems:1000, tag:'¥30' },
-  { id:'pk3', emoji:'👑', name:'至尊礼包', desc:'10,000 钻石 + 200,000,000 金币', coins:2e8, gems:10000, tag:'¥98' },
-  { id:'pk4', emoji:'💎', name:'无限礼包', desc:'100,000 钻石 + 100,000,000,000 金币', coins:1e11, gems:100000, tag:'¥648' },
-  { id:'pk5', emoji:'🌌', name:'虚空神礼', desc:'1,000,000 钻石 + 10,000,000,000,000 金币', coins:1e13, gems:1e6, tag:'¥3280' },
-  { id:'pk6', emoji:'⚛️', name:'全能神礼', desc:'1亿 钻石 + 1e19 金币', coins:1e19, gems:1e8, tag:'¥12800' }
-];
-const POTION_POOL = [
-  { name:'微型幸运药水', emoji:'🍀', color:'#00ff88', luck:0.3,  dur:45, base:600 },
-  { name:'幸运药水',     emoji:'🍀', color:'#00ff88', luck:1.0,  dur:60, base:3000 },
-  { name:'强效幸运药水', emoji:'🍀', color:'#00ff88', luck:3.0,  dur:75, base:25000 },
-  { name:'幸运浓缩液',   emoji:'🍀', color:'#00ff88', luck:8.0,  dur:90, base:400000 },
-  { name:'金币药水',     emoji:'💰', color:'#ffc93c', coinMult:2, dur:60, base:2000 },
-  { name:'金币强化剂',   emoji:'💰', color:'#ffc93c', coinMult:5, dur:75, base:18000 },
-  { name:'黄金之血',     emoji:'💰', color:'#ffc93c', coinMult:15, dur:90, base:250000 },
-  { name:'速度药水',     emoji:'⚡', color:'#3fa9ff', speedMult:0.7, dur:60, base:1500 },
-  { name:'极速精华',     emoji:'⚡', color:'#3fa9ff', speedMult:0.4, dur:75, base:20000 },
-  { name:'时空之血',     emoji:'⚡', color:'#3fa9ff', speedMult:0.15, dur:90, base:300000 },
-  { name:'钻石甘露',     emoji:'💎', color:'#2ee6ff', gems:30, base:1500000 },
-  { name:'虚空甘露',     emoji:'💎', color:'#2ee6ff', gems:300, base:2e8 },
-  { name:'词条精华',     emoji:'🌀', color:'#ff6bff', affixBonus:0.1, dur:120, base:4000000 }
-];
+
+function getShopCoinMult(){
+  /* 商城专用倍率：完全复制 getCoinMult 逻辑，
+     但宠物部分取「背包中倍率最强的 3 只」，
+     不受「卸下宠物」影响，防止玩家卸宠物再买 */
+  let v = 1;
+  v += treeLv('V1')  * 0.10;
+  v += treeLv('V2')  * 0.20;
+  v += treeLv('V3')  * 0.35;
+  v += treeLv('VG')  * 0.75;
+  v += treeLv('VG2') * 1.50;
+  v += treeLv('VE')  * 3.00;
+  v *= 1 + state.rebirths   * (0.75 + ptreeLv('PR1') * 0.20);
+  v *= 1 + state.ascends    * (5    + ptreeLv('PR2') * 0.40);
+  v *= 1 + state.transcends * (50   + ptreeLv('PR4') * 0.50);
+
+  /* 背包最强 3 只（按 petMult 排序） */
+  const top3 = state.petInv.slice().sort((a, b) => petMult(b) - petMult(a)).slice(0, MAX_PETS);
+  for(const p of top3) v *= petMult(p);
+
+  /* 用 top3 计算金币特质 */
+  let coinTrait = 0;
+  for(const p of top3){
+    const sp = getSpecies(p.species);
+    const starMul = 1 + (p.star - 1) * 0.5;
+    const shinyMul = p.shiny ? 2 : 1;
+    for(const tr of sp.traits){
+      if(tr.t === 'coin') coinTrait += tr.v * starMul * shinyMul;
+    }
+  }
+  v *= (1 + coinTrait);
+
+  v *= getPetPermaMult();
+  v += ptree2Lv('P2C1') * 0.50 + ptree2Lv('P2C2') * 1.00;
+  v *= getTrueRebirthCoinMult();
+  for(const b of state.buffs) if(b.coinMult) v *= b.coinMult;
+  const ev = getEvent();
+  if(ev.coinMult) v *= ev.coinMult;
+  return v;
+}
+
+function getShopLuckMult(){
+  /* 商城专用幸运：宠物部分取背包最强 3 只，
+     忽略装备状态和蚕大蛇诅咒，防止钻空子 */
+  let v = 1;
+  v += treeLv('L1')  * 0.03;
+  v += treeLv('L2')  * 0.06;
+  v += treeLv('L3')  * 0.12;
+  v += treeLv('LC')  * 0.25;
+  v += treeLv('LC2') * 0.50;
+  v += treeLv('LE')  * 1.00;
+  v += state.rebirths   * 0.15;
+  v += state.ascends    * 2;
+  v += state.transcends * 20;
+  v += ptreeLv('PR3')   * 2;
+  v += ptree2Lv('P2L1') * 20 + ptree2Lv('P2L2') * 50;
+  v += getTrueRebirthLuck();
+  for(const b of state.buffs) if(b.luck) v += b.luck;
+  const ev = getEvent();
+  if(ev.luck) v += ev.luck;
+
+  /* 背包最强 3 只的幸运特质 */
+  const top3 = state.petInv.slice().sort((a, b) => petMult(b) - petMult(a)).slice(0, MAX_PETS);
+  for(const p of top3){
+    const sp = getSpecies(p.species);
+    const starMul = 1 + (p.star - 1) * 0.5;
+    const shinyMul = p.shiny ? 2 : 1;
+    for(const tr of sp.traits){
+      if(tr.t === 'luck') v += tr.v * starMul * shinyMul;
+    }
+  }
+  return Math.max(1, v);
+}
+
+function getShopWealthMult(){
+  /* 综合财富倍率 = 金币倍率 × 幸运^0.3
+     幸运是间接收益（提升稀有度分布），所以用 0.3 次方温和加成 */
+  const coinM = getShopCoinMult();
+  const luckM = getShopLuckMult();
+  return coinM * Math.pow(luckM, 0.3);
+}
+
+function getShopPrice(basePrice){
+  const mult = Math.max(1, Math.pow(getShopWealthMult(), 0.4));
+  return Math.floor(basePrice * 100 * mult);
+}
+
+function getShopGemPrice(gemCost){
+  const mult = Math.max(1, Math.pow(getShopWealthMult(), 0.2));
+  return Math.ceil(gemCost * mult);
+}
+
+function refreshShop(){
+  const today = new Date().toDateString();
+  if(state.shopDate === today && state.shopSlots && state.shopSlots.length) return;
+
+  const pool = SHOP_POOL.slice();
+  const picked = [];
+  for(let i = 0; i < 6 && pool.length; i++){
+    const total = pool.reduce((s, x) => s + x.weight, 0);
+    let r = Math.random() * total;
+    let idx = 0;
+    for(let j = 0; j < pool.length; j++){
+      r -= pool[j].weight;
+      if(r <= 0){ idx = j; break; }
+    }
+    picked.push(pool[idx].id);
+    pool.splice(idx, 1);
+  }
+  state.shopDate = today;
+  state.shopSlots = picked;
+  state.shopBought = {};
+  markDirty();
+}
+
+function buyShopItem(id){
+  const item = SHOP_POOL.find(x => x.id === id);
+  if(!item){ toast('❌ 商品不存在'); return; }
+  const bought = (state.shopBought && state.shopBought[id]) || 0;
+  if(bought >= item.limit){ toast('❌ 今日已售罄'); beep(220, .12, 'square', .04); return; }
+
+  const price = getShopPrice(item.basePrice);
+  const gemPrice = getShopGemPrice(item.gemCost || 0);
+
+  if(state.coins < price){ toast('❌ 金币不足，需要 💰' + fmt(price)); beep(200, .12, 'square', .04); return; }
+  if(state.gems < gemPrice){ toast('❌ 钻石不足，需要 💎' + fmt(gemPrice)); beep(200, .12, 'square', .04); return; }
+
+  state.coins -= price;
+  state.gems -= gemPrice;
+  if(!state.shopBought) state.shopBought = {};
+  state.shopBought[id] = bought + 1;
+  item.apply();
+
+  beep(1000, .12, 'sine', .05);
+  updateHUD();
+  renderShopPage();
+  markDirty();
+}
+
 const DAILY_TEMPLATES = [
   { id:'d1', emoji:'🎲', type:'rolls', name:'今日抽取 {n} 次', n:100, reward:{coins:20000} },
   { id:'d2', emoji:'🎲', type:'rolls', name:'今日抽取 {n} 次', n:500, reward:{coins:500000} },
@@ -1254,7 +1433,10 @@ const state = {
   coins: 0, gems: 0, rolls: 0, rollCount: 0, pity: 0,
   tree: { root:1 },
   ptree: { PROOT:1 },
+  ptree2: { P2ROOT:1 },
   rebirths: 0, ascends: 0, transcends: 0,
+  trueRebirths: 0,
+  petDrawLuck: 0,
   petInv: [],
   petEquipped: [],
   inv: {}, recent: [], buffs: [],
@@ -1263,6 +1445,7 @@ const state = {
   petTab: 'draw', petSelection: [],
   petLevelupTarget: null, petLevelupMaterials: [],
   potionStock: [], daily: null, rechargeUnlocked: false,
+  shopDate: '', shopSlots: [], shopBought: {}, forceAffix: false,
   event: 'none', eventUntil: 0,
   stats: {
     totalAffix: 0, totalDouble: 0,
@@ -1361,11 +1544,14 @@ function markDirty(){ saveDirty = true; }
 
 function getSaveData(){
   return {
-    v: 6, ts: Date.now(),
+    v: 7, ts: Date.now(),
     coins: state.coins, gems: state.gems,
     rolls: state.rolls, rollCount: state.rollCount, pity: state.pity,
     tree: state.tree,
     ptree: state.ptree,
+    ptree2: state.ptree2,
+    trueRebirths: state.trueRebirths,
+    petDrawLuck: state.petDrawLuck,
     rebirths: state.rebirths, ascends: state.ascends, transcends: state.transcends,
     petInv: state.petInv,
     petEquipped: state.petEquipped,
@@ -1375,6 +1561,10 @@ function getSaveData(){
       a: (r.affixes || []).map(x => x.id)
     })),
     potionStock: state.potionStock.map(p => ({ uid:p.uid, tpl:p.tpl, price:p.price })),
+    shopDate: state.shopDate,
+    shopSlots: state.shopSlots,
+    shopBought: state.shopBought,
+    forceAffix: state.forceAffix,
     daily: state.daily,
     rechargeUnlocked: state.rechargeUnlocked,
     stats: state.stats,
@@ -1396,6 +1586,8 @@ function applySaveData(d){
   state.rebirths  = Math.max(0, Math.floor(num(d.rebirths, 0)));
   state.ascends   = Math.max(0, Math.floor(num(d.ascends, 0)));
   state.transcends= Math.max(0, Math.floor(num(d.transcends, 0)));
+  state.trueRebirths = Math.max(0, Math.floor(num(d.trueRebirths, 0)));
+  state.petDrawLuck  = Math.max(0, Math.floor(num(d.petDrawLuck, 0)));
   if(typeof d.sound === 'boolean') state.sound = d.sound;
   if(typeof d.rechargeUnlocked === 'boolean') state.rechargeUnlocked = d.rechargeUnlocked;
   if(typeof d.event === 'string') state.event = d.event;
@@ -1462,6 +1654,20 @@ function applySaveData(d){
     state.ptree = t;
   }
 
+  /* ═══ 二阶永久树 ═══ */
+  if(d.ptree2 && typeof d.ptree2 === 'object'){
+    const t = {};
+    for(const k of Object.keys(d.ptree2)){
+      if(PERMA_TREE_2.some(n => n.id === k) && typeof d.ptree2[k] === 'number'){
+        t[k] = Math.max(0, Math.floor(d.ptree2[k]));
+      }
+    }
+    if(!t.P2ROOT) t.P2ROOT = 1;
+    state.ptree2 = t;
+  } else {
+    state.ptree2 = { P2ROOT:1 };
+  }
+
   if(d.inv && typeof d.inv === 'object'){
     const iv = {};
     for(const r of RARITIES) iv[r.id] = Math.max(0, Math.floor(num(d.inv[r.id], 0)));
@@ -1487,6 +1693,11 @@ function applySaveData(d){
       }))
       .slice(0, 3);
   }
+  if(typeof d.shopDate === 'string') state.shopDate = d.shopDate;
+  if(Array.isArray(d.shopSlots)) state.shopSlots = d.shopSlots.filter(id => SHOP_POOL.some(x => x.id === id));
+  if(d.shopBought && typeof d.shopBought === 'object') state.shopBought = d.shopBought;
+  else state.shopBought = {};
+  state.forceAffix = !!d.forceAffix;
   if(d.daily && d.daily.date && Array.isArray(d.daily.tasks)){
     const today = new Date().toDateString();
     if(d.daily.date === today) state.daily = d.daily;
@@ -1635,24 +1846,35 @@ function wipeSave(){
   });
 }
 
-/* ═══════════ 树操作（普通 + 永久 通用） ═══════════ */
+/* ═══════════ 树操作（普通 + 永久 + 二阶 通用） ═══════════ */
 function treeLv(id){ return state.tree[id] || 0; }
 function ptreeLv(id){ return state.ptree[id] || 0; }
-function nodeLv(n){ return n.perma ? ptreeLv(n.id) : treeLv(n.id); }
+function ptree2Lv(id){ return state.ptree2[id] || 0; }
+
+function nodeLv(n){
+  if(n.perma2) return ptree2Lv(n.id);
+  if(n.perma)  return ptreeLv(n.id);
+  return treeLv(n.id);
+}
+function setNodeLv(n, v){
+  if(n.perma2) state.ptree2[n.id] = v;
+  else if(n.perma) state.ptree[n.id] = v;
+  else state.tree[n.id] = v;
+}
 
 function nodeCost(n){
-  if(n.id === 'root' || n.id === 'PROOT') return 0;
+  if(n.id === 'root' || n.id === 'PROOT' || n.id === 'P2ROOT') return 0;
   return Math.floor(n.base * Math.pow(n.growth, nodeLv(n)));
 }
 function treeCost(n){ return nodeCost(n); }
 
 function nodeIsUnlocked(n){
-  if(n.id === 'root' || n.id === 'PROOT') return true;
+  if(n.id === 'root' || n.id === 'PROOT' || n.id === 'P2ROOT') return true;
   return n.req.every(r => {
-    if(r === 'root' || r === 'PROOT') return true;
+    if(r === 'root' || r === 'PROOT' || r === 'P2ROOT') return true;
     const ref = ALL_NODES.find(x => x.id === r);
     if(!ref) return false;
-    return ref.perma ? ptreeLv(r) >= 1 : treeLv(r) >= 1;
+    return nodeLv(ref) >= 1;
   });
 }
 function isUnlocked(n){ return nodeIsUnlocked(n); }
@@ -1664,7 +1886,7 @@ function getPityMax(){
   return PITY_TABLE[Math.min(lv, 6)];
 }
 
-/* ═══════════ 新增效果计算 ═══════════ */
+/* ═══════════ 效果计算 ═══════════ */
 function getPetPermaMult(){
   let v = 1;
   v += treeLv('P1') * 0.05;
@@ -1673,6 +1895,7 @@ function getPetPermaMult(){
   v += ptreeLv('PP1') * 0.15;
   v += ptreeLv('PP2') * 0.30;
   v += ptreeLv('PP3') * 0.60;
+  v += ptree2Lv('P2P1') * 1.50;
   return v;
 }
 function getMultiRollChance(){
@@ -1682,7 +1905,27 @@ function getMultiRollChance(){
   c += treeLv('M3') * 0.012;
   c += treeLv('ME') * 0.030;
   c += ptreeLv('PM1') * 0.05;
-  return Math.min(0.75, c);
+  c += ptree2Lv('P2M1') * 0.08;
+  return Math.min(0.90, c);
+}
+
+/* ═══════════ 真重生 ═══════════ */
+function getTrueRebirthCost(){
+  return Math.floor(TRUE_REBIRTH.baseCost * Math.pow(TRUE_REBIRTH.costGrowth, state.trueRebirths));
+}
+function getTrueRebirthCoinMult(){
+  return Math.pow(TRUE_REBIRTH.coinMultPer, state.trueRebirths);
+}
+function getTrueRebirthLuck(){
+  return state.trueRebirths * TRUE_REBIRTH.luckPer;
+}
+function getPetDrawCost(count){
+  const disc = 1 - Math.min(TRUE_REBIRTH.petDrawDiscountCap, state.trueRebirths * TRUE_REBIRTH.petDrawDiscountPer);
+  const base = count === 10 ? PET_DRAW_COST_10 : PET_DRAW_COST_1;
+  return Math.max(1, Math.floor(base * disc));
+}
+function getTotalPetDrawLuck(){
+  return (state.petDrawLuck || 0) + ptree2Lv('P2PL') * 100;
 }
 
 function getTierCost(tier){
@@ -1703,7 +1946,9 @@ function getLuckMult(){
   v += state.rebirths   * 0.15;
   v += state.ascends    * 2;
   v += state.transcends * 20;
-  v += ptreeLv('PR3')   * 2;             /* 永久幸运 */
+  v += ptreeLv('PR3')   * 2;
+  v += ptree2Lv('P2L1') * 20 + ptree2Lv('P2L2') * 50;
+  v += getTrueRebirthLuck();
   for(const b of state.buffs) if(b.luck) v += b.luck;
   const ev = getEvent();
   if(ev.luck) v += ev.luck;
@@ -1725,7 +1970,6 @@ function getCoinMult(){
   v += treeLv('VG')  * 0.75;
   v += treeLv('VG2') * 1.50;
   v += treeLv('VE')  * 3.00;
-  /* 重生乘算（含普通 / 永久强化） */
   v *= 1 + state.rebirths   * (0.75 + ptreeLv('PR1') * 0.20);
   v *= 1 + state.ascends    * (5    + ptreeLv('PR2') * 0.40);
   v *= 1 + state.transcends * (50   + ptreeLv('PR4') * 0.50);
@@ -1734,7 +1978,9 @@ function getCoinMult(){
     if(p) v *= petMult(p);
   }
   v *= (1 + getPetTraits().coin);
-  v *= getPetPermaMult();             /* 宠物倍率永久加成 */
+  v *= getPetPermaMult();
+  v += ptree2Lv('P2C1') * 0.50 + ptree2Lv('P2C2') * 1.00;
+  v *= getTrueRebirthCoinMult();
   for(const b of state.buffs) if(b.coinMult) v *= b.coinMult;
   const ev = getEvent();
   if(ev.coinMult) v *= ev.coinMult;
@@ -1758,12 +2004,14 @@ function getAutoInterval(){
 function getDiceInfo(){
   const ev = getEvent();
   const evMult = ev.diceMult || 1;
-  const pMult = 1 + ptreeLv('PD1') * 0.10 + ptreeLv('PD2') * 0.20;   /* 永久骰子加成 */
+  const pMult = 1 + ptreeLv('PD1') * 0.10 + ptreeLv('PD2') * 0.20;
+  const p2Mult = 1 + ptree2Lv('P2D1') * 0.50;
+  const total = pMult * p2Mult;
   return {
-    gold:    (2.5 + treeLv('D1') * 0.5 + treeLv('D2') * 1.0 + treeLv('D3') * 2.5) * evMult * pMult,
-    diamond: (10  + treeLv('DD2') * 10 + treeLv('DD3') * 25) * evMult * pMult,
-    emerald: (50  + treeLv('DE2') * 50) * evMult * pMult,
-    rainbow: 250 * evMult * pMult
+    gold:    (2.5 + treeLv('D1') * 0.5 + treeLv('D2') * 1.0 + treeLv('D3') * 2.5) * evMult * total,
+    diamond: (10  + treeLv('DD2') * 10 + treeLv('DD3') * 25) * evMult * total,
+    emerald: (50  + treeLv('DE2') * 50) * evMult * total,
+    rainbow: 250 * evMult * total
   };
 }
 function getDiceType(n){
@@ -1784,7 +2032,6 @@ function nextDiceIn(){
 }
 function buildPool(){
   const lm = Math.max(1, getLuckMult());
-  /* K 越小越猛。K=8 时，几百幸运就能爆顶级 */
   const K = 8;
   return RARITIES.map((r, i) => ({
     ref: r,
@@ -1804,6 +2051,12 @@ function getAffixBonus(){
 function getDoubleAffixBonus(){ return treeLv('A3') * 0.015; }
 
 function rollAffixes(){
+  if(state.forceAffix){
+    state.forceAffix = false;
+    const pool = AFFIXES.slice();
+    const sel = pickFrom(pool.map(a => ({ ref:a, w:a.w }))).ref;
+    return [sel];
+  }
   const bonus = getAffixBonus();
   const r = Math.random();
   let count = 0;
@@ -1842,7 +2095,6 @@ function affixMult(affixes){
   if(!affixes || !affixes.length) return 1;
   let m = 1;
   for(const a of affixes) m *= a.mult;
-  /* ⚡ 词条价值线加成（普通树，重生会清） */
   m *= 1 + treeLv('AF1') * 0.05 + treeLv('AF2') * 0.10 + treeLv('AF3') * 0.20;
   return m;
 }
@@ -1937,11 +2189,11 @@ const canvas = $('#fx');
 const ctx = canvas.getContext('2d');
 let W = 0, H = 0;
 const particles = [];
+const MAX_PARTICLES = 350;
 function resize(){ W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
 window.addEventListener('resize', resize);
 resize();
 function burst(color, count, cx, cy){
-  /* 已达上限：直接丢弃，保护性能 */
   const room = MAX_PARTICLES - particles.length;
   if(room <= 0) return;
   if(count > room) count = room;
@@ -1966,7 +2218,6 @@ function burst(color, count, cx, cy){
     });
   }
 }
-const MAX_PARTICLES = 350;
 
 function fxLoop(){
   ctx.clearRect(0, 0, W, H);
@@ -1974,7 +2225,6 @@ function fxLoop(){
 
   ctx.globalCompositeOperation = 'lighter';
 
-  /* 更新 + 按颜色分组 */
   const groups = {};
   for(let i = particles.length - 1; i >= 0; i--){
     const p = particles[i];
@@ -1987,7 +2237,6 @@ function fxLoop(){
     g.push(p);
   }
 
-  /* 每个颜色一批，用 fillRect 代替 arc */
   for(const color in groups){
     const arr = groups[color];
     ctx.fillStyle = color;
@@ -2098,7 +2347,8 @@ function updateHUD(){
   $('#hGems').textContent  = fmt(state.gems);
   $('#hLuck').textContent  = 'x' + getLuckMult().toFixed(2);
   $('#hMult').textContent  = 'x' + fmt(getCoinMult());
-  $('#hRb').textContent    = state.rebirths + '·' + state.ascends + '·' + state.transcends;
+  $('#hRb').textContent    = state.rebirths + '·' + state.ascends + '·' + state.transcends +
+                             (state.trueRebirths ? '·' + state.trueRebirths : '');
   $('#hRolls').textContent = fmt(state.rolls);
   checkAchievements();
   markDirty();
@@ -2202,7 +2452,7 @@ function renderHistUI(){
 
 const BASE_NODE_W = 98, BASE_NODE_H = 76;
 const BASE_GAP_X = 118, BASE_GAP_Y = 100, BASE_PAD = 40;
-const TREE_MIN = 0.30, TREE_MAX = 2.0;
+const TREE_MIN = 0.22, TREE_MAX = 2.0;
 
 const treeView = { x: 0, y: 0, scale: 1 };
 let treeViewport = null, treeCanvas = null, treeZoomLvlEl = null, tipEl = null;
@@ -2239,7 +2489,6 @@ function getNodeEffects(n){
     case 'DD2': add(10,   '钻石骰子倍率 +{v}'); break;
     case 'DD3': add(25,   '钻石骰子倍率 +{v}'); break;
     case 'DE2': add(50,   '翡翠骰子倍率 +{v}'); break;
-    /* 新增 */
     case 'M1':  add(0.5,  '多重抽奖 +{v}%'); break;
     case 'M2':  add(0.8,  '多重抽奖 +{v}%'); break;
     case 'M3':  add(1.2,  '多重抽奖 +{v}%'); break;
@@ -2261,6 +2510,14 @@ function getNodeEffects(n){
     case 'AF1': add(5,    '词条价值 +{v}%'); break;
     case 'AF2': add(10,   '词条价值 +{v}%'); break;
     case 'AF3': add(20,   '词条价值 +{v}%'); break;
+    case 'P2C1': add(50,   '金币倍率 +{v}%'); break;
+    case 'P2C2': add(100,  '金币倍率 +{v}%'); break;
+    case 'P2L1': add(20,   '幸运 +{v}'); break;
+    case 'P2L2': add(50,   '幸运 +{v}'); break;
+    case 'P2P1': add(150,  '宠物倍率 +{v}%'); break;
+    case 'P2D1': add(50,   '骰子倍率 +{v}%'); break;
+    case 'P2M1': add(8,    '多重概率 +{v}%'); break;
+    case 'P2PL': add(100,  '宠物抽奖幸运 +{v}'); break;
   }
   return lines;
 }
@@ -2274,11 +2531,14 @@ function showNodeTip(node, clientX, clientY){
   const unlocked = nodeIsUnlocked(n);
   const maxed = lv >= n.max;
   const lvClass = maxed ? ' max' : '';
-  const lvStr = (n.id === 'root' || n.id === 'PROOT') ? '起点'
+  const lvStr = (n.id === 'root' || n.id === 'PROOT' || n.id === 'P2ROOT') ? '起点'
               : (n.max === 1 ? (lv >= 1 ? '已解锁' : '未解锁') : (lv + ' / ' + n.max));
+  const tag = n.perma2 ? ' <span style="color:#c85aff;font-size:11px">二阶</span>'
+            : n.perma  ? ' <span style="color:#ffc93c;font-size:11px">永久</span>'
+            : '';
   let html = '<div class="nt-head">' +
     '<span class="nt-emoji">' + n.emoji + '</span>' +
-    '<span class="nt-name">' + esc(n.name) + (n.perma ? ' <span style="color:#ffc93c;font-size:11px">永久</span>' : '') + '</span>' +
+    '<span class="nt-name">' + esc(n.name) + tag + '</span>' +
     '<span class="nt-lv' + lvClass + '">' + lvStr + '</span></div>';
   html += '<div class="nt-desc">' + esc(n.desc) + '</div>';
   if(lv > 0){
@@ -2290,15 +2550,15 @@ function showNodeTip(node, clientX, clientY){
       }
     }
   }
-  if(n.id === 'root' || n.id === 'PROOT'){}
+  if(n.id === 'root' || n.id === 'PROOT' || n.id === 'P2ROOT'){}
   else if(maxed){
     html += '<div class="nt-row"><span class="lb">状态</span><span class="vl">已满级</span></div>';
   } else if(!unlocked){
     const missing = n.req.filter(r => {
-      if(r === 'root' || r === 'PROOT') return false;
+      if(r === 'root' || r === 'PROOT' || r === 'P2ROOT') return false;
       const ref = ALL_NODES.find(x => x.id === r);
       if(!ref) return false;
-      return (ref.perma ? ptreeLv(r) : treeLv(r)) < 1;
+      return nodeLv(ref) < 1;
     }).map(r => { const p = ALL_NODES.find(x => x.id === r); return p ? p.name : r; }).join('、');
     html += '<div class="nt-row"><span class="lb">🔒 需要先解锁</span><span class="vl red">' + esc(missing) + '</span></div>';
   } else {
@@ -2306,7 +2566,7 @@ function showNodeTip(node, clientX, clientY){
     const can = state.coins >= cost;
     html += '<div class="nt-row"><span class="lb">下一级价格</span><span class="vl ' + (can ? '' : 'red') + '">💰 ' + fmt(cost) + '</span></div>';
   }
-  html += '<div class="nt-hint">' + (n.perma ? '永久节点 · 重生不清空' : '点击节点即可升级') + '</div>';
+  html += '<div class="nt-hint">' + (n.perma2 ? '二阶永久节点 · 重生不清空' : (n.perma ? '永久节点 · 重生不清空' : '点击节点即可升级')) + '</div>';
   tipEl.innerHTML = html;
   tipEl.classList.add('on');
   const tw = tipEl.offsetWidth, th = tipEl.offsetHeight;
@@ -2322,13 +2582,14 @@ function hideNodeTip(){ if(tipEl) tipEl.classList.remove('on'); }
 
 function renderTreePage(){
   $('#pageTree').innerHTML = `
-    <div class="page-title"><h2>升级路线</h2><p>普通树 · 永久树（金色边框）· 拖拽移动 / 滚轮缩放</p></div>
+    <div class="page-title"><h2>升级路线</h2><p>普通树 · 永久树（金）· 二阶永久树（紫）· 拖拽 / 滚轮缩放</p></div>
     <div class="tree-toolbar">
       <span><i style="background:rgba(90,170,255,.85)"></i>可升级</span>
       <span><i style="background:rgba(90,230,160,.7)"></i>已升级</span>
       <span><i style="background:rgba(255,210,80,.9)"></i>已满级</span>
       <span><i style="background:rgba(255,140,140,.85)"></i>保底</span>
       <span><i style="background:rgba(255,215,110,.95)"></i>永久树</span>
+      <span><i style="background:rgba(200,90,255,.85)"></i>二阶永久</span>
     </div>
     <div class="tree-viewport" id="treeViewport">
       <div class="tree-canvas" id="treeCanvas"></div>
@@ -2402,19 +2663,21 @@ function renderTreeContent(){
     const nx = n.col * gapX + pad;
     const ny = n.row * gapY + pad;
     let cls = 'tnode';
-    if(n.id === 'root' || n.id === 'PROOT') cls += ' maxed';
+    if(n.id === 'root' || n.id === 'PROOT' || n.id === 'P2ROOT') cls += ' maxed';
     else if(lv >= n.max) cls += ' maxed';
     else if(!unlocked) cls += ' locked';
     else if(lv > 0) cls += ' owned';
     else cls += ' avail';
     if(n.id.indexOf('PY') === 0) cls += ' pity-node';
     if(n.perma) cls += ' perma-node';
+    if(n.perma2) cls += ' perma2-node';
     let foot;
     if(n.id === 'root') foot = '起点';
     else if(n.id === 'PROOT') foot = '永久';
+    else if(n.id === 'P2ROOT') foot = '二阶';
     else if(lv >= n.max) foot = 'MAX';
     else foot = '💰' + fmt(nodeCost(n));
-    const lvTxt = (n.id === 'root' || n.id === 'PROOT' || n.max === 1) ? '' : ('Lv.' + lv + '/' + n.max + ' · ');
+    const lvTxt = (n.id === 'root' || n.id === 'PROOT' || n.id === 'P2ROOT' || n.max === 1) ? '' : ('Lv.' + lv + '/' + n.max + ' · ');
     html += '<div class="' + cls + '" data-node="' + n.id + '"' +
               ' style="left:' + nx + 'px;top:' + ny + 'px;' +
                      'width:' + nodeW + 'px;height:' + nodeH + 'px;' +
@@ -2564,75 +2827,53 @@ function bindTreeControls(){
   window.addEventListener('resize', () => { if(state.page === 'tree') resetTreeView(); });
 }
 
+/* ═══════════ 商城 ═══════════ */
 function renderShopPage(){
-  const st = state.shopTab;
-  let h = '<div class="page-title"><h2>商城</h2><p>购买消耗品 · 充值礼包</p></div>';
-  h += '<div class="subtabs">' +
-    '<div class="subtab' + (st==='coins'?' on':'')   + '" data-sub="coins">💰 金币</div>' +
-    '<div class="subtab' + (st==='gems'?' on':'')    + '" data-sub="gems">💎 钻石</div>' +
-    '<div class="subtab' + (st==='packs'?' on':'')   + '" data-sub="packs">🎁 充值</div>' +
-    '<div class="subtab' + (st==='potions'?' on':'') + '" data-sub="potions">🧪 药水</div>' +
-  '</div>';
-  if(st === 'coins'){
-    h += '<div class="shop-grid">';
-    for(const it of SHOP_COINS){
-      const can = state.coins >= it.price;
-      h += '<div class="shop-item"><div class="si-emoji">' + it.emoji + '</div>' +
-        '<div class="si-name">' + esc(it.name) + '</div>' +
-        '<div class="si-desc">' + esc(it.desc) + '</div>' +
-        '<button class="si-price ' + (can ? 'can-gold' : '') + '" data-shop-coins="' + it.id + '"' +
-          (can ? '' : ' disabled') + '>💰 ' + fmt(it.price) + '</button></div>';
-    }
-    h += '</div>';
+  refreshShop();
+
+  let h = '<div class="page-title"><h2>商城</h2><p>金币 + 钻石 · 每日刷新 · 限量供应</p></div>';
+  h += '<div class="merchant"><div class="m-emoji">🛒</div>' +
+    '<div>每件商品都需要 <b>金币 + 钻石</b> 双重支付。<br>' +
+    '两种货币都会随倍率浮动，每天 <b>0 点刷新</b>商品。</div></div>';
+
+  h += '<div class="shop-grid">';
+  for(const id of state.shopSlots){
+    const item = SHOP_POOL.find(x => x.id === id);
+    if(!item) continue;
+    const bought = (state.shopBought && state.shopBought[id]) || 0;
+    const soldOut = bought >= item.limit;
+    const price = getShopPrice(item.basePrice);
+    const gemPrice = getShopGemPrice(item.gemCost || 0);
+    const can = !soldOut && state.coins >= price && state.gems >= gemPrice;
+
+    h += '<div class="shop-item">' +
+      '<div class="si-emoji">' + item.emoji + '</div>' +
+      '<div class="si-name">' + esc(item.name) + '</div>' +
+      '<div class="si-desc">' + esc(item.desc) + '</div>' +
+      '<div style="font-size:10px;color:#7c89a5;font-weight:800;letter-spacing:.05em">剩 ' +
+        (item.limit - bought) + ' / ' + item.limit + '</div>' +
+      '<button class="si-price ' + (can ? 'can-pack' : '') + '" data-buy="' + item.id + '"' +
+        (can ? '' : ' disabled') + '>' +
+        (soldOut
+          ? '今日售罄'
+          : '💰 ' + fmt(price) + ' · 💎 ' + fmt(gemPrice)) +
+      '</button>' +
+    '</div>';
   }
-  if(st === 'gems'){
-    h += '<div class="shop-grid">';
-    for(const it of SHOP_GEMS){
-      const can = state.gems >= it.price;
-      h += '<div class="shop-item"><div class="si-emoji">' + it.emoji + '</div>' +
-        '<div class="si-name">' + esc(it.name) + '</div>' +
-        '<div class="si-desc">' + esc(it.desc) + '</div>' +
-        '<button class="si-price ' + (can ? 'can-gem' : '') + '" data-shop-gems="' + it.id + '"' +
-          (can ? '' : ' disabled') + '>💎 ' + fmt(it.price) + '</button></div>';
-    }
-    h += '</div>';
-  }
-  if(st === 'packs'){
-    const locked = !state.rechargeUnlocked;
-    h += '<div class="merchant" style="background:linear-gradient(165deg,rgba(255,80,180,.12),rgba(255,150,80,.05));border-color:rgba(255,120,180,.3);color:#ffc8e8">' +
-      '<div class="m-emoji">' + (locked ? '🔒' : '🔓') + '</div>' +
-      '<div>' + (locked ? '充值系统已加密 · 首次充值需要输入密码验证'
-        : '充值系统已解锁 · <b>点击礼包立即到账</b>') + '</div></div>';
-    h += '<div class="shop-grid">';
-    for(const pk of SHOP_PACKS){
-      h += '<div class="shop-item"><div class="si-emoji">' + pk.emoji + '</div>' +
-        '<div class="si-name">' + esc(pk.name) + '</div>' +
-        '<div class="si-desc">' + esc(pk.desc) + '</div>' +
-        '<button class="si-price can-pack" data-pack="' + pk.id + '">' + pk.tag + '</button></div>';
-    }
-    h += '</div>';
-  }
-  if(st === 'potions'){
-    if(!state.potionStock.length) state.potionStock = genPotionStock();
-    h += '<div class="merchant"><div class="m-emoji">🧙</div>' +
-      '<div>神秘的药水商人 · 每次购买后货架会补货，货品随机生成</div></div>';
-    h += '<div class="shop-grid">';
-    for(const it of state.potionStock){
-      const t = it.tpl;
-      const can = state.coins >= it.price;
-      const desc = t.gems ? ('立即获得 💎' + t.gems)
-        : (t.luck ? ('幸运 +' + t.luck + '（' + t.dur + '秒）')
-        : (t.coinMult ? ('金币倍率 x' + t.coinMult + '（' + t.dur + '秒）')
-        : (t.affixBonus ? ('词条出现率 +' + Math.round(t.affixBonus * 100) + '%（' + t.dur + '秒）')
-        : ('自动间隔 x' + t.speedMult + '（' + t.dur + '秒）'))));
-      h += '<div class="shop-item"><div class="si-emoji">' + t.emoji + '</div>' +
-        '<div class="si-name">' + esc(t.name) + '</div>' +
-        '<div class="si-desc">' + esc(desc) + '</div>' +
-        '<button class="si-price ' + (can ? 'can-gold' : '') + '" data-potion="' + it.uid + '"' +
-          (can ? '' : ' disabled') + '>💰 ' + fmt(it.price) + '</button></div>';
-    }
-    h += '</div>';
-  }
+  h += '</div>';
+
+  h += '<div class="card" style="max-width:1100px;margin:16px auto 0"><div class="card-body" style="font-size:11.5px;color:#7c89a5;line-height:1.8">' +
+    '<b style="color:#2ee6ff">💡 说明</b><br>' +
+    '· 金币部分 = 基础价 ×100 × 金币倍率<sup>0.4</sup><br>' +
+    '· 钻石部分 = 基础价 × 金币倍率<sup>0.2</sup><br>' +
+    '· 「钻石放大器」净赚 40 钻石，每日限购 3 次<br>' +
+    '· 所有商品每天 0 点刷新，售罄后次日恢复' +
+  '</div></div>';
+
+  const reset = state.shopDate || '—';
+  h += '<div style="text-align:center;margin-top:16px;font-size:11px;color:#5a6580;letter-spacing:.06em">' +
+    '🗓️ 刷新日期：' + reset + ' · 每天 0 点自动刷新</div>';
+
   $('#pageShop').innerHTML = h;
 }
 
@@ -2695,21 +2936,31 @@ function renderPetPage(){
 }
 
 function renderPetDraw(){
+  const c1 = getPetDrawCost(1);
+  const c10 = getPetDrawCost(10);
+  const luck = getTotalPetDrawLuck();
   let h = '<div class="card"><div class="card-head">🎰 抽取宠物</div>';
   h += '<div class="card-body">';
   h += '<div class="merchant"><div class="m-emoji">✨</div>' +
     '<div>花费钻石抽取宠物。宠物种类决定 <b>最低星级</b> 和 <b>特质</b>，稀有种类更强。<br>收集 3 只 <b>相同种类、相同品质、相同星级</b> 且 <b>非闪耀</b> 的宠物，即可合成 1 只 <b>闪耀</b> 宠物。</div></div>';
 
+  if(state.trueRebirths > 0 || luck > 0){
+    h += '<div style="margin-bottom:12px;padding:10px 12px;border-radius:12px;background:linear-gradient(165deg,rgba(200,90,255,.15),rgba(200,90,255,.03));border:1px solid rgba(200,90,255,.4);font-size:12px;color:#e8c8ff;line-height:1.7">' +
+      '🍀 <b>宠物抽奖幸运：' + fmt(luck) + '</b>（提升宠物品质概率）<br>' +
+      (state.trueRebirths > 0 ? '💸 <b>真重生折扣：-' + Math.round(Math.min(TRUE_REBIRTH.petDrawDiscountCap, state.trueRebirths * TRUE_REBIRTH.petDrawDiscountPer) * 100) + '%</b>（' + state.trueRebirths + ' 次真重生）' : '') +
+    '</div>';
+  }
+
   h += '<div class="pet-draw-grid">' +
     '<button class="pet-draw-btn" data-pet-draw="1">' +
       '<div class="pdb-emoji">🎁</div>' +
       '<div class="pdb-name">单抽</div>' +
-      '<div class="pdb-cost">💎 <b>' + PET_DRAW_COST_1 + '</b></div>' +
+      '<div class="pdb-cost">💎 <b>' + c1 + '</b>' + (c1 < PET_DRAW_COST_1 ? ' <span style="color:#ff9f43;text-decoration:line-through;opacity:.7;font-size:10px">' + PET_DRAW_COST_1 + '</span>' : '') + '</div>' +
     '</button>' +
     '<button class="pet-draw-btn big" data-pet-draw="10">' +
       '<div class="pdb-emoji">🌟</div>' +
       '<div class="pdb-name">十连抽</div>' +
-      '<div class="pdb-cost">💎 <b>' + fmt(PET_DRAW_COST_10) + '</b></div>' +
+      '<div class="pdb-cost">💎 <b>' + fmt(c10) + '</b>' + (c10 < PET_DRAW_COST_10 ? ' <span style="color:#ff9f43;text-decoration:line-through;opacity:.7;font-size:10px">' + fmt(PET_DRAW_COST_10) + '</span>' : '') + '</div>' +
     '</button>' +
   '</div>';
 
@@ -2720,10 +2971,19 @@ function renderPetDraw(){
 
   h += '<div class="card"><div class="card-head">📊 抽取概率</div><div class="card-body">';
   const totalW = Object.values(PET_QUALITY_WEIGHTS).reduce((a,b) => a+b, 0);
+  const luckMul = 1 + luck / 100;
   let probHTML = '';
-  for(const q of PET_QUALITIES){
-    const w = PET_QUALITY_WEIGHTS[q.id] || 0;
-    const pct = w / totalW * 100;
+  const keys = Object.keys(PET_QUALITY_WEIGHTS);
+  let baseSum = 0;
+  const weighted = keys.map((k, i) => {
+    const w = PET_QUALITY_WEIGHTS[k] * Math.pow(luckMul, i);
+    baseSum += w;
+    return { k, w };
+  });
+  for(let i = 0; i < PET_QUALITIES.length; i++){
+    const q = PET_QUALITIES[i];
+    const it = weighted.find(x => x.k === q.id);
+    const pct = it ? it.w / baseSum * 100 : 0;
     probHTML += '<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05)">' +
       '<span style="color:' + q.color + ';font-weight:900">' + q.name + '</span>' +
       '<span style="color:#8b98ad;font-size:11.5px">' + pct.toFixed(2) + '%</span>' +
@@ -2804,10 +3064,10 @@ function renderPetBag(){
 
   h += '<div class="set-info" style="margin-top:10px;font-size:11.5px">' +
     '<b>💡 操作说明：</b><br>' +
-    '· 点击宠物卡片：选中 / 取消选择（用于闪耀合成）<br>' +
+    '· 点击宠物卡片：选中 / 取消选择（用于闪耀合成、分解）<br>' +
     '· 点击卡片下方按钮：装备 / 卸下<br>' +
     '· 选择 3 只 <b>相同种类、相同品质、相同星级</b> 且 <b>非闪耀</b> 的宠物，可合成 1 只 <b>✨ 闪耀</b> 宠物<br>' +
-    '· 闪耀宠物基础倍率 ×3，特质 ×2，且不能再参与合成' +
+    '· 选中宠物后点「分解」按钮可兑换金币（装备中的不能分解）' +
   '</div>';
 
   h += '</div></div>';
@@ -3159,7 +3419,7 @@ function renderTaskPage(){
 }
 
 function renderRebPage(){
-  let h = '<div class="page-title"><h2>重生</h2><p>三重轮回 · 永久树保留</p></div>';
+  let h = '<div class="page-title"><h2>重生</h2><p>三重轮回 · 真重生</p></div>';
   h += '<div class="rebirth-wrap">';
 
   for(const tier of REBIRTH_TIERS){
@@ -3194,16 +3454,44 @@ function renderRebPage(){
     h += '</div>';
   }
 
+  /* ═══ 真重生 ═══ */
+  const trCost = getTrueRebirthCost();
+  const trCan = state.coins >= trCost && state.transcends >= TRUE_REBIRTH.reqTranscends;
+  h += '<div class="rb-tier" style="--rc1:rgba(200,80,255,.14);--rc2:rgba(200,80,255,.3);--rc3:rgba(200,80,255,.22);--rc4:#c85aff;--rc5:rgba(200,80,255,.6);--rc6:#e89bff;--rc7:#8a00c8">' +
+    '<div class="rbt-head">' +
+      '<div class="rbt-emoji">☯️</div>' +
+      '<div class="rbt-name" style="color:#c85aff">真重生 · 逆转乾坤</div>' +
+      '<div class="rbt-count">' + state.trueRebirths + '</div>' +
+    '</div>' +
+    '<div class="rbt-desc">' +
+      '重置：<b>金币 · 普通技能树 · 三种重生次数 · 全部宠物与装备</b><br>' +
+      '保留：<b>图鉴 · 永久树 · 二阶永久树 · 成就 · 宠物抽奖幸运</b><br>' +
+      '获得：金币倍率 <b>×' + TRUE_REBIRTH.coinMultPer + '</b>（累积）· 幸运 <b>+' + TRUE_REBIRTH.luckPer + '</b> · ' +
+      '宠物抽奖幸运 <b>+' + TRUE_REBIRTH.petLuckPer + '</b> · 宠物抽奖折扣 <b>-' +
+      Math.round(TRUE_REBIRTH.petDrawDiscountPer * 100) + '%</b>（上限 ' +
+      Math.round(TRUE_REBIRTH.petDrawDiscountCap * 100) + '%）' +
+    '</div>' +
+    (state.transcends < TRUE_REBIRTH.reqTranscends
+      ? '<div class="rbt-req">🔒 需要至少 ' + TRUE_REBIRTH.reqTranscends + ' 次超级重生（当前 ' + state.transcends + '）</div>'
+      : '<div class="rbt-req ok">✓ 已满足条件</div>') +
+    '<div class="rbt-cost">需要 💰 ' + fmt(trCost) +
+      '<span class="have">（当前 ' + fmt(state.coins) + '）</span></div>' +
+    '<button class="rbt-btn" data-truerebirth="1"' + (trCan ? '' : ' disabled') + '>执行 真重生</button>' +
+    '</div>';
+
   const totalCoinMult = (1 + state.rebirths * (0.75 + ptreeLv('PR1') * 0.20))
                       * (1 + state.ascends  * (5    + ptreeLv('PR2') * 0.40))
                       * (1 + state.transcends * (50 + ptreeLv('PR4') * 0.50));
   const totalLuck = state.rebirths * 0.15 + state.ascends * 2 + state.transcends * 20 + ptreeLv('PR3') * 2;
   h += '<div class="card"><div class="card-body" style="font-size:12.5px;color:#9aa8c4;line-height:1.9">' +
     '<b style="color:#ffd86b">重生总加成</b><br>' +
-    '金币倍率：<b style="color:#00ff88">x' + fmt(totalCoinMult) + '</b><br>' +
-    '幸运加成：<b style="color:#00ff88">+' + totalLuck.toFixed(2) + '</b><br><br>' +
-    '<span style="color:#ffc93c">💎 永久树节点不受重生影响，会完整保留。</span><br>' +
-    '<span style="color:#7c89a5">普通重生会清空金币与普通技能树等级，但保留宠物、装备、图鉴收集和所有重生次数。</span>' +
+    '金币倍率：<b style="color:#00ff88">x' + fmt(totalCoinMult * getTrueRebirthCoinMult()) + '</b>' +
+    (state.trueRebirths ? '<span style="color:#c85aff"> （含真重生 ×' + fmt(getTrueRebirthCoinMult()) + '）</span>' : '') + '<br>' +
+    '幸运加成：<b style="color:#00ff88">+' + (totalLuck + getTrueRebirthLuck()).toFixed(2) + '</b><br>' +
+    '宠物抽奖幸运：<b style="color:#00ff88">' + fmt(getTotalPetDrawLuck()) + '</b><br><br>' +
+    '<span style="color:#ffc93c">💎 永久树 / 🌌 二阶永久树节点不受任何重生影响。</span><br>' +
+    '<span style="color:#7c89a5">普通重生会清空金币与普通技能树等级，但保留宠物、装备、图鉴收集和所有重生次数。</span><br>' +
+    '<span style="color:#c85aff">☯️ 真重生会清空金币、普通技能树、三种重生次数、宠物与装备，但保留图鉴、永久树、成就与宠物抽奖幸运。</span>' +
   '</div></div>';
 
   h += '</div>';
@@ -3229,17 +3517,22 @@ function renderSetPage(){
   const achCount = Object.keys(state.unlockedAch).length;
   let ptreeSum = 0;
   for(const k in state.ptree) if(k !== 'PROOT') ptreeSum += state.ptree[k];
+  let ptree2Sum = 0;
+  for(const k in state.ptree2) if(k !== 'P2ROOT') ptree2Sum += state.ptree2[k];
   h += '<div class="card"><div class="card-head">📊 存档信息</div><div class="card-body">';
   h += '<div class="set-stat-grid">' +
     '<div class="set-stat"><div class="ss-lb">总抽数</div><div class="ss-vl">' + fmt(state.rolls) + '</div></div>' +
     '<div class="set-stat"><div class="ss-lb">重生</div><div class="ss-vl">' + state.rebirths + '</div></div>' +
     '<div class="set-stat"><div class="ss-lb">进阶重生</div><div class="ss-vl">' + state.ascends + '</div></div>' +
     '<div class="set-stat"><div class="ss-lb">超级重生</div><div class="ss-vl">' + state.transcends + '</div></div>' +
+    '<div class="set-stat"><div class="ss-lb">真重生</div><div class="ss-vl">' + state.trueRebirths + '</div></div>' +
     '<div class="set-stat"><div class="ss-lb">成就</div><div class="ss-vl">' + achCount + '/' + ACHIEVEMENTS.length + '</div></div>' +
     '<div class="set-stat"><div class="ss-lb">金币倍率</div><div class="ss-vl">x' + fmt(getCoinMult()) + '</div></div>' +
     '<div class="set-stat"><div class="ss-lb">幸运倍率</div><div class="ss-vl">x' + getLuckMult().toFixed(2) + '</div></div>' +
     '<div class="set-stat"><div class="ss-lb">宠物数量</div><div class="ss-vl">' + state.petInv.length + '</div></div>' +
     '<div class="set-stat"><div class="ss-lb">永久树等级</div><div class="ss-vl">' + ptreeSum + '</div></div>' +
+    '<div class="set-stat"><div class="ss-lb">二阶树等级</div><div class="ss-vl">' + ptree2Sum + '</div></div>' +
+    '<div class="set-stat"><div class="ss-lb">宠物抽奖幸运</div><div class="ss-vl">' + fmt(getTotalPetDrawLuck()) + '</div></div>' +
   '</div></div></div>';
 
   h += '<div class="card"><div class="card-head">⚙️ 偏好设置</div><div class="card-body">';
@@ -3366,7 +3659,6 @@ function doRoll(){
     if(el2) el2.classList.remove('rolling');
     resolveRoll(rollFull());
 
-    /* 🎰 多重抽奖：按概率追抽，最多追 5 次 */
     const chance = getMultiRollChance();
     let extra = 0;
     while(extra < 5 && Math.random() < chance) extra++;
@@ -3492,7 +3784,8 @@ requestAnimationFrame(autoLoop);
 
 function buyNode(id){
   const n = ALL_NODES.find(x => x.id === id);
-  if(!n || n.id === 'root' || n.id === 'PROOT') return;
+  if(!n || n.id === 'root' || n.id === 'PROOT' || n.id === 'P2ROOT') return;
+  if(n.perma2 && state.trueRebirths < 1){ toast('🌌 需要完成真重生才能升级二阶永久树'); beep(220, .12, 'square', .04); return; }
   const lv = nodeLv(n);
   if(lv >= n.max) return;
   if(!nodeIsUnlocked(n)){ toast('前置节点未解锁'); beep(200, .12, 'square', .04); return; }
@@ -3500,8 +3793,7 @@ function buyNode(id){
   if(state.coins < cost){ toast('金币不足，需要 💰' + fmt(cost)); beep(200, .12, 'square', .04); return; }
 
   state.coins -= cost;
-  if(n.perma) state.ptree[n.id] = lv + 1;
-  else        state.tree[n.id]  = lv + 1;
+  setNodeLv(n, lv + 1);
 
   beep(880, .1, 'square', .05);
   if(nodeLv(n) >= n.max) setTimeout(() => beep(1320, .2, 'sine', .05), 90);
@@ -3515,7 +3807,7 @@ function buyNode(id){
 }
 
 function drawPets(count){
-  const cost = count === 10 ? PET_DRAW_COST_10 : PET_DRAW_COST_1;
+  const cost = getPetDrawCost(count);
   if(state.gems < cost){
     toast('钻石不足，需要 💎' + fmt(cost));
     beep(200, .12, 'square', .04);
@@ -3563,6 +3855,18 @@ function drawPets(count){
   checkAchievements();
 }
 
+/* ═══════════ 宠物抽奖品质（受宠物抽奖幸运影响） ═══════════ */
+function rollPetQuality(){
+  const luck = getTotalPetDrawLuck();
+  const keys = Object.keys(PET_QUALITY_WEIGHTS);
+  const list = keys.map((k, i) => {
+    const base = PET_QUALITY_WEIGHTS[k];
+    const boost = Math.pow(1 + luck / 100, i);
+    return { ref: k, w: base * boost };
+  });
+  return pickFrom(list).ref;
+}
+
 function tryMergePets(){
   const sel = state.petSelection.map(uid => state.petInv.find(p => p.uid === uid)).filter(Boolean);
   if(sel.length !== 3){
@@ -3601,7 +3905,7 @@ function tryMergePets(){
   });
 }
 
-/* 分解系数：宠物倍率 × 金币倍率 × 这个数 = 分解获得金币 */
+/* 分解系数 */
 const DECOMPOSE_RATE = 10000;
 
 function decomposePets(){
@@ -3758,7 +4062,7 @@ function doRebirth(tierId){
   openConfirm(tier.emoji, '确认' + tier.name,
     '将清空金币与普通技能树等级（永久树保留），获得永久加成。此操作不可撤销。', () => {
     state.coins = 0;
-    state.tree = { root:1 };   /* 只清普通树，state.ptree 不动 */
+    state.tree = { root:1 };
     if(tier.id === 'rebirth') state.rebirths++;
     else if(tier.id === 'ascend') state.ascends++;
     else if(tier.id === 'transcend') state.transcends++;
@@ -3776,6 +4080,53 @@ function doRebirth(tierId){
     updateHUD(); renderRebPage();
     markDirty(); saveGame();
   });
+}
+
+/* ═══════════ 真重生 ═══════════ */
+function doTrueRebirth(){
+  const cost = getTrueRebirthCost();
+  if(state.transcends < TRUE_REBIRTH.reqTranscends){
+    toast('❌ 需要至少 ' + TRUE_REBIRTH.reqTranscends + ' 次超级重生');
+    beep(220, .12, 'square', .04);
+    return;
+  }
+  if(state.coins < cost){ toast('金币不足，需要 💰' + fmt(cost)); beep(200, .12, 'square', .04); return; }
+
+  openConfirm('☯️', '真重生',
+    '⚠️ 将重置：金币、普通技能树、三种重生次数（重生/进阶/超级）、全部宠物与装备。\n' +
+    '✅ 保留：图鉴、永久树、二阶永久树、成就、宠物抽奖幸运。\n' +
+    '🎁 获得：金币倍率 ×' + TRUE_REBIRTH.coinMultPer + '（累积）、幸运 +' + TRUE_REBIRTH.luckPer +
+    '、宠物抽奖幸运 +' + TRUE_REBIRTH.petLuckPer + '、宠物抽奖折扣 -15%。\n\n' +
+    '确定执行第 ' + (state.trueRebirths + 1) + ' 次真重生吗？',
+    () => {
+      state.coins = 0;
+      state.tree = { root:1 };
+      state.rebirths = 0;
+      state.ascends = 0;
+      state.transcends = 0;
+      state.petInv = [];
+      state.petEquipped = [];
+      state.petSelection = [];
+      state.petLevelupTarget = null;
+      state.petLevelupMaterials = [];
+      state.trueRebirths++;
+      state.petDrawLuck += TRUE_REBIRTH.petLuckPer;
+
+      const sounds = [300, 500, 800, 1200, 1800, 2400, 3000];
+      sounds.forEach((f, i) => setTimeout(() => beep(f, .35, 'sine', .07), i * 130));
+      burst('#ff00e6', 130);
+      burst('#ffffff', 100);
+      burst('#00ffc8', 80);
+      shake(11);
+
+      toast('☯️ 逆转乾坤！完成第 ' + state.trueRebirths + ' 次真重生');
+      setTimeout(() => toast('🐾 宠物抽奖幸运 +' + TRUE_REBIRTH.petLuckPer + ' · 当前 ' + fmt(state.petDrawLuck)), 1800);
+
+      updateHUD();
+      renderRebPage();
+      checkAchievements();
+      markDirty(); saveGame();
+    });
 }
 
 let overlayMode = null;
@@ -3903,6 +4254,7 @@ document.addEventListener('click', e => {
       updateHUD(); renderShopPage(); return;
     }
     if(el.dataset.potion){ buyPotion(el.dataset.potion); return; }
+    if(el.dataset.buy){ buyShopItem(el.dataset.buy); return; }
     if(el.dataset.petDraw){ drawPets(parseInt(el.dataset.petDraw, 10)); return; }
     if(el.dataset.petMerge){ tryMergePets(); return; }
     if(el.dataset.petDecompose){ decomposePets(); return; }
@@ -3944,6 +4296,7 @@ document.addEventListener('click', e => {
       saveDaily(); updateHUD(); renderTaskPage(); return;
     }
     if(el.dataset.rebirth){ doRebirth(el.dataset.rebirth); return; }
+    if(el.dataset.truerebirth){ doTrueRebirth(); return; }
     if(el.dataset.eventRoll){
       if(state.gems < 500){ toast('钻石不足'); return; }
       state.gems -= 500;
@@ -4044,6 +4397,7 @@ if(!state.event || state.event === 'none'){
   if(!state.eventUntil || state.eventUntil < Date.now()) state.eventUntil = Date.now() + 60 * 1000;
 }
 buildNav();
+refreshShop();
 updateHUD();
 renderPage();
 if(saveLoaded) setTimeout(() => toast('💾 已加载本地存档'), 300);
@@ -4095,17 +4449,13 @@ window.symrng = {
 
 /* ══════════════════════════════════════════════════════════════
    🛠️  沙杨马 RNG · 可视化后台面板
-   ──────────────────────────────────────────────────────────────
    打开：控制台输入  symrng.admin()   或按  L + B + S
-   关闭：点右上角 ✕   或按  Esc
    ══════════════════════════════════════════════════════════════ */
 (function(){
 'use strict';
 
-/* 防止重复注入 */
 if(window.symrng && window.symrng.admin) return;
 
-/* ═════════ 样式 ═════════ */
 const CSS = `
 #saRoot{position:fixed;inset:0;z-index:99999;display:none;padding:14px;overflow:auto;
   background:rgba(3,6,14,.85);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);}
@@ -4185,10 +4535,9 @@ const CSS = `
   #saRoot .sa-lb{min-width:100%;}
 }`;
 
-/* ═════════ 构建面板 HTML ═════════ */
 function build(){
   const treeOpts = ALL_NODES.map(n =>
-    '<option value="' + n.id + '">' + (n.perma ? '💎 ' : '') + n.id + ' · ' + esc(n.name) + '</option>').join('');
+    '<option value="' + n.id + '">' + (n.perma2 ? '🌌 ' : n.perma ? '💎 ' : '') + n.id + ' · ' + esc(n.name) + '</option>').join('');
   const spOpts = PET_SPECIES.map(s =>
     '<option value="' + s.id + '">' + s.emoji + ' ' + esc(s.name) + '</option>').join('');
   const qOpts = PET_QUALITIES.map(q =>
@@ -4201,8 +4550,6 @@ function build(){
 
   return '' +
   '<div class="sa-box">' +
-
-    /* 头部 */
     '<div class="sa-head">' +
       '<span class="sa-ico">🛠️</span>' +
       '<div>' +
@@ -4212,7 +4559,6 @@ function build(){
       '<button class="sa-x" data-act="close">✕</button>' +
     '</div>' +
 
-    /* 标签页 */
     '<div class="sa-tabs">' +
       '<div class="sa-tab on" data-tab="val">💰 数值</div>' +
       '<div class="sa-tab" data-tab="tree">🌳 技能树</div>' +
@@ -4223,7 +4569,6 @@ function build(){
 
     '<div class="sa-body">' +
 
-    /* ── 数值 ── */
     '<div class="sa-pane on" data-pane="val">' +
       '<div class="sa-sec">' +
         '<div class="sa-st">金币 / 钻石</div>' +
@@ -4267,7 +4612,7 @@ function build(){
           '<button class="sa-btn y" data-act="diceGold">下次黄金</button>' +
           '<button class="sa-btn y" data-act="diceDiamond">下次钻石</button>' +
         '</div>' +
-        '<div class="sa-note">骰子计数设为 9 → 下一抽必触发黄金骰子；设为 49 → 下一抽触发钻石骰子（需已解锁）。</div>' +
+        '<div class="sa-note">骰子计数设为 9 → 下一抽必触发黄金骰子；设为 49 → 下一抽触发钻石骰子。</div>' +
       '</div>' +
 
       '<div class="sa-sec">' +
@@ -4288,6 +4633,16 @@ function build(){
           '<button class="sa-btn" data-act="setTra">设为</button>' +
           '<button class="sa-btn y" data-act="rebAllMax">全部 +10</button>' +
         '</div>' +
+        '<div class="sa-row">' +
+          '<span class="sa-lb">真重生</span>' +
+          '<input type="text" id="saTrueReb" placeholder="0">' +
+          '<button class="sa-btn" data-act="setTrueReb">设为</button>' +
+        '</div>' +
+        '<div class="sa-row">' +
+          '<span class="sa-lb">宠物抽奖幸运</span>' +
+          '<input type="text" id="saPetLuck" placeholder="0">' +
+          '<button class="sa-btn" data-act="setPetLuck">设为</button>' +
+        '</div>' +
       '</div>' +
 
       '<div class="sa-sec">' +
@@ -4296,7 +4651,6 @@ function build(){
       '</div>' +
     '</div>' +
 
-    /* ── 技能树 ── */
     '<div class="sa-pane" data-pane="tree">' +
       '<div class="sa-sec">' +
         '<div class="sa-st">批量操作</div>' +
@@ -4308,8 +4662,9 @@ function build(){
         '<div class="sa-row">' +
           '<button class="sa-btn y" data-act="ptreeMax">永久树满级</button>' +
           '<button class="sa-btn r" data-act="ptreeZero">永久树清零</button>' +
+          '<button class="sa-btn y" data-act="ptree2Max">二阶树满级</button>' +
         '</div>' +
-        '<div class="sa-note">「全部满级」包含永久树；「永久树满级」只升永久树。</div>' +
+        '<div class="sa-note">「全部满级」包含永久树和二阶树；「永久树满级」只升永久树。</div>' +
       '</div>' +
       '<div class="sa-sec">' +
         '<div class="sa-st">单节点修改</div>' +
@@ -4326,7 +4681,6 @@ function build(){
       '</div>' +
     '</div>' +
 
-    /* ── 宠物 ── */
     '<div class="sa-pane" data-pane="pet">' +
       '<div class="sa-sec">' +
         '<div class="sa-st">生成宠物</div>' +
@@ -4365,7 +4719,6 @@ function build(){
       '</div>' +
     '</div>' +
 
-    /* ── 玩法 ── */
     '<div class="sa-pane" data-pane="misc">' +
       '<div class="sa-sec">' +
         '<div class="sa-st">成就</div>' +
@@ -4408,7 +4761,6 @@ function build(){
       '</div>' +
     '</div>' +
 
-    /* ── 存档 ── */
     '<div class="sa-pane" data-pane="save">' +
       '<div class="sa-sec">' +
         '<div class="sa-st">存档操作</div>' +
@@ -4431,11 +4783,10 @@ function build(){
       '</div>' +
     '</div>' +
 
-    '</div>' +  /* /sa-body */
-  '</div>';     /* /sa-box */
+    '</div>' +
+  '</div>';
 }
 
-/* ═════════ 工具 ═════════ */
 let panel = null;
 
 function q(sel){ return panel ? panel.querySelector(sel) : null; }
@@ -4450,12 +4801,13 @@ function vInt(sel, def){
   return isFinite(v) ? v : def;
 }
 
-/* ═════════ 刷新输出区 ═════════ */
 function refresh(){
   if(!panel) return;
 
   let ptreeSum = 0;
   for(const k in state.ptree) if(k !== 'PROOT') ptreeSum += state.ptree[k];
+  let ptree2Sum = 0;
+  for(const k in state.ptree2) if(k !== 'P2ROOT') ptree2Sum += state.ptree2[k];
 
   const so = q('#saStatOut');
   if(so) so.textContent =
@@ -4465,8 +4817,10 @@ function refresh(){
     '保底上限  ' + (getPityMax() === null ? '未解锁' : getPityMax() + ' 抽') + '\n' +
     '多重抽奖  ' + (getMultiRollChance() * 100).toFixed(2) + '% 概率追抽\n' +
     '宠物倍率  x' + fmt(getPetPermaMult()) + '（含永久）\n' +
-    '永久树等级 ' + ptreeSum + '\n' +
-    '宠物数量  ' + state.petInv.length + ' 只 · 已装备 ' + state.petEquipped.length + '\n' +
+    '永久树等级 ' + ptreeSum + ' · 二阶树等级 ' + ptree2Sum + '\n' +
+    '宠物抽奖幸运 ' + fmt(getTotalPetDrawLuck()) + '\n' +
+    '真重生次数 ' + state.trueRebirths + ' · 宠物抽奖折扣 -' +
+      Math.round(Math.min(TRUE_REBIRTH.petDrawDiscountCap, state.trueRebirths * TRUE_REBIRTH.petDrawDiscountPer) * 100) + '%\n' +
     '当前活动  ' + getEvent().emoji + ' ' + getEvent().name;
 
   const po = q('#saPetOut');
@@ -4487,6 +4841,8 @@ function refresh(){
     rebirths: state.rebirths,
     ascends: state.ascends,
     transcends: state.transcends,
+    trueRebirths: state.trueRebirths,
+    petDrawLuck: state.petDrawLuck,
     pets: state.petInv.length,
     equipped: state.petEquipped.length,
     achievements: Object.keys(state.unlockedAch).length + '/' + ACHIEVEMENTS.length,
@@ -4495,11 +4851,11 @@ function refresh(){
     autoInterval: getAutoInterval(),
     multiRollChance: getMultiRollChance(),
     petPermaMult: getPetPermaMult(),
-    ptreeLevels: ptreeSum
+    ptreeLevels: ptreeSum,
+    ptree2Levels: ptree2Sum
   }, null, 1);
 }
 
-/* ═════════ 操作后统一刷新游戏 ═════════ */
 function apply(){
   updateHUD();
   markDirty();
@@ -4515,13 +4871,11 @@ function apply(){
   refresh();
 }
 
-/* ═════════ 执行动作 ═════════ */
 function act(a){
   switch(a){
 
     case 'close': close(); return;
 
-    /* ===== 数值 ===== */
     case 'setCoins': {
       const v = vNum('#saCoins');
       if(isNaN(v)) return toast('❌ 请输入有效数字');
@@ -4577,13 +4931,14 @@ function act(a){
     case 'rebAllMax':
       state.rebirths += 10; state.ascends += 10; state.transcends += 10;
       break;
+    case 'setTrueReb': state.trueRebirths = Math.max(0, vInt('#saTrueReb', 0)); break;
+    case 'setPetLuck': state.petDrawLuck = Math.max(0, vInt('#saPetLuck', 0)); break;
 
     /* ===== 技能树 ===== */
     case 'treeMax':
       for(const n of ALL_NODES){
-        if(n.id === 'root' || n.id === 'PROOT') continue;
-        if(n.perma) state.ptree[n.id] = n.max;
-        else state.tree[n.id] = n.max;
+        if(n.id === 'root' || n.id === 'PROOT' || n.id === 'P2ROOT') continue;
+        setNodeLv(n, n.max);
       }
       break;
     case 'treeOne':
@@ -4602,6 +4957,12 @@ function act(a){
     case 'ptreeZero':
       state.ptree = { PROOT: 1 };
       break;
+    case 'ptree2Max':
+      for(const n of PERMA_TREE_2){
+        if(n.id === 'P2ROOT') continue;
+        state.ptree2[n.id] = n.max;
+      }
+      break;
     case 'nodeSet': {
       const id = q('#saNode') ? q('#saNode').value : '';
       const n = ALL_NODES.find(x => x.id === id);
@@ -4609,16 +4970,14 @@ function act(a){
       const lv = vInt('#saNodeLv', -1);
       if(lv < 0){ toast('❌ 请输入等级'); return; }
       const v = Math.max(0, Math.min(n.max, lv));
-      if(n.perma) state.ptree[id] = v;
-      else state.tree[id] = v;
+      setNodeLv(n, v);
       break;
     }
     case 'nodeMax': {
       const id = q('#saNode') ? q('#saNode').value : '';
       const n = ALL_NODES.find(x => x.id === id);
       if(!n) return;
-      if(n.perma) state.ptree[id] = n.max;
-      else state.tree[id] = n.max;
+      setNodeLv(n, n.max);
       break;
     }
 
@@ -4737,7 +5096,6 @@ function act(a){
   apply();
 }
 
-/* ═════════ 事件绑定 ═════════ */
 function bind(){
   panel.addEventListener('click', function(e){
     if(e.target === panel){ close(); return; }
@@ -4758,7 +5116,6 @@ function bind(){
     if(btn) act(btn.dataset.act);
   });
 
-  /* 阻止键盘事件冒泡到游戏 */
   panel.addEventListener('keydown', function(e){
     if(e.key === 'Escape'){ e.stopPropagation(); close(); return; }
     e.stopPropagation();
@@ -4767,7 +5124,6 @@ function bind(){
   panel.addEventListener('keypress', function(e){ e.stopPropagation(); });
 }
 
-/* ═════════ 打开 / 关闭 ═════════ */
 function open(){
   if(!panel){
     if(!document.getElementById('saStyle')){
@@ -4795,7 +5151,6 @@ function close(){
   apply();
 }
 
-/* ═════════ 快捷键 L + B + S ═════════ */
 const _saKeys = {};
 document.addEventListener('keydown', function(e){
   _saKeys[e.key.toLowerCase()] = true;
@@ -4810,14 +5165,12 @@ document.addEventListener('keyup', function(e){
   _saKeys[e.key.toLowerCase()] = false;
 });
 
-/* ═════════ 挂载到 window.symrng ═════════ */
 window.symrng = window.symrng || {};
 window.symrng.admin        = open;
 window.symrng.panel        = open;
 window.symrng['后台']      = open;
 window.symrng.closeAdmin   = close;
 
-/* 附带的控制台快捷指令 */
 if(!window.symrng.addCoins){
   window.symrng.addCoins = function(n){
     n = Number(n);
@@ -4849,6 +5202,13 @@ if(!window.symrng.addCoins){
     if(state.page === 'tree') renderPage();
     console.log('%c💎 永久技能树已全部满级', 'color:#ffc93c;font-weight:900');
   };
+  window.symrng.maxPermaTree2 = function(){
+    for(const n of PERMA_TREE_2) state.ptree2[n.id] = n.max;
+    state.ptree2.P2ROOT = 1;
+    updateHUD(); markDirty();
+    if(state.page === 'tree') renderPage();
+    console.log('%c🌌 二阶永久技能树已全部满级', 'color:#c85aff;font-weight:900');
+  };
   window.symrng.allAch = function(){
     const now = Date.now();
     let c = 0;
@@ -4859,7 +5219,6 @@ if(!window.symrng.addCoins){
   };
 }
 
-/* ═════════ 控制台欢迎语 ═════════ */
 try{
   console.log(
     '%c🐴 沙杨马 RNG · 可视化后台\n' +
