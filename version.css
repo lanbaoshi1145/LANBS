@@ -1,6 +1,6 @@
 /* ═══ 版本号（伪元素） ═══ */
 body::after{
-  content: "Version: 0919005";
+  content: "Version: 0919006";
   position: fixed;
   left: 8px;
   top: 8px;
