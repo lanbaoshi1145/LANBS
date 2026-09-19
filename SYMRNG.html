@@ -900,7 +900,7 @@ body{
 
 /* ═══ 版本号 ═══ */
 body::after{
-  content: "v9.2.0";
+  content: "v9.5.0";
   position: fixed;
   left: 8px;
   top: 8px;
@@ -1521,6 +1521,65 @@ const SHOP_POOL = [
     apply:() => { state.petDrawLuck += 200; toast('🐾 宠物抽奖幸运 +200'); } }
 ];
 
+/* ═══════════ 💠 源质充值 ═══════════ */
+const RECHARGE_PACKS = [
+  { id:'starter', emoji:'🎁', name:'首充大礼包', desc:'金币 + 钻石 + 彩虹充能',
+    essenceCost:30, originCost:100, limit:1,
+    reward:() => {
+      const g = getCoinMult() * 1e6;
+      state.coins += g;
+      state.gems += 1000;
+      state.rollCount = state.rollCount - (state.rollCount % DICE_INTERVAL.rainbow) + (DICE_INTERVAL.rainbow - 1);
+      return '💰+' + fmt(g) + ' · 💎+1000 · 🌈充能';
+    } },
+  { id:'coin', emoji:'💰', name:'金币礼包', desc:'立即获得巨额金币',
+    essenceCost:10, limit:99,
+    reward:() => { const g = getCoinMult() * 1e5; state.coins += g; return '💰+' + fmt(g); } },
+  { id:'gem', emoji:'💎', name:'钻石礼包', desc:'立即获得 500~1000 钻石',
+    essenceCost:20, limit:99,
+    reward:() => { const g = 500 + Math.floor(Math.random()*500); state.gems += g; return '💎+' + g; } },
+  { id:'pet', emoji:'🐾', name:'神宠礼包', desc:'获得一只 GOD 6★ 宠物',
+    essenceCost:100, limit:99,
+    reward:() => {
+      const p = genPet('GOD', rollSpecies());
+      p.star = 6;
+      state.petInv.push(p);
+      return '🐾 GOD 6★ ' + getSpecies(p.species).name;
+    } },
+  { id:'pity', emoji:'🛡️', name:'保底重置卡', desc:'保底进度拉满',
+    essenceCost:15, limit:99,
+    reward:() => {
+      const pm = getPityMax();
+      if(pm === null) return '⚠️ 未解锁保底系统';
+      state.pity = pm;
+      return '🛡️ 保底已满';
+    } },
+  { id:'dice', emoji:'🌈', name:'彩虹充能', desc:'下次抽奖必触发彩虹骰子',
+    essenceCost:50, limit:99,
+    reward:() => {
+      state.rollCount = state.rollCount - (state.rollCount % DICE_INTERVAL.rainbow) + (DICE_INTERVAL.rainbow - 1);
+      return '🌈 已充能';
+    } },
+  { id:'all', emoji:'👑', name:'尊享大礼包', desc:'金币 + 钻石 + 3 只神宠 + 彩虹',
+    essenceCost:300, originCost:800, limit:99,
+    reward:() => {
+      const g = getCoinMult() * 1e8;
+      state.coins += g;
+      state.gems += 10000;
+      for(let i = 0; i < 3; i++){ const p = genPet('GOD', rollSpecies()); p.star = 6; state.petInv.push(p); }
+      state.rollCount = state.rollCount - (state.rollCount % DICE_INTERVAL.rainbow) + (DICE_INTERVAL.rainbow - 1);
+      return '💰+' + fmt(g) + ' · 💎+10000 · 🐾×3 · 🌈';
+    } }
+];
+
+/* ═══════════ 🎲 赌注抽奖 ═══════════ */
+const GAMBLE_TYPES = [
+  { id:'bigsmall', name:'大小', emoji:'⚖️', desc:'点数 1~100，>50 为大 · 赢 2 倍', mult:2, picks:['大','小'] },
+  { id:'oddeven', name:'单双', emoji:'🎯', desc:'点数 1~100 · 赢 2 倍',         mult:2, picks:['单','双'] },
+  { id:'dice',    name:'骰子', emoji:'🎲', desc:'押中 1~6 · 赢 6 倍',           mult:6, picks:['1','2','3','4','5','6'] },
+  { id:'allin',   name:'孤注一掷', emoji:'💥', desc:'10% 概率赢 10 倍，否则全输', mult:10, picks:['全押'] }
+];
+
 function getShopCoinMult(){
   let v = 1;
   v += treeLv('V1')  * 0.10;
@@ -1699,7 +1758,10 @@ const state = {
   },
   unlockedAch: {},
   devUnlocked: false,
-  specialCodes: {}
+  specialCodes: {},
+  shopMainTab: 'main',
+  gambleHistory: [],
+  rechargeBought: {}
 };
 RARITIES.forEach(r => state.inv[r.id] = 0);
 try{
@@ -1820,6 +1882,9 @@ function getSaveData(){
     event: state.event, eventUntil: state.eventUntil,
     devUnlocked: state.devUnlocked,
     specialCodes: state.specialCodes,
+    shopMainTab: state.shopMainTab,
+    gambleHistory: (state.gambleHistory || []).slice(0, 20),
+    rechargeBought: state.rechargeBought,
     /* 🕳️ 源质深渊 */
     abyssFloor: state.abyssFloor,
     abyssBest: state.abyssBest,
@@ -1856,6 +1921,11 @@ function applySaveData(d){
   if(typeof d.devUnlocked === 'boolean') state.devUnlocked = d.devUnlocked;
   if(d.specialCodes && typeof d.specialCodes === 'object') state.specialCodes = d.specialCodes;
   else state.specialCodes = {};
+  if(typeof d.shopMainTab === 'string') state.shopMainTab = d.shopMainTab;
+  if(Array.isArray(d.gambleHistory)) state.gambleHistory = d.gambleHistory.slice(0, 20);
+  else state.gambleHistory = [];
+  if(d.rechargeBought && typeof d.rechargeBought === 'object') state.rechargeBought = d.rechargeBought;
+  else state.rechargeBought = {};
 
   let refundGems = 0;
   if(d.pets && typeof d.pets === 'object' && !Array.isArray(d.petInv)){
@@ -3289,10 +3359,24 @@ function bindTreeControls(){
 }
 
 function renderShopPage(){
-  refreshShop();
+  const tab = state.shopMainTab || 'main';
+  let h = '<div class="page-title"><h2>商城</h2><p>常规商城 · 源质充值 · 赌注抽奖</p></div>';
+  h += '<div class="subtabs">' +
+    '<div class="subtab' + (tab==='main'?' on':'') + '" data-shoptab="main">🛒 商城</div>' +
+    '<div class="subtab' + (tab==='recharge'?' on':'') + '" data-shoptab="recharge">💠 源质充值</div>' +
+    '<div class="subtab' + (tab==='gamble'?' on':'') + '" data-shoptab="gamble">🎲 赌注抽奖</div>' +
+  '</div>';
 
-  let h = '<div class="page-title"><h2>商城</h2><p>金币 + 钻石 · 每日刷新 · 限量供应</p></div>';
-  h += '<div class="merchant"><div class="m-emoji">🛒</div>' +
+  if(tab === 'main') h += renderShopMain();
+  else if(tab === 'recharge') h += renderShopRecharge();
+  else h += renderShopGamble();
+
+  $('#pageShop').innerHTML = h;
+}
+
+function renderShopMain(){
+  refreshShop();
+  let h = '<div class="merchant"><div class="m-emoji">🛒</div>' +
     '<div>每件商品都需要 <b>金币 + 钻石</b> 双重支付。<br>' +
     '两种货币都会随倍率浮动，每天 <b>0 点刷新</b>商品。</div></div>';
 
@@ -3314,11 +3398,8 @@ function renderShopPage(){
         (item.limit - bought) + ' / ' + item.limit + '</div>' +
       '<button class="si-price ' + (can ? 'can-pack' : '') + '" data-buy="' + item.id + '"' +
         (can ? '' : ' disabled') + '>' +
-        (soldOut
-          ? '今日售罄'
-          : '💰 ' + fmt(price) + ' · 💎 ' + fmt(gemPrice)) +
-      '</button>' +
-    '</div>';
+        (soldOut ? '今日售罄' : '💰 ' + fmt(price) + ' · 💎 ' + fmt(gemPrice)) +
+      '</button></div>';
   }
   h += '</div>';
 
@@ -3326,15 +3407,195 @@ function renderShopPage(){
     '<b style="color:#2ee6ff">💡 说明</b><br>' +
     '· 金币部分 = 基础价 ×100 × 金币倍率<sup>0.4</sup><br>' +
     '· 钻石部分 = 基础价 × 金币倍率<sup>0.2</sup><br>' +
-    '· 「钻石放大器」净赚 40 钻石，每日限购 3 次<br>' +
     '· 所有商品每天 0 点刷新，售罄后次日恢复' +
   '</div></div>';
 
   const reset = state.shopDate || '—';
   h += '<div style="text-align:center;margin-top:16px;font-size:11px;color:#5a6580;letter-spacing:.06em">' +
     '🗓️ 刷新日期：' + reset + ' · 每天 0 点自动刷新</div>';
+  return h;
+}
 
-  $('#pageShop').innerHTML = h;
+function renderShopRecharge(){
+  let h = '<div class="merchant" style="background:linear-gradient(165deg,rgba(168,85,247,.16),rgba(168,85,247,.04));border-color:rgba(168,85,247,.4);color:#e0c8ff">' +
+    '<div class="m-emoji">💠</div>' +
+    '<div>使用 <b>源质</b> 兑换珍稀资源。<br>' +
+    '源质来自 <b>源质深渊</b> 爬塔，也可通过通关获得。</div></div>';
+
+  h += '<div style="text-align:center;margin-bottom:12px;font-size:12px;color:#a78bd4;font-weight:800;letter-spacing:.05em">' +
+    '当前源质：<b style="color:#e9d5ff;font-size:15px">💠 ' + fmt(state.essence) + '</b></div>';
+
+  h += '<div class="shop-grid">';
+  for(const p of RECHARGE_PACKS){
+    const bought = (state.rechargeBought && state.rechargeBought[p.id]) || 0;
+    const soldOut = bought >= p.limit;
+    const can = !soldOut && state.essence >= p.essenceCost;
+    const discount = p.originCost ? Math.round((1 - p.essenceCost / p.originCost) * 100) : 0;
+
+    h += '<div class="shop-item" style="' + (p.id === 'starter' ? 'border-color:rgba(255,200,60,.5);box-shadow:0 0 30px -10px rgba(255,200,60,.5);' : '') +
+      (p.id === 'all' ? 'border-color:rgba(200,90,255,.5);box-shadow:0 0 30px -10px rgba(200,90,255,.5);' : '') + '">' +
+      (discount ? '<div style="position:absolute;top:-8px;right:8px;font-size:9.5px;font-weight:900;padding:3px 7px;border-radius:6px;background:linear-gradient(180deg,#ff5f5f,#b81c1c);color:#fff;box-shadow:0 4px 12px -3px #ff5f5f">-' + discount + '%</div>' : '') +
+      '<div class="si-emoji" style="font-size:32px">' + p.emoji + '</div>' +
+      '<div class="si-name" style="font-size:13px">' + esc(p.name) + '</div>' +
+      '<div class="si-desc" style="min-height:36px">' + esc(p.desc) + '</div>' +
+      '<div style="font-size:10px;color:#7c89a5;font-weight:800;letter-spacing:.05em">剩 ' +
+        (p.limit - bought) + ' / ' + p.limit + '</div>' +
+      '<button class="si-price ' + (can ? 'can-pack' : '') + '" data-recharge="' + p.id + '"' +
+        (can ? '' : ' disabled') + ' style="background:' + (can ? 'linear-gradient(180deg,#a855f7,#5b1cb8)' : '') + ';color:' + (can ? '#fff' : '') + '">' +
+        (soldOut ? '已售罄' : '💠 ' + fmt(p.essenceCost) +
+          (p.originCost ? ' <span style="text-decoration:line-through;opacity:.55;font-size:10px;margin-left:4px">' + fmt(p.originCost) + '</span>' : '')) +
+      '</button></div>';
+  }
+  h += '</div>';
+
+  h += '<div class="card" style="max-width:1100px;margin:16px auto 0"><div class="card-body" style="font-size:11.5px;color:#a78bd4;line-height:1.8">' +
+    '<b style="color:#e9d5ff">💡 说明</b><br>' +
+    '· 源质可通过源质深渊爬塔获取<br>' +
+    '· 「首充大礼包」每个存档只能购买 1 次<br>' +
+    '· 其他礼包不限次数，但消耗源质会随进度累积' +
+  '</div></div>';
+  return h;
+}
+
+function renderShopGamble(){
+  let h = '<div class="merchant" style="background:linear-gradient(165deg,rgba(255,95,95,.14),rgba(255,95,95,.03));border-color:rgba(255,95,95,.35);color:#ffb8b8">' +
+    '<div class="m-emoji">🎲</div>' +
+    '<div>押注 <b>金币</b>，赢取倍数奖励。<br>' +
+    '高风险高回报，请理性游戏。</div></div>';
+
+  h += '<div class="card" style="max-width:760px;margin:0 auto 12px"><div class="card-body">';
+  h += '<div style="font-size:11.5px;color:#9aa8c4;font-weight:800;margin-bottom:8px">押注金额</div>';
+  h += '<div style="display:flex;gap:8px;margin-bottom:10px">' +
+    '<input id="gambleAmount" class="set-input" type="number" min="1" placeholder="请输入押注金额" style="flex:1;text-transform:none;letter-spacing:0">' +
+    '<button class="set-btn" data-betquick="0.1" style="flex:none;min-width:60px;padding:12px">10%</button>' +
+    '<button class="set-btn" data-betquick="0.25" style="flex:none;min-width:60px;padding:12px">25%</button>' +
+    '<button class="set-btn" data-betquick="0.5" style="flex:none;min-width:60px;padding:12px">50%</button>' +
+    '<button class="set-btn" data-betquick="1" style="flex:none;min-width:60px;padding:12px;background:linear-gradient(180deg,#ff5f5f,#b81c1c);color:#fff">全押</button>' +
+  '</div>';
+  h += '<div style="text-align:center;font-size:12px;color:#8b98ad;font-weight:800">当前金币：<b style="color:#ffc93c">💰 ' + fmt(state.coins) + '</b></div>';
+  h += '</div></div>';
+
+  h += '<div class="shop-grid" style="max-width:760px">';
+  for(const t of GAMBLE_TYPES){
+    h += '<div class="shop-item" style="border-color:rgba(255,140,140,.3);gap:8px">' +
+      '<div class="si-emoji">' + t.emoji + '</div>' +
+      '<div class="si-name">' + esc(t.name) + '</div>' +
+      '<div class="si-desc" style="min-height:28px">' + esc(t.desc) + '</div>';
+    h += '<div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:center;width:100%">';
+    for(const pick of t.picks){
+      h += '<button class="set-btn" data-gamble="' + t.id + '" data-pick="' + esc(pick) + '" ' +
+        'style="flex:none;min-width:44px;padding:8px 10px;font-size:11.5px;font-weight:900">' + esc(pick) + '</button>';
+    }
+    h += '</div></div>';
+  }
+  h += '</div>';
+
+  if(state.gambleHistory && state.gambleHistory.length){
+    h += '<div class="card" style="max-width:760px;margin:12px auto 0"><div class="card-head">📜 最近记录</div><div class="card-body" style="padding:8px">';
+    for(const g of state.gambleHistory.slice(0, 10)){
+      const type = GAMBLE_TYPES.find(x => x.id === g.type) || { name:g.type, emoji:'?' };
+      const deltaColor = g.delta > 0 ? '#8ff0c4' : '#ff8a8a';
+      const deltaTxt = (g.delta > 0 ? '+' : '') + fmt(g.delta);
+      h += '<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;border-radius:9px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);margin-bottom:5px;font-size:11.5px">' +
+        '<span style="color:#c8d4ea;font-weight:800">' + type.emoji + ' ' + esc(type.name) + ' · ' + esc(g.pick) + '</span>' +
+        '<span style="color:#8b98ad;font-size:10.5px">' + esc(g.result) + '</span>' +
+        '<b style="color:' + deltaColor + ';font-variant-numeric:tabular-nums">' + deltaTxt + '</b>' +
+      '</div>';
+    }
+    h += '</div></div>';
+  }
+
+  h += '<div class="card" style="max-width:760px;margin:12px auto 0"><div class="card-body" style="font-size:11.5px;color:#9aa8c4;line-height:1.8">' +
+    '<b style="color:#ffb8b8">💡 玩法说明</b><br>' +
+    '· 输入押注金额或点击快捷按钮（10% / 25% / 50% / 全押）<br>' +
+    '· 点击玩法选项按钮立即开赌，赢了返还倍率，输了扣除押注<br>' +
+    '· 每次只能押一种玩法，结果即时结算<br>' +
+    '· 赌注记录保留最近 20 条' +
+  '</div></div>';
+  return h;
+}
+
+/* ═══════════ 💠 充值 / 🎲 赌注 核心逻辑 ═══════════ */
+function buyRechargePack(id){
+  const p = RECHARGE_PACKS.find(x => x.id === id);
+  if(!p) return;
+  const bought = (state.rechargeBought && state.rechargeBought[id]) || 0;
+  if(bought >= p.limit){ toast('❌ 已达购买上限'); beep(220,.12,'square',.04); return; }
+  if(state.essence < p.essenceCost){ toast('❌ 源质不足，需要 💠' + fmt(p.essenceCost)); beep(220,.12,'square',.04); return; }
+
+  state.essence -= p.essenceCost;
+  if(!state.rechargeBought) state.rechargeBought = {};
+  state.rechargeBought[id] = bought + 1;
+
+  const result = p.reward();
+  toast('✅ ' + p.name + ' 到账！' + result);
+  beep(1200, .2, 'sine', .06);
+  setTimeout(() => beep(1600, .3, 'sine', .05), 120);
+  burst('#a855f7', 60);
+  burst('#ffffff', 40);
+  shake(6);
+
+  updateHUD();
+  renderShopPage();
+  markDirty(); saveGame();
+}
+
+function doGamble(typeId, pick){
+  const type = GAMBLE_TYPES.find(t => t.id === typeId);
+  if(!type) return;
+  const inp = $('#gambleAmount');
+  const amount = Math.max(1, Math.floor(parseFloat(inp ? inp.value : 0) || 0));
+  if(amount < 1){ toast('❌ 请输入有效押注金额'); beep(220,.12,'square',.04); return; }
+  if(state.coins < amount){ toast('❌ 金币不足'); beep(220,.12,'square',.04); return; }
+
+  state.coins -= amount;
+
+  let win = false;
+  let resultText = '';
+
+  if(typeId === 'bigsmall'){
+    const n = Math.floor(Math.random() * 100) + 1;
+    const isBig = n > 50;
+    resultText = '点数 ' + n + ' → ' + (isBig ? '大' : '小');
+    win = (pick === '大' && isBig) || (pick === '小' && !isBig);
+  } else if(typeId === 'oddeven'){
+    const n = Math.floor(Math.random() * 100) + 1;
+    const isOdd = n % 2 === 1;
+    resultText = '点数 ' + n + ' → ' + (isOdd ? '单' : '双');
+    win = (pick === '单' && isOdd) || (pick === '双' && !isOdd);
+  } else if(typeId === 'dice'){
+    const n = Math.floor(Math.random() * 6) + 1;
+    resultText = '骰子 ' + n;
+    win = (pick === String(n));
+  } else if(typeId === 'allin'){
+    win = Math.random() < 0.1;
+    resultText = win ? '天命所归！' : '天不遂人愿……';
+  }
+
+  let delta = 0;
+  if(win){
+    const gain = amount * type.mult;
+    state.coins += gain;
+    delta = gain - amount;
+    toast('🎉 赢了！' + resultText + ' · +💰' + fmt(delta));
+    burst('#ffc93c', 60);
+    burst('#ffffff', 40);
+    beep(1300, .25, 'sine', .06);
+    setTimeout(() => beep(1700, .3, 'sine', .05), 120);
+    shake(4);
+  } else {
+    delta = -amount;
+    toast('😢 输了！' + resultText + ' · -💰' + fmt(amount));
+    beep(220, .25, 'square', .05);
+    shake(3);
+  }
+
+  state.gambleHistory.unshift({ t: Date.now(), type: typeId, pick: pick, result: resultText, delta: delta });
+  if(state.gambleHistory.length > 20) state.gambleHistory.pop();
+
+  updateHUD();
+  renderShopPage();
+  markDirty(); saveGame();
 }
 
 function renderPetPage(){
@@ -5049,6 +5310,14 @@ document.addEventListener('click', e => {
   const nav = e.target.closest('.nav-btn, .side-btn');
   if(nav && nav.dataset.page){ switchPage(nav.dataset.page); return; }
 
+  const shoptab = e.target.closest('[data-shoptab]');
+  if(shoptab){
+    state.shopMainTab = shoptab.dataset.shoptab;
+    renderShopPage();
+    beep(600, .05, 'sine', .025);
+    return;
+  }
+
   const sub = e.target.closest('.subtab');
   if(sub){
     if(sub.dataset.sub){ state.shopTab = sub.dataset.sub; renderShopPage(); beep(600, .05, 'sine', .025); }
@@ -5157,6 +5426,21 @@ document.addEventListener('click', e => {
     }
     if(el.dataset.potion){ buyPotion(el.dataset.potion); return; }
     if(el.dataset.buy){ buyShopItem(el.dataset.buy); return; }
+    if(el.dataset.recharge){ buyRechargePack(el.dataset.recharge); return; }
+    if(el.dataset.gamble){
+      doGamble(el.dataset.gamble, el.dataset.pick);
+      return;
+    }
+    if(el.dataset.betquick){
+      const pct = parseFloat(el.dataset.betquick);
+      const inp = document.getElementById('gambleAmount');
+      if(inp){
+        const v = Math.floor(state.coins * pct);
+        inp.value = v > 0 ? v : 1;
+        beep(700, .05, 'sine', .03);
+      }
+      return;
+    }
     if(el.dataset.petDraw){ drawPets(parseInt(el.dataset.petDraw, 10)); return; }
     if(el.dataset.petMerge){ tryMergePets(); return; }
     if(el.dataset.petDecompose){ decomposePets(); return; }
