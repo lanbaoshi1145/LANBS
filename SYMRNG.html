@@ -961,9 +961,75 @@ body{
   color:#ffd86b;font-variant-numeric:tabular-nums;flex:none;font-size:10.5px;
 }
 
+/* ═══ 👹 世界 Boss ═══ */
+.boss-hero{
+  max-width:760px;margin:0 auto 14px;padding:22px 18px;border-radius:22px;text-align:center;
+  background:
+    radial-gradient(500px 260px at 50% 0%,var(--bc-soft,rgba(255,95,95,.2)),transparent 70%),
+    linear-gradient(165deg,rgba(255,255,255,.07),rgba(255,255,255,.012)),#0d1425;
+  border:1px solid var(--bc-line,rgba(255,95,95,.4));
+  box-shadow:0 0 40px -14px var(--bc,#ff5f5f);
+}
+.boss-hero .bh-emoji{font-size:64px;line-height:1;margin-bottom:10px;filter:drop-shadow(0 0 22px var(--bc,#ff5f5f))}
+.boss-hero .bh-name{font-size:20px;font-weight:900;letter-spacing:.1em;color:var(--bc,#ff5f5f);text-shadow:0 0 22px var(--bc,#ff5f5f)}
+.boss-hero .bh-desc{font-size:12px;color:#9aa8c4;margin-top:6px;line-height:1.6}
+.boss-hp-bar{height:18px;border-radius:99px;background:rgba(0,0,0,.5);overflow:hidden;border:1px solid rgba(255,255,255,.1);margin:14px auto 6px;max-width:620px}
+.boss-hp-bar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#7b2cff,#ff5f5f,#ffc93c);border-radius:99px;transition:width .3s;box-shadow:0 0 16px rgba(255,95,95,.7)}
+.boss-hp-text{font-size:11.5px;color:#c4b1e8;font-weight:800;font-variant-numeric:tabular-nums}
+.boss-weak{
+  display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:11px;
+  font-size:12px;font-weight:900;letter-spacing:.04em;margin-top:11px;
+  background:var(--wc-soft,rgba(255,107,255,.15));
+  border:1px solid var(--wc,rgba(255,107,255,.5));
+  color:var(--wc,#ff6bff);
+}
+.boss-weak b{color:#fff}
+.boss-charges{
+  max-width:760px;margin:0 auto 12px;padding:12px 14px;border-radius:14px;
+  background:linear-gradient(165deg,rgba(46,230,255,.14),rgba(46,230,255,.03));
+  border:1px solid rgba(46,230,255,.4);
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.boss-charges .bc-lb{font-size:11.5px;color:#8b98ad;font-weight:800;letter-spacing:.05em}
+.boss-charges .bc-val{font-size:16px;font-weight:900;color:#2ee6ff;font-variant-numeric:tabular-nums;text-shadow:0 0 14px rgba(46,230,255,.6)}
+.boss-charges .bc-btn{
+  margin-left:auto;padding:8px 13px;border-radius:10px;border:none;
+  font-family:inherit;font-size:11.5px;font-weight:900;cursor:pointer;transition:.15s;
+  background:linear-gradient(180deg,#2ee6ff,#0090b8);color:#041820;
+}
+.boss-charges .bc-btn:active{transform:scale(.95)}
+.boss-charges .bc-btn:disabled{filter:grayscale(.8) brightness(.55);cursor:not-allowed}
+.boss-rewards{max-width:760px;margin:0 auto}
+.boss-reward{
+  display:flex;align-items:center;gap:11px;padding:11px 13px;border-radius:13px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  margin-bottom:8px;transition:.2s;
+}
+.boss-reward.done{
+  background:linear-gradient(165deg,rgba(90,230,160,.1),rgba(90,230,160,.02));
+  border-color:rgba(90,230,160,.32);
+}
+.boss-reward .br-emoji{font-size:22px;flex:none;width:34px;text-align:center}
+.boss-reward .br-info{flex:1;min-width:0}
+.boss-reward .br-name{font-size:13px;font-weight:900;color:#e2e9f8}
+.boss-reward .br-req{font-size:11px;color:#8b98ad;margin-top:2px;font-variant-numeric:tabular-nums}
+.boss-reward .br-gain{font-size:11.5px;color:#ffd86b;font-weight:900;font-variant-numeric:tabular-nums}
+.boss-reward .br-btn{
+  flex:none;padding:8px 13px;border-radius:9px;border:none;
+  font-family:inherit;font-size:11px;font-weight:900;cursor:pointer;transition:.15s;
+  background:linear-gradient(180deg,#22c98a,#0d8557);color:#03150e;
+}
+.boss-reward .br-btn:active{transform:scale(.95)}
+.boss-reward .br-btn:disabled{filter:grayscale(.8) brightness(.55);cursor:not-allowed}
+.boss-reward .br-btn.claimed{background:rgba(255,255,255,.1);color:#7c89a5}
+
+.side-btn.boss-nav{background:linear-gradient(165deg,rgba(255,95,95,.22),rgba(255,95,95,.05));border-color:rgba(255,95,95,.55);box-shadow:0 0 22px -6px rgba(255,95,95,.55)}
+.side-btn.boss-nav small{color:#ff9b9b}
+.side-btn.boss-nav.on{background:linear-gradient(165deg,rgba(255,95,95,.35),rgba(255,95,95,.1));box-shadow:0 0 26px -5px rgba(255,95,95,.7)}
+
 /* ═══ 版本号 ═══ */
 body::after{
-  content: "v9.9.1";
+  content: "v10.0.0";
   position: fixed;
   left: 8px;
   top: 8px;
@@ -1009,6 +1075,7 @@ body::after{
   <div class="page" id="pageTask"></div>
   <div class="page" id="pageReb"></div>
   <div class="page" id="pageAbyss"></div>
+  <div class="page" id="pageBoss"></div>
   <div class="page" id="pageVip"></div>
   <div class="page" id="pageSet"></div>
 </div>
@@ -1503,7 +1570,10 @@ const ACHIEVEMENTS = [
   { id:'abyss_50',      name:'深渊征服者', emoji:'👑', desc:'深渊抵达第 50 层',             check:() => state.abyssBest >= 50 },
   { id:'abyss_100',     name:'深渊主宰',   emoji:'🌌', desc:'深渊抵达第 100 层',            check:() => state.abyssBest >= 100 },
   { id:'abyss_essence', name:'源质收集者', emoji:'💠', desc:'累计源质达到 1 万',            check:() => state.essence >= 10000 },
-  { id:'abyss_dmg_big', name:'深渊重击',   emoji:'💥', desc:'单次抽卡深渊伤害达到 1e15',    check:() => state.abyssFloorDamage >= 1e15 || state.abyssTotalDamage >= 1e15 }
+  { id:'abyss_dmg_big', name:'深渊重击',   emoji:'💥', desc:'单次抽卡深渊伤害达到 1e15',    check:() => state.abyssFloorDamage >= 1e15 || state.abyssTotalDamage >= 1e15 },
+  /* 👹 世界 Boss 成就 */
+  { id:'boss_first',    name:'屠龙勇士',   emoji:'👹', desc:'首次击杀世界 Boss',            check:() => state.boss && state.boss.kills >= 1 },
+  { id:'boss_5',        name:'弑神者',     emoji:'⚔️', desc:'累计击杀世界 Boss 5 次',       check:() => state.boss && state.boss.kills >= 5 }
 ];
 
 /* ═══════════ 🕳️ 源质深渊 · 常量 ═══════════ */
@@ -1648,6 +1718,55 @@ const GAMBLE_TYPES = [
   { id:'dice',    name:'骰子', emoji:'🎲', desc:'押中 1~6 · 赢 6 倍',           mult:6, picks:['1','2','3','4','5','6'] },
   { id:'allin',   name:'孤注一掷', emoji:'💥', desc:'10% 概率赢 10 倍，否则全输', mult:10, picks:['全押'] }
 ];
+
+/* ═══════════ 👹 世界 Boss ═══════════ */
+const BOSS_POOL = [
+  { id:'dragon',  emoji:'🐉', name:'深渊龙皇',   desc:'掌控深渊之火的远古巨龙' },
+  { id:'shadow',  emoji:'👤', name:'暗影之主',   desc:'从阴影中汲取力量的化身' },
+  { id:'void',    emoji:'👾', name:'虚空泰坦',   desc:'吞噬星球的虚空造物' },
+  { id:'time',    emoji:'⏳', name:'时之吞噬者', desc:'啃食时间本身的恐怖存在' },
+  { id:'chaos',   emoji:'💥', name:'混沌之神',   desc:'混沌与秩序的交界者' }
+];
+const BOSS_WEAKNESSES = [
+  { id:'affix',  name:'词条',   emoji:'✨', desc:'词条倍率 ×5 · 其他 ×0.2', color:'#ff6bff' },
+  { id:'dice',   name:'骰子',   emoji:'🎲', desc:'骰子倍率 ×5 · 其他 ×0.2', color:'#2ee6ff' },
+  { id:'pet',    name:'宠物',   emoji:'🐾', desc:'宠物倍率 ×5 · 其他 ×0.2', color:'#ffb020' },
+  { id:'rarity', name:'稀有度', emoji:'⭐', desc:'稀有度加成 ×5 · 其他 ×0.2', color:'#00ffc8' }
+];
+const BOSS_REWARDS = [
+  { needKills: 1,  name:'周常 I',   emoji:'🌱', rebirth:1 },
+  { needKills: 2,  name:'周常 II',  emoji:'🌿', rebirth:2 },
+  { needKills: 3,  name:'周常 III', emoji:'🌳', rebirth:3 },
+  { needKills: 5,  name:'周常 IV',  emoji:'🔥', rebirth:5,  ascend:1 },
+  { needKills: 8,  name:'周常 V',   emoji:'💫', rebirth:10, ascend:3 },
+  { needKills: 12, name:'周常 VI',  emoji:'⭐', transcend:1 }
+];
+function getBossWeekId(){
+  const d = new Date();
+  const year = d.getFullYear();
+  const start = new Date(year, 0, 1);
+  const days = Math.floor((d - start) / 86400000);
+  return year + '-W' + Math.floor(days / 7);
+}
+function getBossWeakness(){
+  const W = state.boss && state.boss.weakness;
+  return BOSS_WEAKNESSES.find(x => x.id === W) || BOSS_WEAKNESSES[0];
+}
+function ensureBossInit(force){
+  const weekId = getBossWeekId();
+  if(!force && state.boss && state.boss.weekId === weekId) return;
+  const boss = BOSS_POOL[Math.floor(Math.random() * BOSS_POOL.length)];
+  const weak = BOSS_WEAKNESSES[Math.floor(Math.random() * BOSS_WEAKNESSES.length)];
+  const kills = (state.boss && state.boss.kills) || 0;
+  const hp = 1e12 * Math.pow(10, kills);
+  state.boss = {
+    weekId, bossId: boss.id, emoji: boss.emoji, name: boss.name, desc: boss.desc,
+    weakness: weak.id, hp, maxHp: hp, totalDamage: 0, killed: false, kills,
+    weekKills: 0,          // ✅ 跨周清零
+    claimedRewards: [], charges: 0
+  };
+  markDirty();
+}
 
 /* ═══════════ 👑 VIP 特权表 ═══════════ */
 const VIP_PRIVILEGES = {
@@ -1850,6 +1969,13 @@ const state = {
   vipDailyClaim: 0,   // 上次领取时间戳
   vipTree: {},         // VIP 升级树占位
   svipExtrasQueue: [],
+  /* 👹 世界 Boss */
+  boss: {
+    weekId:'', bossId:'', emoji:'🐉', name:'', desc:'', weakness:'',
+    hp:0, maxHp:0, totalDamage:0, killed:false, kills:0,
+    weekKills:0,          // ✅ 本周击杀数，跨周重置
+    claimedRewards:[], charges:0
+  }
 };
 RARITIES.forEach(r => state.inv[r.id] = 0);
 try{
@@ -1941,7 +2067,7 @@ function markDirty(){ saveDirty = true; }
 
 function getSaveData(){
   return {
-    v: 9, ts: Date.now(),
+    v: 10, ts: Date.now(),
     coins: state.coins, gems: state.gems,
     rolls: state.rolls, rollCount: state.rollCount, pity: state.pity,
     tree: state.tree,
@@ -1988,7 +2114,8 @@ function getSaveData(){
     abyssFloorDamage: state.abyssFloorDamage,
     abyssTotalDamage: state.abyssTotalDamage,
     essence: state.essence,
-    abyssUpg: state.abyssUpg
+    abyssUpg: state.abyssUpg,
+    boss: state.boss
   };
 }
 
@@ -2161,6 +2288,26 @@ function applySaveData(d){
     }
     state.abyssUpg = u;
   } else state.abyssUpg = {};
+
+  /* 👹 世界 Boss */
+  if(d.boss && typeof d.boss === 'object'){
+    state.boss = {
+      weekId: typeof d.boss.weekId === 'string' ? d.boss.weekId : '',
+      bossId: typeof d.boss.bossId === 'string' ? d.boss.bossId : '',
+      emoji: typeof d.boss.emoji === 'string' ? d.boss.emoji : '🐉',
+      name: typeof d.boss.name === 'string' ? d.boss.name : '',
+      desc: typeof d.boss.desc === 'string' ? d.boss.desc : '',
+      weakness: typeof d.boss.weakness === 'string' ? d.boss.weakness : 'affix',
+      hp: Math.max(0, num(d.boss.hp, 0)),
+      maxHp: Math.max(1, num(d.boss.maxHp, 1)),
+      totalDamage: Math.max(0, num(d.boss.totalDamage, 0)),
+      killed: !!d.boss.killed,
+      kills: Math.max(0, Math.floor(num(d.boss.kills, 0))),
+      weekKills: Math.max(0, Math.floor(num(d.boss.weekKills, 0))),   // ✅ 新增
+      claimedRewards: Array.isArray(d.boss.claimedRewards) ? d.boss.claimedRewards.slice(0, 10) : [],
+      charges: Math.max(0, Math.min(10, Math.floor(num(d.boss.charges, 0))))
+    };
+  }
 
   /* 👑 VIP / SVIP */
   state.vip           = Math.max(0, Math.min(2, Math.floor(num(d.vip, 0))));
@@ -2745,6 +2892,130 @@ function applyAbyssDamageFromRoll(idx, aMult, diceMult){
     updateAbyssUI();
   }
   markDirty();
+}
+
+/* ═══════════ 👹 世界 Boss 核心 ═══════════ */
+function applyBossDamageFromRoll(idx, aMult, diceMult){
+  ensureBossInit();
+  if(!state.boss || !state.boss.weekId) return;
+  if(state.boss.killed) return;
+
+  const W = state.boss.weakness;
+  let dmg = Math.pow(20, idx) * 100;
+  let mult = 0.2;
+  if(W === 'affix'  && aMult > 1.001)    mult = 5 * aMult;
+  if(W === 'dice'   && diceMult > 1.001) mult = 5 * diceMult;
+  if(W === 'pet'){  const pt = getPetTraits(); if(pt.coin > 0) mult = 5 * (1 + pt.coin); }
+  if(W === 'rarity') mult = 5 * (1 + idx * 0.5);
+  dmg *= mult;
+
+  /* 储存充能：本次有充能则全额释放并清零 */
+  if(state.boss.charges > 0){
+    dmg *= (1 + state.boss.charges * 0.5);
+    state.boss.charges = 0;
+  }
+
+  state.boss.totalDamage += dmg;
+  state.boss.hp -= dmg;
+
+  if(state.boss.hp <= 0){
+    onBossKilled();
+  }
+  markDirty();
+}
+
+function onBossKilled(){
+  const b = state.boss;
+  b.hp = 0;
+  b.killed = true;
+  b.kills++;
+  b.weekKills++;          // ✅ 新增
+
+  const cg = getCoinMult() * 1e9;
+  const gg = 100000;
+  state.coins += cg;
+  state.gems  += gg;
+
+  /* 专属宠物 */
+  const pet = genPet('GOD', rollSpecies());
+  pet.star = 6;
+  pet.shiny = true;
+  state.petInv.push(pet);
+
+  toast('👹 ' + b.name + ' 已被击杀！💰+' + fmt(cg) + ' 💎+' + fmt(gg) + ' + 神宠');
+  beep(1400, .3, 'sine', .07);
+  setTimeout(() => beep(1800, .4, 'sine', .06), 140);
+  setTimeout(() => beep(2200, .5, 'sine', .055), 300);
+  burst('#ff5f5f', 120);
+  burst('#ffc93c', 80);
+  burst('#ffffff', 60);
+  shake(12);
+
+  /* 复活，血量 ×10 */
+  setTimeout(() => {
+    if(!state.boss) return;
+    const newHp = 1e12 * Math.pow(10, state.boss.kills);
+    state.boss.hp = newHp;
+    state.boss.maxHp = newHp;
+    state.boss.killed = false;
+    /* totalDamage 保留，用于展示本周累计；不再归零 */
+    toast('👹 ' + state.boss.name + ' 复活！（HP ×10）');
+    markDirty();
+    if(state.page === 'boss') updateBossUI();
+  }, 3000);
+
+  checkAchievements();
+}
+
+function storePityToBossCharge(){
+  ensureBossInit();
+  if(!state.boss) return;
+  if(state.boss.charges >= 10){ toast('充能已满'); beep(400, .1, 'sine', .04); return; }
+  const cost = 10;
+  if(state.pity < cost){ toast('保底进度不足 ' + cost); beep(220, .12, 'square', .04); return; }
+  state.pity -= cost;
+  state.boss.charges = Math.min(10, state.boss.charges + 1);
+  toast('⚡ 充能 +1（当前 ' + state.boss.charges + '）');
+  beep(1100, .15, 'sine', .06);
+  setTimeout(() => beep(1500, .2, 'sine', .05), 100);
+  burst('#2ee6ff', 40);
+  updateHUD();
+  if(state.page === 'roll') updatePityUI();
+  if(state.page === 'boss') renderBossPage();
+  markDirty();
+}
+
+function claimBossReward(needKills){
+  ensureBossInit();
+  const r = BOSS_REWARDS.find(x => x.needKills === needKills);
+  if(!r) return;
+  if(state.boss.weekKills < r.needKills){ toast('击杀数不足'); return; }
+  if(state.boss.claimedRewards.indexOf(r.needKills) >= 0){ toast('已领取'); return; }
+  state.boss.claimedRewards.push(r.needKills);
+
+  if(r.rebirth)   state.rebirths   += r.rebirth;
+  if(r.ascend)    state.ascends    += r.ascend;
+  if(r.transcend) state.transcends += r.transcend;
+
+  const txt = (r.rebirth ? '重生+' + r.rebirth + ' ' : '') +
+              (r.ascend  ? '进阶+' + r.ascend  + ' ' : '') +
+              (r.transcend ? '超级+' + r.transcend : '');
+  toast('🎁 ' + r.emoji + ' ' + r.name + ' 已领取！' + txt.trim());
+  beep(1200, .2, 'sine', .06);
+  setTimeout(() => beep(1600, .3, 'sine', .05), 120);
+  burst('#ffd86b', 50);
+  updateHUD();
+  markDirty(); saveGame();
+
+  /* 只更新这一个按钮 */
+  const el = document.querySelector('#bossRewards [data-boss-reward="' + needKills + '"]');
+  if(el){
+    el.disabled = true;
+    el.textContent = '已领';
+    el.classList.add('claimed');
+    const row = el.closest('.boss-reward');
+    if(row) row.classList.add('done');
+  }
 }
 
 function saveAch(){
@@ -4590,6 +4861,142 @@ function updateAbyssUI(){
   }
 }
 
+/* ═══════════ 👹 世界 Boss 页面 ═══════════ */
+function renderBossPage(){
+  ensureBossInit();
+  const b = state.boss;
+  const W = getBossWeakness();
+  const hpPct = b.maxHp > 0 ? Math.max(0, Math.min(100, b.hp / b.maxHp * 100)) : 0;
+
+  let h = '<div class="page-title"><h2>世界 Boss（测试版）</h2><p>每周轮换 · 弱点机制 · 伤害排行</p></div>';
+
+  h += '<div class="boss-hero" style="--bc:' + W.color + ';--bc-soft:' + W.color + '28;--bc-line:' + W.color + '66">' +
+    '<div class="bh-emoji">' + b.emoji + '</div>' +
+    '<div class="bh-name">' + esc(b.name) + '</div>' +
+    '<div class="bh-desc">' + esc(b.desc) + '</div>' +
+    '<div class="boss-hp-bar"><i style="width:' + hpPct + '%"></i></div>' +
+    '<div class="boss-hp-text">' + fmt(Math.max(0, b.hp)) + ' / ' + fmt(b.maxHp) + (b.killed ? ' · 已击杀' : '') + '</div>' +
+    '<div class="boss-weak" style="--wc:' + W.color + ';--wc-soft:' + W.color + '22">' +
+      W.emoji + ' 本周弱点：<b>' + W.name + '</b> · ' + W.desc +
+    '</div>' +
+  '</div>';
+
+  /* 充能面板 */
+  h += '<div class="boss-charges">' +
+    '<div><div class="bc-lb">⚡ 储存充能</div>' +
+    '<div class="bc-val">' + b.charges + ' / 10</div></div>' +
+    '<button class="bc-btn" data-boss-charge="1"' +
+      (state.pity >= 10 && b.charges < 10 ? '' : ' disabled') + '>' +
+      '消耗 10 保底 → 充能 +1' +
+    '</button>' +
+  '</div>';
+
+  /* 伤害 + 击杀 */
+  h += '<div class="card" style="max-width:760px;margin:0 auto 12px"><div class="card-body" style="display:flex;gap:14px;justify-content:space-around;text-align:center">' +
+    '<div><div style="font-size:10.5px;color:#8b98ad;font-weight:800;letter-spacing:.05em">本周击杀</div>' +
+    '<div id="bossTotalDmg" style="font-size:17px;font-weight:900;color:#ffc93c;margin-top:4px;font-variant-numeric:tabular-nums;text-shadow:0 0 14px rgba(255,200,60,.5)">' + fmt(b.totalDamage) + '</div></div>' +
+    '<div><div style="font-size:10.5px;color:#8b98ad;font-weight:800;letter-spacing:.05em">累计击杀</div>' +
+    '<div id="bossKills" style="font-size:17px;font-weight:900;color:#ff5f5f;margin-top:4px;font-variant-numeric:tabular-nums;text-shadow:0 0 14px rgba(255,95,95,.5)">' + b.kills + '</div></div>' +
+    '<div><div style="font-size:10.5px;color:#8b98ad;font-weight:800;letter-spacing:.05em">复活血量</div>' +
+    '<div id="bossReviveMult" style="font-size:17px;font-weight:900;color:#c4b1e8;margin-top:4px;font-variant-numeric:tabular-nums">×' + Math.pow(10, b.kills) + '</div></div>' +
+  '</div></div>';
+
+  /* 抽取 / 自动 按钮 */
+  h += '<div class="abyss-actions" style="max-width:420px;margin:0 auto 14px">' +
+    '<button class="abyss-btn primary" id="bossRollBtn">抽 取 · 攻 击  BOSS</button>' +
+    '<button class="abyss-btn auto' + (state.auto ? ' on' : '') + '" id="bossAutoBtn">' +
+      (state.auto ? '自动抽取：开' : '自动抽取：关') + '</button>' +
+  '</div>';
+
+  /* 奖励列表 */
+  h += '<div class="boss-rewards" id="bossRewards">';
+  for(const r of BOSS_REWARDS){
+    const reached = b.weekKills >= r.needKills;
+    const claimed = b.claimedRewards.indexOf(r.needKills) >= 0;
+    const gainTxt =
+      (r.rebirth   ? '重生 +' + r.rebirth   + ' ' : '') +
+      (r.ascend    ? '进阶 +' + r.ascend    + ' ' : '') +
+      (r.transcend ? '超级 +' + r.transcend       : '');
+    h += '<div class="boss-reward' + (claimed ? ' done' : '') + '">' +
+      '<div class="br-emoji">' + r.emoji + '</div>' +
+      '<div class="br-info">' +
+        '<div class="br-name">' + esc(r.name) + '</div>' +
+        '<div class="br-req">本周击杀 ' + r.needKills + ' 次（当前 ' + b.weekKills + '）</div>' +
+        '<div class="br-gain" style="color:#8ff0c4">' + gainTxt.trim() + '</div>' +
+      '</div>' +
+      '<button class="br-btn' + (claimed ? ' claimed' : '') + '" data-boss-reward="' + r.needKills + '"' +
+        (reached && !claimed ? '' : ' disabled') + '>' +
+        (claimed ? '已领' : (reached ? '领取' : '未达成')) +
+      '</button>' +
+    '</div>';
+  }
+  h += '</div>';
+
+  h += '<div class="card" style="max-width:760px;margin:14px auto 0"><div class="card-body" style="font-size:11.5px;color:#9aa8c4;line-height:1.8">' +
+    '<b style="color:#ffd86b">💡 玩法说明</b><br>' +
+    '· 每周一自动刷新一个新 Boss 和弱点<br>' +
+    '· 每次抽奖自动对 Boss 造成伤害<br>' +
+    '· 命中弱点伤害 ×5，否则 ×0.2<br>' +
+    '· 储存充能：消耗 10 点保底进度换 1 点，下次抽奖全额释放（每点 +50% 伤害）<br>' +
+    '· 击杀 Boss 获得大量金币、钻石 + 一只 GOD 6★ 闪耀宠物<br>' +
+    '· 击杀后 Boss 复活，血量 ×10，每周重置' +
+  '</div></div>';
+
+  $('#pageBoss').innerHTML = h;
+  const brb = $('#bossRollBtn');
+  if(brb) brb.addEventListener('click', doRoll);
+  const bab = $('#bossAutoBtn');
+  if(bab) bab.addEventListener('click', () => {
+    state.auto = !state.auto;
+    bab.textContent = state.auto ? '自动抽取：开' : '自动抽取：关';
+    bab.classList.toggle('on', state.auto);
+    if(state.auto) lastRollTime = performance.now() - getAutoInterval();
+    beep(state.auto ? 720 : 380, .09, 'sine', .04);
+  });
+}
+
+function updateBossUI(){
+  if(state.page !== 'boss') return;
+  const b = state.boss;
+  if(!b) return;
+  const W = getBossWeakness();
+  const hpPct = b.maxHp > 0 ? Math.max(0, Math.min(100, b.hp / b.maxHp * 100)) : 0;
+
+  const hero = document.querySelector('#pageBoss .boss-hero');
+  if(hero){
+    hero.style.setProperty('--bc', W.color);
+    hero.style.setProperty('--bc-soft', W.color + '28');
+    hero.style.setProperty('--bc-line', W.color + '66');
+  }
+  const fill = document.querySelector('#pageBoss .boss-hp-bar i');
+  if(fill) fill.style.width = hpPct + '%';
+  const hpTxt = document.querySelector('#pageBoss .boss-hp-text');
+  if(hpTxt) hpTxt.textContent = fmt(Math.max(0, b.hp)) + ' / ' + fmt(b.maxHp) + (b.killed ? ' · 已击杀' : '');
+
+  const td = $('#bossTotalDmg'); if(td) td.textContent = fmt(b.totalDamage);
+  const kl = $('#bossKills');   if(kl) kl.textContent = b.weekKills;
+  const rv = $('#bossReviveMult'); if(rv) rv.textContent = '×' + Math.pow(10, b.kills);
+  const bc = document.querySelector('#pageBoss .bc-val'); if(bc) bc.textContent = b.charges + ' / 10';
+
+  const btn = document.querySelector('#pageBoss .bc-btn');
+  if(btn) btn.disabled = !(state.pity >= 10 && b.charges < 10);
+
+  const wrap = $('#bossRewards');
+  if(wrap){
+    for(const r of BOSS_REWARDS){
+      const reached = b.weekKills >= r.needKills;
+      const claimed = b.claimedRewards.indexOf(r.needKills) >= 0;
+      const el = wrap.querySelector('[data-boss-reward="' + r.needKills + '"]');
+      if(el){
+        el.disabled = !(reached && !claimed);
+        el.textContent = claimed ? '已领' : (reached ? '领取' : '未达成');
+        el.classList.toggle('claimed', claimed);
+        el.closest('.boss-reward').classList.toggle('done', claimed);
+      }
+    }
+  }
+}
+
 /* ═══════════ 👑 VIP 专属页面 ═══════════ */
 const VIP_TREE_NODES = [
   { id:'vt_1', emoji:'⚔️', name:'VIP 攻击', pos:'tl' },
@@ -4722,6 +5129,7 @@ function renderSetPage(){
     '<div class="set-stat"><div class="ss-lb">宠物抽奖幸运</div><div class="ss-vl">' + fmt(getTotalPetDrawLuck()) + '</div></div>' +
     '<div class="set-stat"><div class="ss-lb">🕳️ 深渊层数</div><div class="ss-vl">' + state.abyssBest + '</div></div>' +
     '<div class="set-stat"><div class="ss-lb">💠 源质</div><div class="ss-vl">' + fmt(state.essence) + '</div></div>' +
+    '<div class="set-stat"><div class="ss-lb">👹 Boss击杀</div><div class="ss-vl">' + (state.boss ? state.boss.kills : 0) + '</div></div>' +
   '</div></div></div>';
 
   h += '<div class="card"><div class="card-head">⚙️ 偏好设置</div><div class="card-body">';
@@ -4887,6 +5295,8 @@ function buildNav(){
     return { id:p.id, name:p.name, emoji:p.emoji, locked:locked };
   });
 
+  sideList.unshift({ id:'boss', name:'Boss', emoji:'👹', boss:true });
+
   if(state.vip >= 1){
     sideList.unshift({ id:'vip', name:'VIP', emoji: state.vip === 2 ? '💎' : '👑', vip:true });
   }
@@ -4898,6 +5308,7 @@ function buildNav(){
   $('#sideNav').innerHTML = sideList.map(p => {
     return '<div class="side-btn' + (p.id === state.page ? ' on' : '') +
       (p.locked ? ' locked' : '') +
+      (p.boss ? ' boss-nav' : '') +
       (p.dev ? ' dev' : '') +
       (p.vip ? ' vip-nav' + (state.vip === 2 ? ' svip-nav' : '') : '') +
       '" data-page="' + p.id + '">' +
@@ -4917,6 +5328,10 @@ function switchPage(id){
     beep(220, .12, 'square', .04);
     shake(2);
     return;
+  }
+
+  if(id === 'boss'){
+    ensureBossInit();
   }
 
   if(id === '__dev'){
@@ -4948,6 +5363,7 @@ function renderPage(){
     case 'task': renderTaskPage(); break;
     case 'reb':  renderRebPage();  break;
     case 'abyss':renderAbyssPage();break;
+    case 'boss': renderBossPage(); break;
     case 'vip':  renderVipPage();  break;
     case 'set':  renderSetPage();  break;
   }
@@ -4985,12 +5401,14 @@ function showDiceTag(key, mult){
 }
 function doRoll(){
   if(state.rolling) return;
-  if(state.page !== 'roll' && state.page !== 'abyss') return;
+  if(state.page !== 'roll' && state.page !== 'abyss' && state.page !== 'boss') return;
   state.rolling = true;
   const btn = $('#rollBtn');
   if(btn) btn.disabled = true;
   const abtn = $('#abyssRollBtn');
   if(abtn) abtn.disabled = true;
+  const bbtn = $('#bossRollBtn');
+  if(bbtn) bbtn.disabled = true;
   hideDiceTag();
   const el = $('#display');
   if(el){ el.classList.remove('pop'); el.classList.add('rolling'); }
@@ -5021,8 +5439,12 @@ function doRoll(){
     if(btn2) btn2.disabled = false;
     const abtn2 = $('#abyssRollBtn');
     if(abtn2) abtn2.disabled = false;
+    const bbtn2 = $('#bossRollBtn');
+    if(bbtn2) bbtn2.disabled = false;
+    if(state.page === 'boss') updateBossUI();
   }, ROLL_ANIM);
 }
+
 function resolveRoll(result){
   const base = result.base;
   const affixes = result.affixes || [];
@@ -5125,12 +5547,16 @@ function resolveRoll(result){
 
   /* 🕳️ 深渊伤害 */
   applyAbyssDamageFromRoll(idx, aMult, diceMult);
+  /* 👹 世界 Boss 伤害 */
+  applyBossDamageFromRoll(idx, aMult, diceMult);
 
   updateHUD();
   if(state.page === 'roll'){
     updatePityUI(); updateDiceHintUI(); renderHistUI();
   }else if(state.page === 'abyss'){
     updateAbyssUI();
+  }else if(state.page === 'boss'){
+    updateBossUI();
   }
 }
 
@@ -5171,6 +5597,8 @@ function resolveSVIPExtra(result){
 
   /* 深渊伤害照常结算，不带骰子倍率 */
   applyAbyssDamageFromRoll(idx, aMult, 1);
+  /* 👹 Boss 伤害 */
+  applyBossDamageFromRoll(idx, aMult, 1);
 
   /* 推入队列 */
   if(!state.svipExtrasQueue) state.svipExtrasQueue = [];
@@ -5178,6 +5606,7 @@ function resolveSVIPExtra(result){
 
   updateHUD();
   if(state.page === 'abyss') updateAbyssUI();
+  else if(state.page === 'boss') updateBossUI();
 }
 
 function renderSVIPExtras(){
@@ -5207,7 +5636,7 @@ function renderSVIPExtras(){
 
 function autoLoop(){
   const now = performance.now();
-  if(state.auto && !state.rolling && (state.page === 'roll' || state.page === 'abyss') && now - lastRollTime >= getAutoInterval()){
+  if(state.auto && !state.rolling && (state.page === 'roll' || state.page === 'abyss' || state.page === 'boss') && now - lastRollTime >= getAutoInterval()){
     lastRollTime = now;
     doRoll();
   }
@@ -5810,6 +6239,8 @@ document.addEventListener('click', e => {
     if(el.dataset.buy){ buyShopItem(el.dataset.buy); return; }
     if(el.dataset.recharge){ buyRechargePack(el.dataset.recharge); return; }
     if(el.dataset.vipclaim){ claimVipDaily(); return; }
+    if(el.dataset.bossCharge){ storePityToBossCharge(); return; }
+    if(el.dataset.bossReward){ claimBossReward(parseFloat(el.dataset.bossReward)); return; }
     if(el.dataset.gamble){
       doGamble(el.dataset.gamble, el.dataset.pick);
       return;
@@ -5949,7 +6380,7 @@ window.addEventListener('keydown', e => {
     if(e.key === 'Escape') closeConfirm();
     return;
   }
-  if(state.page === 'roll' || state.page === 'abyss'){
+  if(state.page === 'roll' || state.page === 'abyss' || state.page === 'boss'){
     if(e.target.tagName === 'BUTTON' && (e.code === 'Space' || e.key === ' ')) return;
     if(e.code === 'Space' || e.key === ' '){
       e.preventDefault();
@@ -5957,7 +6388,9 @@ window.addEventListener('keydown', e => {
     }
     if(e.key === 'a' || e.key === 'A'){
       if(!e.repeat){
-        const b = state.page === 'roll' ? $('#autoBtn') : $('#abyssAutoBtn');
+        const b = state.page === 'roll'  ? $('#autoBtn')
+                : state.page === 'abyss' ? $('#abyssAutoBtn')
+                :                          $('#bossAutoBtn');
         if(b) b.click();
       }
     }
@@ -5977,6 +6410,7 @@ if(!state.daily) state.daily = loadDaily();
 if(!state.event || state.event === 'none'){
   if(!state.eventUntil || state.eventUntil < Date.now()) state.eventUntil = Date.now() + 60 * 1000;
 }
+ensureBossInit();
 buildNav();
 refreshShop();
 updateHUD();
@@ -5997,7 +6431,8 @@ window.symrng = {
       rainbowPets: state.petInv.filter(p => p.rainbow).length,
       abyssFloor: state.abyssFloor,
       abyssBest: state.abyssBest,
-      essence: state.essence
+      essence: state.essence,
+      bossKills: state.boss ? state.boss.kills : 0
     };
   },
   buffWorm: function(mult){
@@ -6072,6 +6507,16 @@ window.symrng = {
     console.log('  变异: ' + getAbyssMods().map(m => m.name).join('、'));
     console.log('  源质: ' + state.essence);
     return { floor: state.abyssFloor, best: state.abyssBest, hp: state.abyssHp, maxHp: state.abyssMaxHp, essence: state.essence };
+  },
+  bossInfo: function(){
+    ensureBossInit();
+    console.log('%c👹 世界 Boss 信息', 'color:#ff5f5f;font-weight:900;font-size:13px');
+    console.log('  ' + state.boss.emoji + ' ' + state.boss.name + '（' + state.boss.desc + '）');
+    console.log('  弱点: ' + getBossWeakness().name);
+    console.log('  HP: ' + fmt(state.boss.hp) + ' / ' + fmt(state.boss.maxHp));
+    console.log('  本周伤害: ' + fmt(state.boss.totalDamage));
+    console.log('  击杀: ' + state.boss.kills + ' · 充能: ' + state.boss.charges);
+    return state.boss;
   }
 };
 
@@ -6487,7 +6932,8 @@ function refresh(){
     '宠物抽奖幸运 ' + fmt(getTotalPetDrawLuck()) + '\n' +
     '真重生次数 ' + state.trueRebirths + ' · 宠物抽奖折扣 -' +
       Math.round(Math.min(TRUE_REBIRTH.petDrawDiscountCap, state.trueRebirths * TRUE_REBIRTH.petDrawDiscountPer) * 100) + '%\n' +
-    '当前活动  ' + getEvent().emoji + ' ' + getEvent().name;
+    '当前活动  ' + getEvent().emoji + ' ' + getEvent().name + '\n' +
+    '👹 Boss击杀 ' + (state.boss ? state.boss.kills : 0) + ' · 充能 ' + (state.boss ? state.boss.charges : 0);
 
   const po = q('#saPetOut');
   if(po){
@@ -6526,6 +6972,7 @@ function refresh(){
     abyssFloor: state.abyssFloor,
     abyssBest: state.abyssBest,
     essence: state.essence,
+    bossKills: state.boss ? state.boss.kills : 0,
     ptreeLevels: ptreeSum,
     ptree2Levels: ptree2Sum
   }, null, 1);
@@ -6979,14 +7426,16 @@ if(!window.symrng.addCoins){
 
 try{
   console.log(
-    '%c🐴 沙杨马 RNG · 可视化后台 v8\n' +
+    '%c🐴 沙杨马 RNG · 可视化后台 v10\n' +
     '%csymrng.admin()  →  打开后台面板（或按 L+B+S）\n' +
     '%csymrng.giveEssence(10000)  →  直接获得源质\n' +
-    '%csymrng.abyssInfo()  →  查看深渊状态',
+    '%csymrng.abyssInfo()  →  查看深渊状态\n' +
+    '%csymrng.bossInfo()  →  查看世界 Boss 状态',
     'color:#8ff0c4;font-size:14px;font-weight:900',
     'color:#9fc4ff;font-size:12px',
     'color:#a855f7;font-size:12px',
-    'color:#ff9bd8;font-size:12px'
+    'color:#ff9bd8;font-size:12px',
+    'color:#ff5f5f;font-size:12px'
   );
 }catch(e){}
 
