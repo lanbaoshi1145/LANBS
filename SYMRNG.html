@@ -538,6 +538,27 @@ body{
 .set-toggle .st-sw.on{background:linear-gradient(90deg,#22c98a,#0d8557);}
 .set-toggle .st-sw::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s;}
 .set-toggle .st-sw.on::after{transform:translateX(22px);}
+.set-input{
+  width:100%;padding:12px 14px;border-radius:12px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);
+  color:#fff;font-size:14px;font-family:inherit;letter-spacing:.1em;
+  outline:none;transition:.2s;text-align:center;text-transform:uppercase;
+}
+.set-input:focus{border-color:rgba(120,170,255,.7);background:rgba(255,255,255,.09)}
+.set-input::placeholder{color:#5a6580;text-transform:none;letter-spacing:.05em}
+
+/* 💾 后台按钮 */
+.side-btn.dev{
+  background:linear-gradient(165deg,rgba(255,200,60,.18),rgba(255,200,60,.04));
+  border-color:rgba(255,200,60,.4);
+}
+.side-btn.dev span{filter:none;}
+.side-btn.dev small{color:#ffd86b;}
+.side-btn.dev.on{
+  background:linear-gradient(165deg,rgba(255,200,60,.32),rgba(255,200,60,.08));
+  border-color:rgba(255,200,60,.7);
+  box-shadow:0 0 22px -6px rgba(255,200,60,.6);
+}
 
 .bottom-nav{position:fixed;left:0;right:0;bottom:0;height:var(--nav-h);z-index:100;display:flex;background:rgba(10,15,30,.94);backdrop-filter:blur(16px);border-top:1px solid rgba(255,255,255,.08);box-shadow:0 -10px 30px -16px #000;padding:0 6px;overflow-x:auto;justify-content:center;}
 .bottom-nav::-webkit-scrollbar{display:none}
@@ -879,7 +900,7 @@ body{
 
 /* ═══ 版本号 ═══ */
 body::after{
-  content: "v9.1.0";
+  content: "v9.2.0";
   position: fixed;
   left: 8px;
   top: 8px;
@@ -1082,6 +1103,7 @@ function petTier(p){
   return 0;
 }
 function petPrefix(p){
+  if(p && p.richPup) return '💰';
   const t = petTier(p);
   return t === 2 ? '🌈' : (t === 1 ? '✨' : '');
 }
@@ -1090,6 +1112,7 @@ function petVisualClass(p){
   return t === 2 ? ' rainbow' : (t === 1 ? ' shiny' : '');
 }
 function petBadgeHTML(p){
+  if(p && p.richPup) return '<div class="pcv-badge sh" style="background:linear-gradient(180deg,#ffd86b,#c98a00)">💰</div>';
   const t = petTier(p);
   if(t === 2) return '<div class="pcv-badge rb">🌈</div>';
   if(t === 1) return '<div class="pcv-badge sh">✨</div>';
@@ -1122,6 +1145,7 @@ function getPetTraits(){
     for(const tr of sp.traits){
       total[tr.t] = (total[tr.t] || 0) + tr.v * starMul * formMul;
     }
+    if(p.richPup) total.coin += 0.001;
   }
   return total;
 }
@@ -1135,7 +1159,8 @@ function genPet(qualityId, speciesId){
     star: sp.minStar,
     exp: 0,
     shiny: false,
-    rainbow: false
+    rainbow: false,
+    richPup: false
   };
 }
 function rollSpecies(){
@@ -1149,6 +1174,7 @@ function petExpNeed(qualityId){
 }
 
 function petAbsorbExp(absorber, absorbed){
+  if(absorber.richPup || absorbed.richPup) return 0;
   if(!absorber || !absorbed) return 0;
   if(absorber.uid === absorbed.uid) return 0;
   if(absorber.star !== absorbed.star) return 0;
@@ -1164,11 +1190,13 @@ function petAbsorbExp(absorber, absorbed){
 function autoSelectLevelup(){
   const target = state.petLevelupTarget ? state.petInv.find(p => p.uid === state.petLevelupTarget) : null;
   if(!target) return 0;
+  if(target.richPup) return 0;                     // ← 新增：主宠物是富贵小狗直接返回
 
   const ti = PET_QUALITIES.findIndex(q => q.id === target.quality);
   const tt = petTier(target);
   const mats = state.petInv.filter(p =>
     p.uid !== target.uid &&
+    !p.richPup &&                                  // ← 新增：排除富贵小狗
     p.star === target.star &&
     petTier(p) === tt &&
     PET_QUALITIES.findIndex(q => q.id === p.quality) <= ti
@@ -1184,6 +1212,7 @@ function autoSelectLevelup(){
 }
 
 function absorbPets(){
+  if(target.richPup){ toast('💰「有钱人养的」小狗不能进阶'); return; }
   const target = state.petInv.find(p => p.uid === state.petLevelupTarget);
   if(!target){ toast('请先选主宠物'); return; }
   const mats = state.petLevelupMaterials
@@ -1668,7 +1697,9 @@ const state = {
     shinyCommon: 0, shinyCommonDouble: 0, chaoticCommon: 0,
     goldDice: 0, diamondDice: 0, emeraldDice: 0, rainbowDice: 0
   },
-  unlockedAch: {}
+  unlockedAch: {},
+  devUnlocked: false,
+  specialCodes: {}
 };
 RARITIES.forEach(r => state.inv[r.id] = 0);
 try{
@@ -1787,6 +1818,8 @@ function getSaveData(){
     unlockedAch: state.unlockedAch,
     sound: state.sound,
     event: state.event, eventUntil: state.eventUntil,
+    devUnlocked: state.devUnlocked,
+    specialCodes: state.specialCodes,
     /* 🕳️ 源质深渊 */
     abyssFloor: state.abyssFloor,
     abyssBest: state.abyssBest,
@@ -1820,6 +1853,9 @@ function applySaveData(d){
   if(typeof d.rechargeUnlocked === 'boolean') state.rechargeUnlocked = d.rechargeUnlocked;
   if(typeof d.event === 'string') state.event = d.event;
   if(typeof d.eventUntil === 'number') state.eventUntil = d.eventUntil;
+  if(typeof d.devUnlocked === 'boolean') state.devUnlocked = d.devUnlocked;
+  if(d.specialCodes && typeof d.specialCodes === 'object') state.specialCodes = d.specialCodes;
+  else state.specialCodes = {};
 
   let refundGems = 0;
   if(d.pets && typeof d.pets === 'object' && !Array.isArray(d.petInv)){
@@ -1848,7 +1884,8 @@ function applySaveData(d){
           star: Math.max(sp.minStar, Math.min(MAX_STAR, Math.floor(num(p.star, 1)))),
           exp: Math.max(0, Math.floor(num(p.exp, 0))),
           shiny: !!p.shiny,
-          rainbow: !!p.rainbow
+          rainbow: !!p.rainbow,
+          richPup: !!p.richPup
         };
       });
   } else {
@@ -3324,9 +3361,9 @@ function renderPetPage(){
       const q = getQuality(p.quality);
       const sp = getSpecies(p.species);
       const t = petTier(p);
-      h += '<div class="equip-slot filled' + (t === 2 ? ' rb' : '') + '" data-unequip="' + p.uid + '" style="--qc:' + q.color + '">' +
+      h += '<div class="equip-slot filled' + (t === 2 ? ' rb' : '') + '" data-unequip="' + p.uid + '" style="--qc:' + (p.richPup ? '#ffc93c' : q.color) + '">' +
         '<div class="es-emoji">' + sp.emoji + '</div>' +
-        '<div class="es-info">' + q.id + ' · ' + petPrefix(p) + esc(sp.name) + '</div>' +
+        '<div class="es-info">' + (p.richPup ? '富贵 · 有钱人养的' + sp.name : q.id + ' · ' + petPrefix(p) + esc(sp.name)) + '</div>' +
         '<div class="es-mult">x' + fmt(petMult(p)) + '</div>' +
       '</div>';
     }else{
@@ -3437,6 +3474,8 @@ function renderPetBag(){
   for(const p of sorted){
     const q = getQuality(p.quality);
     const sp = getSpecies(p.species);
+    const dispName = p.richPup ? '有钱人养的' + sp.name : (petPrefix(p) + esc(sp.name));
+    const dispQuality = p.richPup ? '富贵' : q.name;
     const eq = state.petEquipped.includes(p.uid);
     const sel = state.petSelection.includes(p.uid);
     const selIdx = state.petSelection.indexOf(p.uid);
@@ -3446,13 +3485,13 @@ function renderPetBag(){
 
     h += '<div class="pet-card-v2 ' + (eq ? 'equipped' : '') + ' ' + (sel ? 'selected' : '') +
       petVisualClass(p) + '" ' +
-      'data-pet-card="' + p.uid + '" data-pet-idx="' + selIdx + '" style="--qc:' + q.color + '">' +
+      'data-pet-card="' + p.uid + '" data-pet-idx="' + selIdx + '" style="--qc:' + (p.richPup ? '#ffc93c' : q.color) + '">' +
       '<div class="pcv-sel">' + (sel ? (selIdx + 1) : '') + '</div>' +
       (eq ? '<div class="pcv-badge">装备中</div>' : '') +
       petBadgeHTML(p) +
       '<div class="pcv-emoji">' + sp.emoji + '</div>' +
-      '<div class="pcv-name">' + petPrefix(p) + esc(sp.name) + '</div>' +
-      '<div class="pcv-quality">' + q.name + '</div>' +
+      '<div class="pcv-name">' + dispName + '</div>' +
+      '<div class="pcv-quality">' + dispQuality + '</div>' +
       '<div class="pcv-star">' + getStarInfo(p.star).label + '</div>' +
       '<div class="pcv-mult">x' + fmt(petMult(p)) + '</div>' +
       '<button class="pcv-equip' + (eq ? ' on' : '') + '" data-equip="' + p.uid + '"' + eqBtnAttr + '>' + eqBtnTxt + '</button>' +
@@ -3558,6 +3597,8 @@ function renderPetLevelup(){
   for(const p of sorted){
     const q = getQuality(p.quality);
     const sp = getSpecies(p.species);
+    const dispName = p.richPup ? '有钱人养的' + sp.name : (petPrefix(p) + esc(sp.name));
+    const dispQuality = p.richPup ? '富贵' : q.name;
     const eq = state.petEquipped.includes(p.uid);
 
     let sel = false, selIdx = -1, dim = false;
@@ -3582,14 +3623,14 @@ function renderPetLevelup(){
     const eqBtnAttr = (!eq && slotFull) ? 'disabled' : '';
 
     h += '<div class="pet-card-v2 ' + (eq ? 'equipped' : '') + ' ' + (sel ? 'selected' : '') +
-      petVisualClass(p) + (dim ? ' dim' : '') + '" ' +
-      'data-pet-card="' + p.uid + '" data-pet-idx="' + selIdx + '" style="--qc:' + q.color + '">' +
+      petVisualClass(p) + '" ' +
+      'data-pet-card="' + p.uid + '" data-pet-idx="' + selIdx + '" style="--qc:' + (p.richPup ? '#ffc93c' : q.color) + '">' +
       '<div class="pcv-sel">' + (sel ? (selIdx + 1) : '') + '</div>' +
       (eq ? '<div class="pcv-badge">装备中</div>' : '') +
       petBadgeHTML(p) +
       '<div class="pcv-emoji">' + sp.emoji + '</div>' +
-      '<div class="pcv-name">' + petPrefix(p) + esc(sp.name) + '</div>' +
-      '<div class="pcv-quality">' + q.name + '</div>' +
+      '<div class="pcv-name">' + dispName + '</div>' +
+      '<div class="pcv-quality">' + dispQuality + '</div>' +
       '<div class="pcv-star">' + getStarInfo(p.star).label + '</div>' +
       '<div class="pcv-mult">x' + fmt(petMult(p)) + '</div>' +
       '<button class="pcv-equip' + (eq ? ' on' : '') + '" data-equip="' + p.uid + '"' + eqBtnAttr + '>' + eqBtnTxt + '</button>' +
@@ -4139,11 +4180,20 @@ function renderSetPage(){
     '<div class="st-sw ' + (state.sound ? 'on' : '') + '" id="soundSw"></div>' +
   '</div></div></div>';
 
+  /* 🎁 礼包码 */
+  h += '<div class="card"><div class="card-head">🎁 礼包码</div><div class="card-body">';
+  h += '<div class="set-info">输入礼包码可兑换奖励。<br>例如：VIP666 等老套的兑换码。</div>';
+  h += '<div style="display:flex;gap:8px;margin-bottom:10px">' +
+    '<input id="giftCodeInput" class="set-input" type="text" placeholder="请输入礼包码" maxlength="32" autocomplete="off" spellcheck="false">' +
+    '<button class="set-btn primary" id="giftCodeBtn" style="flex:none;min-width:88px;padding:12px 18px">兑换</button>' +
+  '</div>';
+  h += '<div id="giftCodeMsg" style="font-size:11.5px;color:#7c89a5;min-height:16px;text-align:center;font-weight:800;letter-spacing:.03em"></div>';
+  h += '</div></div>';
+
   h += '<div class="card"><div class="card-head" style="color:#ff8a8a">⚠️ 危险操作</div><div class="card-body">';
   h += '<div class="set-info">清空存档会删除所有游戏进度，包括金币、钻石、宠物、技能树、成就、重生次数等。此操作<b style="color:#ff8a8a">不可撤销</b>。</div>';
   h += '<div class="set-btns"><button class="set-btn danger" id="btnWipe">🗑️ 清空存档并重置游戏</button></div>';
-  h += '</div></div></div>';
-
+  h += '</div></div>';
   $('#pageSet').innerHTML = h;
 
   $('#btnExport').addEventListener('click', exportSave);
@@ -4156,6 +4206,79 @@ function renderSetPage(){
     $('#soundSw').classList.toggle('on', state.sound);
     markDirty(); saveGame();
     if(state.sound) beep(1000, .12, 'sine', .05);
+  });
+
+  /* 🎁 礼包码兑换 */
+  function redeemGiftCode(){
+    const inp = $('#giftCodeInput');
+    const msg = $('#giftCodeMsg');
+    if(!inp || !msg) return;
+    const code = inp.value.trim().toUpperCase();
+    if(!code){
+      msg.textContent = '请输入礼包码';
+      msg.style.color = '#ff8a8a';
+      beep(220, .12, 'square', .04);
+      return;
+    }
+
+    if(code === 'GMLBS1145'){
+      if(state.devUnlocked){
+        msg.textContent = '该礼包码已兑换过';
+        msg.style.color = '#8b98ad';
+        beep(400, .1, 'sine', .04);
+        return;
+      }
+      state.devUnlocked = true;
+      msg.textContent = '✅ 兑换成功！侧边栏已解锁 💾 按钮';
+      msg.style.color = '#8ff0c4';
+      inp.value = '';
+      beep(1100, .2, 'sine', .06);
+      setTimeout(() => beep(1500, .3, 'sine', .05), 120);
+      burst('#ffd86b', 60);
+      buildNav();
+      markDirty(); saveGame();
+      return;
+    }
+
+    if(code === 'VIP666'){
+      if(state.specialCodes && state.specialCodes.VIP666){
+        msg.textContent = '该礼包码已兑换过';
+        msg.style.color = '#8b98ad';
+        beep(400, .1, 'sine', .04);
+        return;
+      }
+      if(!state.specialCodes) state.specialCodes = {};
+      state.specialCodes.VIP666 = true;
+
+      state.coins += 666;
+
+      const richPup = genPet('N', 'dog');
+      richPup.shiny = true;
+      richPup.star = 1;
+      richPup.richPup = true;
+      state.petInv.push(richPup);
+
+      msg.textContent = '✅ 兑换成功！获得 💰666 金币 + 「有钱人养的」小狗';
+      msg.style.color = '#8ff0c4';
+      inp.value = '';
+      beep(1100, .2, 'sine', .06);
+      setTimeout(() => beep(1500, .3, 'sine', .05), 120);
+      burst('#ffd86b', 60);
+      buildNav();
+      updateHUD();
+      markDirty(); saveGame();
+      return;
+    }
+
+    msg.textContent = '❌ 礼包码无效';
+    msg.style.color = '#ff8a8a';
+    beep(200, .15, 'square', .05);
+    inp.value = '';
+    inp.focus();
+  }
+  $('#giftCodeBtn').addEventListener('click', redeemGiftCode);
+  $('#giftCodeInput').addEventListener('keydown', e => {
+    if(e.key === 'Enter') redeemGiftCode();
   });
 }
 
@@ -4179,10 +4302,19 @@ function buildNav(){
       '<span class="nb-emoji">' + p.emoji + '</span><span>' + p.name + '</span></div>'
   ).join('');
 
-  $('#sideNav').innerHTML = SIDE_PAGES.map(p => {
+  const sideList = SIDE_PAGES.map(p => {
     const locked = (p.id === 'abyss' && state.trueRebirths < 1);
+    return { id:p.id, name:p.name, emoji:p.emoji, locked:locked };
+  });
+
+  if(state.devUnlocked){
+    sideList.push({ id:'__dev', name:'后台', emoji:'💾', dev:true });
+  }
+
+  $('#sideNav').innerHTML = sideList.map(p => {
     return '<div class="side-btn' + (p.id === state.page ? ' on' : '') +
-      (locked ? ' locked' : '') +
+      (p.locked ? ' locked' : '') +
+      (p.dev ? ' dev' : '') +
       '" data-page="' + p.id + '">' +
       '<span>' + p.emoji + '</span><small>' + p.name + '</small></div>';
   }).join('');
@@ -4194,6 +4326,15 @@ function switchPage(id){
     shake(2);
     return;
   }
+
+  if(id === '__dev'){
+    if(window.symrng && window.symrng.admin){
+      window.symrng.admin();
+      beep(1000, .12, 'sine', .05);
+    }
+    return;
+  }
+
   state.page = id;
   document.querySelectorAll('.page').forEach(el => el.classList.remove('on'));
   const pageEl = $('#page' + id.charAt(0).toUpperCase() + id.slice(1));
@@ -4491,6 +4632,7 @@ function tryMergePets(){
     toast('需要选择 3 只宠物');
     return;
   }
+  if(sel.some(p => p.richPup)){ toast('💰「有钱人养的」小狗不能参与合成'); beep(220,.12,'square',.04); return; }
   const first = sel[0];
   const tier = petTier(first);
 
@@ -4572,6 +4714,7 @@ function tryMergePets(){
 const DECOMPOSE_RATE = 10000;
 
 function decomposePets(){
+  if(sel.some(p => p.richPup)){ toast('💰「有钱人养的」小狗不能分解'); beep(220,.12,'square',.04); return; }
   const sel = state.petSelection.map(uid => state.petInv.find(p => p.uid === uid)).filter(Boolean);
   if(!sel.length){ toast('请先选择要分解的宠物'); return; }
 
@@ -4620,6 +4763,7 @@ function autoMergeAll(){
     changed = false;
     const groups = {};
     for(const p of state.petInv){
+      if(p.richPup) continue;
       if(petTier(p) !== 0) continue;
       const key = p.species + '|' + p.quality + '|' + p.star;
       if(!groups[key]) groups[key] = [];
@@ -4647,6 +4791,7 @@ function autoMergeAll(){
     changed = false;
     const groups = {};
     for(const p of state.petInv){
+      if(p.richPup) continue;
       if(petTier(p) !== 1) continue;
       const key = p.species + '|' + p.quality + '|' + p.star;
       if(!groups[key]) groups[key] = [];
