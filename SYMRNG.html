@@ -38,6 +38,7 @@ body{
 .chip.gold .v{color:var(--gold);text-shadow:0 0 12px rgba(255,201,60,.5)}
 .chip.gem .v{color:var(--gem);text-shadow:0 0 12px rgba(46,230,255,.5)}
 .chip.rb .v{color:#ff9bd8;text-shadow:0 0 12px rgba(255,155,216,.5)}
+.chip.abyss .v{color:#c85aff;text-shadow:0 0 12px rgba(200,90,255,.6)}
 
 .buffs{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:10px;min-height:0}
 .buff{
@@ -906,6 +907,7 @@ body::after{
     <div class="chip"><span>💵</span><span class="v" id="hMult">x1.00</span></div>
     <div class="chip rb"><span>🌟</span><span class="v" id="hRb">0·0·0</span></div>
     <div class="chip"><span>🎲</span><span class="v" id="hRolls">0</span></div>
+    <div class="chip abyss" id="hAbyssChip" style="display:none"><span>🕳️</span><span class="v" id="hAbyss">1</span></div>
   </div>
 
   <div class="buffs" id="buffBar"></div>
@@ -2756,6 +2758,19 @@ function updateHUD(){
   $('#hRb').textContent    = state.rebirths + '·' + state.ascends + '·' + state.transcends +
                              (state.trueRebirths ? '·' + state.trueRebirths : '');
   $('#hRolls').textContent = fmt(state.rolls);
+
+  /* 🕳️ 深渊层数 chip */
+  const abyssChip = $('#hAbyssChip');
+  if(abyssChip){
+    if(state.trueRebirths >= 1){
+      abyssChip.style.display = '';
+      const ha = $('#hAbyss');
+      if(ha) ha.textContent = state.abyssBest || 1;
+    }else{
+      abyssChip.style.display = 'none';
+    }
+  }
+
   checkAchievements();
   markDirty();
 }
@@ -3949,15 +3964,15 @@ function renderAbyssPage(){
   let h = '<div class="page-title"><h2>源质深渊</h2><p>无尽爬塔 · 变异规则 · 源质永久升级</p></div>';
 
   h += '<div class="abyss-progress">' +
-    '<div class="abyss-stat"><span>当前层</span><b>' + state.abyssFloor + '</b></div>' +
-    '<div class="abyss-stat"><span>最高层</span><b>' + state.abyssBest + '</b></div>' +
+    '<div class="abyss-stat"><span>当前层</span><b id="abyssFloorNow">' + state.abyssFloor + '</b></div>' +
+    '<div class="abyss-stat"><span>最高层</span><b id="abyssBestNow">' + state.abyssBest + '</b></div>' +
     '<div class="abyss-stat"><span>源质</span><b>' + fmt(state.essence) + '</b></div>' +
   '</div>';
 
   h += '<div class="abyss-enemy">' +
     '<div class="enemy-head">' +
       '<span class="enemy-emoji">👹</span>' +
-      '<span class="enemy-name">深渊守卫 · 第 ' + state.abyssFloor + ' 层' +
+      '<span class="enemy-name" id="abyssEnemyName">深渊守卫 · 第 ' + state.abyssFloor + ' 层' +
         (getAbyssModCount(state.abyssFloor) >= 4 ? ' <span style="color:#ff9bd8">[狂乱]</span>' : '') +
       '</span>' +
     '</div>' +
@@ -4038,6 +4053,7 @@ function renderAbyssPage(){
 }
 function updateAbyssUI(){
   if(state.page !== 'abyss') return;
+
   const hpPct = state.abyssMaxHp > 0 ? Math.max(0, Math.min(100, state.abyssHp / state.abyssMaxHp * 100)) : 0;
   const fill = $('#enemyHpFill');
   if(fill) fill.style.width = hpPct + '%';
@@ -4053,6 +4069,23 @@ function updateAbyssUI(){
   if(rrBtn){
     rrBtn.disabled = state.abyssRerollLeft <= 0;
     rrBtn.textContent = '🎲 重随变异（剩 ' + state.abyssRerollLeft + '）';
+  }
+
+  /* 🕳️ 下面这几行是新加的：刷新层数、敌人名、变异列表 */
+  const fn = $('#abyssFloorNow');
+  if(fn) fn.textContent = state.abyssFloor;
+  const bn = $('#abyssBestNow');
+  if(bn) bn.textContent = state.abyssBest;
+  const en = $('#abyssEnemyName');
+  if(en) en.innerHTML = '深渊守卫 · 第 ' + state.abyssFloor + ' 层' +
+    (getAbyssModCount(state.abyssFloor) >= 4 ? ' <span style="color:#ff9bd8">[狂乱]</span>' : '');
+  const modsEl = $('#abyssMods');
+  if(modsEl){
+    const mods = getAbyssMods();
+    modsEl.innerHTML = mods.map(m =>
+      '<div class="abyss-mod">' + m.emoji + ' ' + esc(m.name) +
+      '<span class="am-desc">' + esc(m.desc) + '</span></div>'
+    ).join('');
   }
 }
 
