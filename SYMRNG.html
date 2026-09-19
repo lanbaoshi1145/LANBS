@@ -622,6 +622,9 @@ body{
 .side-btn.on span{filter:none;transform:scale(1.12);}
 .side-btn.on small{color:#9fc4ff;}
 .side-btn:active{transform:scale(.92);}
+.side-btn.locked{opacity:.45;filter:grayscale(.85)}
+.side-btn.locked small{color:#5a6580}
+.side-btn.locked.on{opacity:.6}
 
 @media(max-width:820px){
   .side-nav{
@@ -4176,19 +4179,19 @@ function buildNav(){
       '<span class="nb-emoji">' + p.emoji + '</span><span>' + p.name + '</span></div>'
   ).join('');
 
-  const sidePages = SIDE_PAGES.filter(p => {
-    if(p.id === 'abyss') return state.trueRebirths >= 1;
-    return true;
-  });
-  $('#sideNav').innerHTML = sidePages.map(p =>
-    '<div class="side-btn' + (p.id === state.page ? ' on' : '') + '" data-page="' + p.id + '">' +
-      '<span>' + p.emoji + '</span><small>' + p.name + '</small></div>'
-  ).join('');
+  $('#sideNav').innerHTML = SIDE_PAGES.map(p => {
+    const locked = (p.id === 'abyss' && state.trueRebirths < 1);
+    return '<div class="side-btn' + (p.id === state.page ? ' on' : '') +
+      (locked ? ' locked' : '') +
+      '" data-page="' + p.id + '">' +
+      '<span>' + p.emoji + '</span><small>' + p.name + '</small></div>';
+  }).join('');
 }
 function switchPage(id){
   if(id === 'abyss' && state.trueRebirths < 1){
-    toast('🌌 完成一次真重生后解锁源质深渊');
+    toast('要想进入沙杨马之深渊，需掌握逆转乾坤之术。');
     beep(220, .12, 'square', .04);
+    shake(2);
     return;
   }
   state.page = id;
