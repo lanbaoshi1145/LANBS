@@ -561,6 +561,8 @@ body{
 .set-toggle .st-sw.on{background:linear-gradient(90deg,#22c98a,#0d8557);}
 .set-toggle .st-sw::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s;}
 .set-toggle .st-sw.on::after{transform:translateX(22px);}
+.set-toggle .st-lb{display:flex;flex-direction:column;gap:2px;line-height:1.35}
+.set-toggle .st-sub{font-size:10.5px;font-weight:700;color:#7c89a5;letter-spacing:.01em}
 .set-input{
   width:100%;padding:12px 14px;border-radius:12px;
   background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);
@@ -1969,6 +1971,9 @@ const state = {
   petEquipped: [],
   inv: {}, recent: [], buffs: [],
   auto: false, sound: true, rolling: false,
+  screenShake: true,   // 偏好：画面震动（抽卡/升级/合成的屏幕抖动）
+  deviceVibrate: true,  // 偏好：设备震动（移动端 navigator.vibrate）
+  particles: true,      // 偏好：抽卡 / 升级粒子特效
   upgradeMode: 10,      // 升级模式：点击节点一次升几级（1 / 5 / 10）
   page: 'roll', shopTab: 'coins', invTab: 'base',
   petTab: 'draw', petSelection: [],
@@ -2128,6 +2133,9 @@ function getSaveData(){
     stats: state.stats,
     unlockedAch: state.unlockedAch,
     sound: state.sound,
+    screenShake: state.screenShake,
+    deviceVibrate: state.deviceVibrate,
+    particles: state.particles,
     event: state.event, eventUntil: state.eventUntil,
     devUnlocked: state.devUnlocked,
     specialCodes: state.specialCodes,
@@ -2169,6 +2177,11 @@ function applySaveData(d){
   state.trueRebirths = Math.max(0, Math.floor(num(d.trueRebirths, 0)));
   state.petDrawLuck  = Math.max(0, Math.floor(num(d.petDrawLuck, 0)));
   if(typeof d.sound === 'boolean') state.sound = d.sound;
+  if(typeof d.screenShake === 'boolean') state.screenShake = d.screenShake;
+  if(typeof d.deviceVibrate === 'boolean') state.deviceVibrate = d.deviceVibrate;
+  if(typeof d.particles === 'boolean') state.particles = d.particles;
+  // 向后兼容：旧存档只有 vibrate 字段 → 映射到 deviceVibrate
+  if(typeof d.vibrate === 'boolean' && typeof d.deviceVibrate !== 'boolean') state.deviceVibrate = d.vibrate;
   if(typeof d.rechargeUnlocked === 'boolean') state.rechargeUnlocked = d.rechargeUnlocked;
   if(typeof d.event === 'string') state.event = d.event;
   if(typeof d.eventUntil === 'number') state.eventUntil = d.eventUntil;
@@ -3129,6 +3142,12 @@ function beep(freq, dur, type, vol){
   }catch(e){}
 }
 
+/* ═══ 设备震动统一入口：受 state.deviceVibrate 控制 ═══ */
+function doVibrate(pattern){
+  if(state.deviceVibrate === false) return;
+  try{ if(navigator.vibrate) navigator.vibrate(pattern || 30); }catch(e){}
+}
+
 const canvas = $('#fx');
 const ctx = canvas.getContext('2d');
 let W = 0, H = 0;
@@ -3138,6 +3157,7 @@ function resize(){ W = canvas.width = window.innerWidth; H = canvas.height = win
 window.addEventListener('resize', resize);
 resize();
 function burst(color, count, cx, cy){
+  if(state.particles === false) return;   // ═══ 粒子开关：关闭时直接跳过 ═══
   const room = MAX_PARTICLES - particles.length;
   if(room <= 0) return;
   if(count > room) count = room;
@@ -3199,6 +3219,7 @@ function fxLoop(){
 fxLoop();
 
 function shake(level){
+  if(state.screenShake === false) return;  // ═══ 画面震动独立开关 ═══
   const amp = 4 + level * 2.2;
   const app = $('#app');
   app.style.setProperty('--amp', amp + 'px');
@@ -5223,6 +5244,18 @@ function renderSetPage(){
   h += '<div class="set-toggle">' +
     '<div class="st-lb">🔊 音效</div>' +
     '<div class="st-sw ' + (state.sound ? 'on' : '') + '" id="soundSw"></div>' +
+  '</div>';
+  h += '<div class="set-toggle">' +
+    '<div class="st-lb">📳 画面震动<span class="st-sub">抽卡、升级、合成时的屏幕抖动效果</span></div>' +
+    '<div class="st-sw ' + (state.screenShake ? 'on' : '') + '" id="screenShakeSw"></div>' +
+  '</div>';
+  h += '<div class="set-toggle">' +
+    '<div class="st-lb">📱 设备震动<span class="st-sub">抽卡 / 升级时手机物理震动反馈（仅移动端）</span></div>' +
+    '<div class="st-sw ' + (state.deviceVibrate ? 'on' : '') + '" id="deviceVibrateSw"></div>' +
+  '</div>';
+  h += '<div class="set-toggle">' +
+    '<div class="st-lb">✨ 粒子特效<span class="st-sub">抽卡、升级、合成时的粒子爆发效果</span></div>' +
+    '<div class="st-sw ' + (state.particles ? 'on' : '') + '" id="particlesSw"></div>' +
   '</div></div></div>';
 
   /* 🎁 礼包码 */
@@ -5251,6 +5284,24 @@ function renderSetPage(){
     $('#soundSw').classList.toggle('on', state.sound);
     markDirty(); saveGame();
     if(state.sound) beep(1000, .12, 'sine', .05);
+  });
+  $('#screenShakeSw').addEventListener('click', () => {
+    state.screenShake = !state.screenShake;
+    $('#screenShakeSw').classList.toggle('on', state.screenShake);
+    markDirty(); saveGame();
+    if(state.screenShake) shake(6);   // 开启时给一次即时反馈（画面抖动）
+  });
+  $('#deviceVibrateSw').addEventListener('click', () => {
+    state.deviceVibrate = !state.deviceVibrate;
+    $('#deviceVibrateSw').classList.toggle('on', state.deviceVibrate);
+    markDirty(); saveGame();
+    if(state.deviceVibrate) doVibrate([15, 10, 15]);   // 开启时给一次即时反馈（设备震动）
+  });
+  $('#particlesSw').addEventListener('click', () => {
+    state.particles = !state.particles;
+    $('#particlesSw').classList.toggle('on', state.particles);
+    markDirty(); saveGame();
+    if(state.particles) burst('#7dc4ff', 40);  // 开启时撒一把粒子预览
   });
 
   /* 🎁 礼包码兑换 */
