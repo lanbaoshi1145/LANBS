@@ -173,6 +173,27 @@ body{
 .tree-ctrl button:active{transform:scale(.92)}
 .tree-ctrl button.zoom-lvl{font-size:10px;font-weight:900;color:#9fc4ff;letter-spacing:0;}
 .tree-hint{position:absolute;left:14px;bottom:14px;font-size:10.5px;color:#7c89a5;letter-spacing:.03em;background:rgba(10,16,32,.75);border:1px solid rgba(255,255,255,.06);padding:6px 11px;border-radius:9px;backdrop-filter:blur(8px);pointer-events:none;line-height:1.5;}
+
+/* ═══ 升级档位切换器 ═══ */
+.buy-mode-bar{
+  display:flex;align-items:center;gap:10px;justify-content:center;flex-wrap:wrap;
+  padding:9px 12px;margin-bottom:12px;border-radius:14px;
+  background:var(--panel);border:1px solid var(--line);backdrop-filter:blur(10px);
+}
+.bm-label{font-size:12px;font-weight:900;color:#cfd9ec;letter-spacing:.06em;white-space:nowrap}
+.bm-seg{display:inline-flex;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:3px;gap:3px}
+.bm-opt{
+  font-family:inherit;font-weight:900;font-size:13px;letter-spacing:0;
+  padding:7px 18px;border:none;border-radius:9px;cursor:pointer;
+  color:#aebdde;background:transparent;transition:.16s;white-space:nowrap;
+}
+.bm-opt:hover{color:#fff;background:rgba(255,255,255,.08)}
+.bm-opt.on{
+  color:#080b14;background:linear-gradient(180deg,#5aa0ff,#2e6fd6);
+  box-shadow:0 5px 16px -6px #3f7bff,inset 0 1px 0 rgba(255,255,255,.35);
+}
+.bm-hint{font-size:11px;color:#7c89a5;font-weight:700;letter-spacing:.02em;min-width:120px;text-align:left}
+@media(max-width:640px){.bm-hint{display:none}.bm-opt{padding:7px 14px}}
 @media(max-width:640px){.tree-hint{display:none}}
 
 .tnode{
@@ -1126,16 +1147,22 @@ const RARITIES = [
   { id:'DSYM', name:'暗影',   w:30,      color:'#8b3dff', coins:2500000,   gems:250 },
   { id:'HSYM', name:'天启',   w:10,      color:'#ffe600', coins:35000000,  gems:1200 },
   { id:'CSYM', name:'湮灭',   w:3,       color:'#ff2d2d', coins:600000000, gems:6000 },
+  { id:'LKYM', name:'裂空',   w:2,       color:'#ff7a4d', coins:2e10,      gems:22000 },
   { id:'VSYM', name:'星海',   w:1,       color:'#00c2ff', coins:1.5e10,    gems:35000 },
+  { id:'JXYM', name:'机械',   w:0.5,     color:'#7fd8ff', coins:8e10,      gems:180000 },
   { id:'QSYM', name:'律动',   w:0.3,     color:'#b6ff00', coins:6e11,      gems:200000 },
   { id:'GSYM', name:'起源',   w:0.1,     color:'#ffffff', coins:4e13,      gems:1500000 },
+  { id:'LGYM', name:'另类',   w:0.05,    color:'#ffd2a0', coins:8e14,      gems:9000000 },
   { id:'ISYM', name:'永恒',   w:0.03,    color:'#ff00e6', coins:3e15,      gems:12000000 },
   { id:'ESYM', name:'终焉',   w:0.01,    color:'#00ff88', coins:5e17,      gems:2e8 },
+  { id:'GNYM', name:'归一',   w:0.005,   color:'#5cffb0', coins:2e18,      gems:1e9 },
   { id:'TSYM', name:'超脱',   w:0.003,   color:'#00d4ff', coins:1e20,      gems:1e10 },
   { id:'ZSYM', name:'至臻',   w:0.001,   color:'#ff00ff', coins:1e23,      gems:1e13 },
+  { id:'LJYM', name:'凌驾',   w:0.0005,  color:'#ff77cc', coins:5e24,      gems:5e14 },
   { id:'XSYM', name:'无尽',   w:0.0003,  color:'#ffaa00', coins:1e26,      gems:1e16 },
   { id:'OMSYM',name:'全能',   w:0.0001,  color:'#ff3300', coins:1e30,      gems:1e20 },
-  { id:'ABSYM',name:'绝对',   w:0.00003, color:'#ffffff', coins:1e34,      gems:1e25 }
+  { id:'ABSYM',name:'绝对',   w:0.00003, color:'#ffffff', coins:1e34,      gems:1e25 },
+  { id:'8FQ',  name:'杨八分钱', w:0.00001, color:'#c9c9d4', coins:1e37,      gems:1e29 }
 ];
 const AFFIXES = [
   { id:'shiny',    name:'闪耀', emoji:'✨', mult:2,     w:5000,   color:'#fff9a8' },
@@ -1227,6 +1254,7 @@ const MAX_PETS = 3;
 function getSpecies(id){ return PET_SPECIES.find(s => s.id === id) || PET_SPECIES[0]; }
 function getQuality(id){ return PET_QUALITIES.find(q => q.id === id) || PET_QUALITIES[0]; }
 function getStarInfo(star){ return PET_STARS[Math.max(0, Math.min(PET_STARS.length - 1, star - 1))]; }
+function getRarity(id){ return RARITIES.find(r => r.id === id) || RARITIES[0]; }
 
 function petTier(p){
   if(!p) return 0;
@@ -1531,6 +1559,12 @@ const ACHIEVEMENTS = [
   { id:'first_ESYM',    name:'终焉低语',     emoji:'☄️', desc:'抽到终焉沙杨马',              check:() => state.inv.ESYM >= 1 },
   { id:'first_TSYM',    name:'超脱轮回',     emoji:'🌀', desc:'抽到超脱沙杨马',              check:() => state.inv.TSYM >= 1 },
   { id:'first_ABSYM',   name:'绝对存在',     emoji:'⚪', desc:'抽到绝对沙杨马',              check:() => state.inv.ABSYM >= 1 },
+  { id:'first_JXYM',    name:'机械飞升',     emoji:'⚙️', desc:'抽到机械沙杨马',              check:() => state.inv.JXYM >= 1 },
+  { id:'first_LKYM',    name:'裂空之隙',     emoji:'🌪️', desc:'抽到裂空沙杨马',              check:() => state.inv.LKYM >= 1 },
+  { id:'first_LGYM',    name:'另类现实',     emoji:'🔮', desc:'抽到另类沙杨马',              check:() => state.inv.LGYM >= 1 },
+  { id:'first_GNYM',    name:'归一为壹',     emoji:'🧬', desc:'抽到归一沙杨马',              check:() => state.inv.GNYM >= 1 },
+  { id:'first_LJYM',    name:'凌驾万物',     emoji:'👑', desc:'抽到凌驾沙杨马',              check:() => state.inv.LJYM >= 1 },
+  { id:'first_8FQ',     name:'杨八分钱',     emoji:'🖤', desc:'抽到杨八分钱沙杨马（超越绝对）',  check:() => state.inv['8FQ'] >= 1 },
   { id:'coin_1B',       name:'十亿富翁',     emoji:'💰', desc:'金币达到 1B',                 check:() => state.coins >= 1e9 },
   { id:'coin_1T',       name:'万亿富豪',     emoji:'💎', desc:'金币达到 1T',                 check:() => state.coins >= 1e12 },
   { id:'coin_1Qa',      name:'超级财阀',     emoji:'👑', desc:'金币达到 1Qa',                check:() => state.coins >= 1e15 },
@@ -1935,6 +1969,7 @@ const state = {
   petEquipped: [],
   inv: {}, recent: [], buffs: [],
   auto: false, sound: true, rolling: false,
+  upgradeMode: 10,      // 升级模式：点击节点一次升几级（1 / 5 / 10）
   page: 'roll', shopTab: 'coins', invTab: 'base',
   petTab: 'draw', petSelection: [],
   petLevelupTarget: null, petLevelupMaterials: [],
@@ -3491,6 +3526,21 @@ function showNodeTip(node, clientX, clientY){
     const cost = nodeCost(n);
     const can = state.coins >= cost;
     html += '<div class="nt-row"><span class="lb">下一级价格</span><span class="vl ' + (can ? '' : 'red') + '">💰 ' + fmt(cost) + '</span></div>';
+    // 批量升级预览：显示按当前档位一次升满所需总花费与可升次数
+    const mode = Math.max(1, state.upgradeMode || 1);
+    if(mode > 1){
+      let previewTimes = 0, previewCost = 0;
+      for(let i = 0; i < mode; i++){
+        if(lv + previewTimes >= n.max) break;
+        const c = nodeCostAt(n, lv + previewTimes);
+        if(state.coins < previewCost + c) break;
+        previewCost += c; previewTimes++;
+      }
+      if(previewTimes > 1){
+        html += '<div class="nt-row"><span class="lb">一键 +' + mode + ' 预览</span>' +
+                '<span class="vl" style="color:#ffc93c">+' + previewTimes + ' 级 · 💰 ' + fmt(previewCost) + '</span></div>';
+      }
+    }
   }
   html += '<div class="nt-hint">' + (n.perma2 ? '二阶永久节点 · 重生不清空' : (n.perma ? '永久节点 · 重生不清空' : '点击节点即可升级')) + '</div>';
   tipEl.innerHTML = html;
@@ -3517,6 +3567,15 @@ function renderTreePage(){
       <span><i style="background:rgba(255,215,110,.95)"></i>永久树</span>
       <span><i style="background:rgba(200,90,255,.85)"></i>二阶永久</span>
     </div>
+    <div class="buy-mode-bar" id="buyModeBar">
+      <span class="bm-label">点击升级</span>
+      <div class="bm-seg" role="group" aria-label="升级档位">
+        <button class="bm-opt" data-mode="1">+1</button>
+        <button class="bm-opt" data-mode="5">+5</button>
+        <button class="bm-opt" data-mode="10">+10</button>
+      </div>
+      <span class="bm-hint" id="buyModeHint">点击节点一次性升 10 级</span>
+    </div>
     <div class="tree-viewport" id="treeViewport">
       <div class="tree-canvas" id="treeCanvas"></div>
       <div class="tree-hint">🖱 拖拽平移 · 滚轮缩放<br>📱 单指拖拽 · 双指缩放 · 悬停查看</div>
@@ -3535,6 +3594,7 @@ function renderTreePage(){
   resetTreeView(true);
   renderTreeContent();
   bindTreeControls();
+  bindBuyModeBar();
   treeCanvas.addEventListener('click', e => {
     if(draggedSinceDown) return;
     const node = e.target.closest('.tnode');
@@ -3751,6 +3811,33 @@ function bindTreeControls(){
   $('#treeZoomOut').addEventListener('click', e => { e.stopPropagation(); treeZoom(1/1.18); beep(500, .05, 'sine', .025); });
   $('#treeReset').addEventListener('click', e => { e.stopPropagation(); resetTreeView(); beep(600, .08, 'sine', .03); });
   window.addEventListener('resize', () => { if(state.page === 'tree') resetTreeView(); });
+}
+
+function bindBuyModeBar(){
+  const bar = $('#buyModeBar');
+  if(!bar) return;
+  const hint = $('#buyModeHint');
+  const refresh = () => {
+    const m = state.upgradeMode;
+    bar.querySelectorAll('.bm-opt').forEach(btn => {
+      btn.classList.toggle('on', Number(btn.dataset.mode) === m);
+    });
+    if(hint) hint.textContent = '点击节点一次性升 ' + m + ' 级';
+  };
+  bar.querySelectorAll('.bm-opt').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.upgradeMode = Number(btn.dataset.mode) || 1;
+      beep(700, .05, 'sine', .025);
+      refresh();
+      try { localStorage.setItem('symrng_upgradeMode', String(state.upgradeMode)); } catch(e){}
+    });
+  });
+  // 读取本地缓存（首次加载时 state 已初始化，此处仅做覆盖）
+  try{
+    const saved = Number(localStorage.getItem('symrng_upgradeMode')) || 0;
+    if(saved === 1 || saved === 5 || saved === 10) state.upgradeMode = saved;
+  }catch(e){}
+  refresh();
 }
 
 function renderShopPage(){
@@ -4569,12 +4656,12 @@ function renderInvPage(){
   if(it === 'mix'){
     h += '<div class="example">词条叠加后名字会前缀在稀有度前，倍率相乘。</div>';
     const examples = [
-      { base: RARITIES[3],  affixes: [AFFIXES[0]] },
-      { base: RARITIES[5],  affixes: [AFFIXES[0]] },
-      { base: RARITIES[11], affixes: [AFFIXES[0]] },
-      { base: RARITIES[3],  affixes: [AFFIXES[0], AFFIXES[3]] },
-      { base: RARITIES[11], affixes: [AFFIXES[0], AFFIXES[5]] },
-      { base: RARITIES[19], affixes: [AFFIXES[0], AFFIXES[10]] }
+      { base: getRarity('SSR'),  affixes: [AFFIXES[0]] },
+      { base: getRarity('SYM'),  affixes: [AFFIXES[0]] },
+      { base: getRarity('QSYM'), affixes: [AFFIXES[0]] },
+      { base: getRarity('SSR'),  affixes: [AFFIXES[0], AFFIXES[3]] },
+      { base: getRarity('QSYM'), affixes: [AFFIXES[0], AFFIXES[5]] },
+      { base: getRarity('ABSYM'), affixes: [AFFIXES[0], AFFIXES[10]] }
     ];
     for(const ex of examples){
       const m = affixMult(ex.affixes);
@@ -5648,17 +5735,38 @@ function buyNode(id){
   const n = ALL_NODES.find(x => x.id === id);
   if(!n || n.id === 'root' || n.id === 'PROOT' || n.id === 'P2ROOT') return;
   if(n.perma2 && state.trueRebirths < 1){ toast('🌌 需要完成真重生才能升级二阶永久树'); beep(220, .12, 'square', .04); return; }
-  const lv = nodeLv(n);
-  if(lv >= n.max) return;
-  if(!nodeIsUnlocked(n)){ toast('前置节点未解锁'); beep(200, .12, 'square', .04); return; }
-  const cost = nodeCost(n);
-  if(state.coins < cost){ toast('金币不足，需要 💰' + fmt(cost)); beep(200, .12, 'square', .04); return; }
 
-  state.coins -= cost;
-  setNodeLv(n, lv + 1);
+  // ── 批量升级：按 upgradeMode（1 / 5 / 10）一次性升满目标次数 ──
+  let target = Math.max(1, state.upgradeMode || 1);
+  let lv = nodeLv(n);
+  if(lv >= n.max) return;
+
+  // 计算能升的次数（受「剩余可升次数」与「金币」双重限制）
+  let totalCost = 0;
+  let times = 0;
+  for(let i = 0; i < target; i++){
+    if(lv + times >= n.max) break;
+    // 逐级检查前置（防止在批量过程中解锁条件变化，理论上稳定，但保险起见）
+    if(!nodeIsUnlocked(n)) break;
+    const c = nodeCostAt(n, lv + times);
+    if(state.coins < totalCost + c) break;
+    totalCost += c;
+    times++;
+  }
+  if(times === 0){
+    if(!nodeIsUnlocked(n)){ toast('前置节点未解锁'); beep(200, .12, 'square', .04); return; }
+    const cost = nodeCost(n);
+    toast('金币不足，需要 💰' + fmt(cost)); beep(200, .12, 'square', .04);
+    return;
+  }
+
+  state.coins -= totalCost;
+  setNodeLv(n, lv + times);
 
   beep(880, .1, 'square', .05);
   if(nodeLv(n) >= n.max) setTimeout(() => beep(1320, .2, 'sine', .05), 90);
+  // 批量升级时显示总花费提示（仅多于 1 级时）
+  if(times > 1) toast('⬆️ ' + esc(n.name) + ' +' + times + ' 级（💰' + fmt(totalCost) + '）');
   updateHUD();
   renderTreeContent();
   const hovered = treeCanvas.querySelector('.tnode:hover');
@@ -5666,6 +5774,12 @@ function buyNode(id){
     const rect = hovered.getBoundingClientRect();
     showNodeTip(hovered, rect.left + rect.width / 2, rect.top + rect.height / 2);
   }
+}
+
+// 计算节点在第 lv 级时的升级花费（不依赖当前真实等级，便于批量预演）
+function nodeCostAt(n, lv){
+  if(n.id === 'root' || n.id === 'PROOT' || n.id === 'P2ROOT') return 0;
+  return Math.floor(n.base * Math.pow(n.growth, lv));
 }
 
 function drawPets(count){
