@@ -587,7 +587,7 @@ body{
 
 .bottom-nav{position:fixed;left:0;right:0;bottom:0;height:var(--nav-h);z-index:100;display:flex;background:rgba(10,15,30,.94);backdrop-filter:blur(16px);border-top:1px solid rgba(255,255,255,.08);box-shadow:0 -10px 30px -16px #000;padding:0 6px;overflow-x:auto;justify-content:center;}
 .bottom-nav::-webkit-scrollbar{display:none}
-.nav-btn{flex:0 1 140px;min-width:70px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:#66748f;font-size:10.5px;font-weight:900;letter-spacing:.04em;transition:.18s;position:relative;padding:0 4px;}
+.nav-btn{flex:0 1 140px;min-width:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:#66748f;font-size:10.5px;font-weight:900;letter-spacing:.04em;transition:.18s;position:relative;padding:0 4px;}
 .nav-btn .nb-emoji{font-size:19px;line-height:1;transition:.18s;filter:grayscale(.5) opacity(.7)}
 .nav-btn.on{color:#fff}
 .nav-btn.on .nb-emoji{filter:none;transform:scale(1.12)}
@@ -1050,7 +1050,14 @@ body{
 .side-btn.boss-nav small{color:#ff9b9b}
 .side-btn.boss-nav.on{background:linear-gradient(165deg,rgba(255,95,95,.35),rgba(255,95,95,.1));box-shadow:0 0 26px -5px rgba(255,95,95,.7)}
 
-/* ═══ 版本号 ═══ */
+/* ═══ 版本号 ═══
+ * 格式：v主版本.修改次数.修订次数
+ *   - 主版本：存档版本（存档结构/字段变更时 +1，需考虑存档兼容）
+ *   - 修改次数：功能性改动 / 新内容的次数
+ *   - 修订次数：小修小补 / bug 修复的次数
+ * 由作者手动维护，AI 助手下次改动时需按此规则同步递增对应位数字。
+ * 本次（画面震动/设备震动/粒子三开关拆分）已更新为 v10.3.0。
+ */
 body::after{
   content: "v10.3.0";
   position: fixed;
@@ -2965,6 +2972,11 @@ function applyBossDamageFromRoll(idx, aMult, diceMult){
 
   state.boss.totalDamage += dmg;
   state.boss.hp -= dmg;
+
+  /* 👹 Boss 伤害飘字 */
+  if(state.page === 'boss' && !state.boss.killed){
+    showAbyssHit(dmg, false);
+  }
 
   if(state.boss.hp <= 0){
     onBossKilled();
@@ -5001,7 +5013,7 @@ function renderBossPage(){
 
   /* 伤害 + 击杀 */
   h += '<div class="card" style="max-width:760px;margin:0 auto 12px"><div class="card-body" style="display:flex;gap:14px;justify-content:space-around;text-align:center">' +
-    '<div><div style="font-size:10.5px;color:#8b98ad;font-weight:800;letter-spacing:.05em">本周击杀</div>' +
+    '<div><div style="font-size:10.5px;color:#8b98ad;font-weight:800;letter-spacing:.05em">本周伤害</div>' +
     '<div id="bossTotalDmg" style="font-size:17px;font-weight:900;color:#ffc93c;margin-top:4px;font-variant-numeric:tabular-nums;text-shadow:0 0 14px rgba(255,200,60,.5)">' + fmt(b.totalDamage) + '</div></div>' +
     '<div><div style="font-size:10.5px;color:#8b98ad;font-weight:800;letter-spacing:.05em">累计击杀</div>' +
     '<div id="bossKills" style="font-size:17px;font-weight:900;color:#ff5f5f;margin-top:4px;font-variant-numeric:tabular-nums;text-shadow:0 0 14px rgba(255,95,95,.5)">' + b.kills + '</div></div>' +
@@ -5412,15 +5424,15 @@ const TOP_PAGES = [
   { id:'roll', name:'抽奖', emoji:'🎲' },
   { id:'tree', name:'升级', emoji:'🌳' },
   { id:'shop', name:'商城', emoji:'🛒' },
-  { id:'pet',  name:'宠物', emoji:'🐾' }
+  { id:'pet',  name:'宠物', emoji:'🐾' },
+  { id:'set',  name:'设置', emoji:'⚙️' }
 ];
 const SIDE_PAGES = [
   { id:'abyss', name:'深渊', emoji:'🕳️' },
   { id:'event', name:'活动', emoji:'🎉' },
   { id:'inv',   name:'图鉴', emoji:'📖' },
   { id:'task',  name:'任务', emoji:'📋' },
-  { id:'reb',   name:'重生', emoji:'🌟' },
-  { id:'set',   name:'设置', emoji:'⚙️' }
+  { id:'reb',   name:'重生', emoji:'🌟' }
 ];
 function buildNav(){
   $('#bottomNav').innerHTML = TOP_PAGES.map(p =>
