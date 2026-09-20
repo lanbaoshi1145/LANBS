@@ -265,6 +265,7 @@ body{
 .subtab{flex:1;padding:10px 8px;border-radius:11px;text-align:center;font-size:12px;font-weight:900;letter-spacing:.02em;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:#8b98ad;cursor:pointer;transition:.2s;min-width:62px;}
 .subtab.on{background:linear-gradient(180deg,#3f7bff,#1d3fd0);color:#fff;border-color:transparent}
 .subtab:active{transform:scale(.96)}
+.subtab.locked{opacity:.5;cursor:not-allowed}
 
 .shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;max-width:1100px;margin:0 auto;}
 .shop-item{border-radius:14px;padding:13px 11px;background:linear-gradient(165deg,rgba(255,255,255,.06),rgba(255,255,255,.015));border:1px solid rgba(255,255,255,.09);text-align:center;display:flex;flex-direction:column;gap:6px;align-items:center;}
@@ -1045,10 +1046,6 @@ body{
 .boss-reward .br-btn:active{transform:scale(.95)}
 .boss-reward .br-btn:disabled{filter:grayscale(.8) brightness(.55);cursor:not-allowed}
 .boss-reward .br-btn.claimed{background:rgba(255,255,255,.1);color:#7c89a5}
-
-.side-btn.boss-nav{background:linear-gradient(165deg,rgba(255,95,95,.22),rgba(255,95,95,.05));border-color:rgba(255,95,95,.55);box-shadow:0 0 22px -6px rgba(255,95,95,.55)}
-.side-btn.boss-nav small{color:#ff9b9b}
-.side-btn.boss-nav.on{background:linear-gradient(165deg,rgba(255,95,95,.35),rgba(255,95,95,.1));box-shadow:0 0 26px -5px rgba(255,95,95,.7)}
 
 /* ═══ 版本号 ═══
  * 格式：v主版本.修改次数.修订次数
@@ -4840,6 +4837,17 @@ function renderRebPage(){
   $('#pageReb').innerHTML = h;
 }
 
+function renderChallengeTabs(current){
+  const abyssUnlocked = state.trueRebirths >= 1;
+  return '<div class="subtabs" style="max-width:760px">' +
+    '<div class="subtab' + (current === 'abyss' ? ' on' : '') + (abyssUnlocked ? '' : ' locked') + '" ' +
+      (abyssUnlocked ? 'data-challenge="abyss"' : 'data-challenge-locked="1"') + '>' +
+      '🕳️ 源质深渊' + (abyssUnlocked ? '' : ' 🔒') +
+    '</div>' +
+    '<div class="subtab' + (current === 'boss' ? ' on' : '') + '" data-challenge="boss">👹 世界 Boss</div>' +
+  '</div>';
+}
+
 /* ═══════════ 🕳️ 源质深渊页面 ═══════════ */
 function renderAbyssPage(){
   if(state.trueRebirths < 1){
@@ -4853,7 +4861,8 @@ function renderAbyssPage(){
   const mods = getAbyssMods();
   const hpPct = state.abyssMaxHp > 0 ? Math.max(0, Math.min(100, state.abyssHp / state.abyssMaxHp * 100)) : 0;
 
-  let h = '<div class="page-title"><h2>源质深渊</h2><p>无尽爬塔 · 变异规则 · 源质永久升级</p></div>';
+  let h = '<div class="page-title"><h2>挑战</h2><p>源质深渊 · 世界 Boss</p></div>';
+  h += renderChallengeTabs('abyss');
 
   h += '<div class="abyss-progress">' +
     '<div class="abyss-stat"><span>当前层</span><b id="abyssFloorNow">' + state.abyssFloor + '</b></div>' +
@@ -4927,6 +4936,20 @@ function renderAbyssPage(){
     '· 自动抽取在深渊页同样生效，可挂机爬塔<br>' +
     '· 深渊进度（层数、源质、升级）不受任何重生影响' +
   '</div></div>';
+  h += '<div class="card" style="max-width:760px;margin:12px auto 0;border-color:rgba(120,80,255,.4);box-shadow:0 0 30px -12px rgba(120,80,255,.5)">' +
+    '<div class="card-body" style="text-align:center;padding:18px 14px">' +
+      '<div style="font-size:36px;line-height:1;margin-bottom:8px;filter:drop-shadow(0 0 16px rgba(160,120,255,.8))">🌊</div>' +
+      '<div style="font-size:15px;font-weight:900;color:#c8a8ff;letter-spacing:.1em">深渊探索</div>' +
+      '<div style="font-size:11.5px;color:#8b98ad;line-height:1.7;margin-top:6px">' +
+        '二次真重生解锁 · 深入杨马内部<br>' +
+        '<span style="color:#a78bd4">（新模式开发中，敬请期待）</span>' +
+      '</div>' +
+      '<button class="abyss-btn" id="abyssExploreBtn" ' +
+        'style="max-width:320px;margin:12px auto 0;background:linear-gradient(180deg,#8b5cf6,#4c1d95);color:#fff;border:1px solid rgba(200,160,255,.5);box-shadow:0 12px 30px -12px #8b5cf6">' +
+        '敬 请 期 待' +
+      '</button>' +
+    '</div>' +
+  '</div>';
 
   $('#pageAbyss').innerHTML = h;
 
@@ -4942,6 +4965,12 @@ function renderAbyssPage(){
   });
   const rr = $('#abyssRerollBtn');
   if(rr) rr.addEventListener('click', rerollAbyssMods);
+  const ae = $('#abyssExploreBtn');
+  if(ae) ae.addEventListener('click', () => {
+    toast('🌊 深渊探索：新模式开发中，敬请期待');
+    beep(880, .12, 'sine', .05);
+    setTimeout(() => beep(1200, .18, 'sine', .045), 100);
+  });
 }
 function updateAbyssUI(){
   if(state.page !== 'abyss') return;
@@ -4988,7 +5017,8 @@ function renderBossPage(){
   const W = getBossWeakness();
   const hpPct = b.maxHp > 0 ? Math.max(0, Math.min(100, b.hp / b.maxHp * 100)) : 0;
 
-  let h = '<div class="page-title"><h2>世界 Boss（测试版）</h2><p>每周轮换 · 弱点机制 · 伤害排行</p></div>';
+  let h = '<div class="page-title"><h2>挑战</h2><p>源质深渊 · 世界 Boss</p></div>';
+  h += renderChallengeTabs('boss');
 
   h += '<div class="boss-hero" style="--bc:' + W.color + ';--bc-soft:' + W.color + '28;--bc-line:' + W.color + '66">' +
     '<div class="bh-emoji">' + b.emoji + '</div>' +
@@ -5428,7 +5458,7 @@ const TOP_PAGES = [
   { id:'set',  name:'设置', emoji:'⚙️' }
 ];
 const SIDE_PAGES = [
-  { id:'abyss', name:'深渊', emoji:'🕳️' },
+  { id:'challenge', name:'挑战', emoji:'⚔️' },
   { id:'event', name:'活动', emoji:'🎉' },
   { id:'inv',   name:'图鉴', emoji:'📖' },
   { id:'task',  name:'任务', emoji:'📋' },
@@ -5441,11 +5471,8 @@ function buildNav(){
   ).join('');
 
   const sideList = SIDE_PAGES.map(p => {
-    const locked = (p.id === 'abyss' && state.trueRebirths < 1);
-    return { id:p.id, name:p.name, emoji:p.emoji, locked:locked };
+    return { id:p.id, name:p.name, emoji:p.emoji };
   });
-
-  sideList.unshift({ id:'boss', name:'Boss', emoji:'👹', boss:true });
 
   if(state.vip >= 1){
     sideList.unshift({ id:'vip', name:'VIP', emoji: state.vip === 2 ? '💎' : '👑', vip:true });
@@ -5456,9 +5483,9 @@ function buildNav(){
   }
 
   $('#sideNav').innerHTML = sideList.map(p => {
-    return '<div class="side-btn' + (p.id === state.page ? ' on' : '') +
-      (p.locked ? ' locked' : '') +
-      (p.boss ? ' boss-nav' : '') +
+    const isOn = (p.id === state.page) ||
+                 (p.id === 'challenge' && (state.page === 'abyss' || state.page === 'boss'));
+    return '<div class="side-btn' + (isOn ? ' on' : '') +
       (p.dev ? ' dev' : '') +
       (p.vip ? ' vip-nav' + (state.vip === 2 ? ' svip-nav' : '') : '') +
       '" data-page="' + p.id + '">' +
@@ -5466,6 +5493,12 @@ function buildNav(){
   }).join('');
 }
 function switchPage(id){
+  if(id === 'challenge'){
+    // 已经在挑战页里，不重复切换
+    if(state.page === 'abyss' || state.page === 'boss') return;
+    // 有真重生优先进深渊，否则进 Boss
+    id = (state.trueRebirths >= 1) ? 'abyss' : 'boss';
+  }
   if(id === 'abyss' && state.trueRebirths < 1){
     toast('要想进入沙杨马之深渊，需掌握逆转乾坤之术。');
     beep(220, .12, 'square', .04);
@@ -5497,7 +5530,14 @@ function switchPage(id){
   const pageEl = $('#page' + id.charAt(0).toUpperCase() + id.slice(1));
   if(pageEl) pageEl.classList.add('on');
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('on', b.dataset.page === id));
-  document.querySelectorAll('.side-btn').forEach(b => b.classList.toggle('on', b.dataset.page === id));
+  document.querySelectorAll('.side-btn').forEach(b => {
+    const pid = b.dataset.page;
+    if(pid === 'challenge' && (state.page === 'abyss' || state.page === 'boss')){
+      b.classList.add('on');
+    } else {
+      b.classList.toggle('on', pid === state.page);
+    }
+  });
   hideNodeTip();
   renderPage();
   beep(620, .06, 'sine', .025);
@@ -6305,6 +6345,23 @@ document.addEventListener('click', e => {
     beep(600, .05, 'sine', .025);
     return;
   }
+
+  // ⬇️ 新增：挑战页内的 tab 切换
+  const chalTab = e.target.closest('[data-challenge]');
+  if(chalTab){
+    const t = chalTab.dataset.challenge;
+    if(t === state.page) return;
+    switchPage(t);
+    beep(600, .05, 'sine', .025);
+    return;
+  }
+
+  if(e.target.closest('[data-challenge-locked]')){
+    toast('需要先完成真重生解锁深渊');
+    beep(220, .12, 'square', .04);
+    return;
+  }
+  // ⬆️ 新增结束
 
   const sub = e.target.closest('.subtab');
   if(sub){
