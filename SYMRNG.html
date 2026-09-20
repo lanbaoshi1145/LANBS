@@ -41,6 +41,7 @@ body{
 .chip.abyss .v{color:#c85aff;text-shadow:0 0 12px rgba(200,90,255,.6)}
 .chip.vip .v{color:#ffd86b;text-shadow:0 0 12px rgba(255,200,60,.6)}
 .chip.svip .v{color:#ff6bff;text-shadow:0 0 12px rgba(255,107,255,.6)}
+.chip.player .v{color:#ffd86b;text-shadow:0 0 12px rgba(255,200,60,.5)}
 
 .buffs{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:10px;min-height:0}
 .buff{
@@ -1054,9 +1055,10 @@ body{
  *   - 修订次数：小修小补 / bug 修复的次数
  * 由作者手动维护，AI 助手下次改动时需按此规则同步递增对应位数字。
  * v10.3.1 → v11.0.0：存档版本升至 11（虚空模式新增字段），公开版本号同步跟进
+ * v11.0.0 → v12SP：新增玩家昵称系统（本地存储，非账号系统）
  */
 body::after{
-  content: "v11.0.0";
+  content: "v12SP";
   position: fixed;
   left: 8px;
   top: 8px;
@@ -1110,6 +1112,7 @@ body::after{
 
 <div class="app" id="app">
   <div class="hud">
+    <div class="chip player" id="hPlayerChip"><span>🐴</span><span class="v" id="hPlayerName">沙杨马</span></div>
     <div class="chip gold"><span>💰</span><span class="v" id="hCoins">0</span></div>
     <div class="chip gem"><span>💎</span><span class="v" id="hGems">0</span></div>
     <div class="chip"><span>🍀</span><span class="v" id="hLuck">x1.00</span></div>
@@ -2052,6 +2055,7 @@ const state = {
     goldDice: 0, diamondDice: 0, emeraldDice: 0, rainbowDice: 0
   },
   unlockedAch: {},
+  playerName: '沙杨马',
   devUnlocked: false,
   specialCodes: {},
   shopMainTab: 'main',
@@ -2192,6 +2196,7 @@ function getSaveData(){
     deviceVibrate: state.deviceVibrate,
     particles: state.particles,
     event: state.event, eventUntil: state.eventUntil,
+    playerName: state.playerName,
     devUnlocked: state.devUnlocked,
     specialCodes: state.specialCodes,
     shopMainTab: state.shopMainTab,
@@ -2244,6 +2249,9 @@ function applySaveData(d){
   if(typeof d.rechargeUnlocked === 'boolean') state.rechargeUnlocked = d.rechargeUnlocked;
   if(typeof d.event === 'string') state.event = d.event;
   if(typeof d.eventUntil === 'number') state.eventUntil = d.eventUntil;
+  if(typeof d.playerName === 'string'){
+    state.playerName = d.playerName.slice(0, 12) || '沙杨马';
+  }
   if(typeof d.devUnlocked === 'boolean') state.devUnlocked = d.devUnlocked;
   if(d.specialCodes && typeof d.specialCodes === 'object') state.specialCodes = d.specialCodes;
   else state.specialCodes = {};
@@ -3376,6 +3384,8 @@ function updateHUD(){
   $('#hRb').textContent    = state.rebirths + '·' + state.ascends + '·' + state.transcends +
                              (state.trueRebirths ? '·' + state.trueRebirths : '');
   $('#hRolls').textContent = fmt(state.rolls);
+  const pn = $('#hPlayerName');
+  if(pn) pn.textContent = state.playerName || '沙杨马';
 
   /* 🕳️ 深渊层数 chip */
   const abyssChip = $('#hAbyssChip');
@@ -4979,6 +4989,7 @@ function resetForVoid(){
     abyssTotalDamage: state.abyssTotalDamage, essence: state.essence, abyssUpg: state.abyssUpg,
     boss: state.boss,
     sound: state.sound, rolling: false,
+    playerName: state.playerName,
     screenShake: state.screenShake, deviceVibrate: state.deviceVibrate,
     particles: state.particles, upgradeMode: state.upgradeMode
   };
@@ -5428,6 +5439,13 @@ function renderSetPage(){
   let h = '<div class="page-title"><h2>设置</h2><p>存档管理 · 偏好设置</p></div>';
   h += '<div class="set-wrap">';
 
+  h += '<div class="card"><div class="card-head">🐴 玩家昵称</div><div class="card-body">';
+  h += '<div class="set-info">给自己起个名字，会显示在顶部 HUD。本地存档，不上传任何服务器。</div>';
+  h += '<div style="display:flex;gap:8px">' +
+    '<input id="playerNameInput" class="set-input" type="text" placeholder="输入昵称（1~12 字符）" maxlength="12" value="' + esc(state.playerName || '沙杨马') + '" style="text-transform:none;letter-spacing:0">' +
+    '<button class="set-btn primary" id="playerNameSave" style="flex:none;min-width:88px;padding:12px 18px">保存</button>' +
+  '</div>';
+  h += '</div></div>';
   h += '<div class="card"><div class="card-head">💾 存档管理</div><div class="card-body">';
   h += '<div class="set-info">游戏进度会<b>自动保存</b>到本地浏览器，刷新或关闭页面后仍会保留。<br>' +
     '导出存档文件可备份或跨设备转移；导入会<b>覆盖</b>当前进度。</div>';
@@ -5629,6 +5647,29 @@ function renderSetPage(){
     inp.focus();
   }
   $('#giftCodeBtn').addEventListener('click', redeemGiftCode);
+  const pnBtn = $('#playerNameSave');
+  if(pnBtn){
+    pnBtn.addEventListener('click', () => {
+      const inp = $('#playerNameInput');
+      let v = (inp.value || '').trim();
+      if(!v){ toast('❌ 昵称不能为空'); beep(220,.12,'square',.04); return; }
+      v = v.slice(0, 12);
+      state.playerName = v;
+      inp.value = v;
+      updateHUD();
+      markDirty(); saveGame();
+      toast('✅ 昵称已改为「' + v + '」');
+      beep(1100, .15, 'sine', .05);
+      setTimeout(() => beep(1500, .2, 'sine', .05), 100);
+      burst('#ffd86b', 40);
+    });
+    const pnInput = $('#playerNameInput');
+    if(pnInput){
+      pnInput.addEventListener('keydown', e => {
+        if(e.key === 'Enter') pnBtn.click();
+      });
+    }
+  }
   $('#giftCodeInput').addEventListener('keydown', e => {
     if(e.key === 'Enter') redeemGiftCode();
   });
