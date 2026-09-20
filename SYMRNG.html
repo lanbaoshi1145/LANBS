@@ -1053,10 +1053,10 @@ body{
  *   - 修改次数：功能性改动 / 新内容的次数
  *   - 修订次数：小修小补 / bug 修复的次数
  * 由作者手动维护，AI 助手下次改动时需按此规则同步递增对应位数字。
- * 本次（画面震动/设备震动/粒子三开关拆分）已更新为 v10.3.0。
+ * v10.3.1 → v11.0.0：存档版本升至 11（虚空模式新增字段），公开版本号同步跟进
  */
 body::after{
-  content: "v10.3.0";
+  content: "v11.0.0";
   position: fixed;
   left: 8px;
   top: 8px;
@@ -1074,6 +1074,35 @@ body::after{
   user-select: none;
   font-family: ui-monospace, Menlo, Consolas, monospace;
 }
+
+
+/* ═══ 虚空 / 地狱 模式卡片 ═══ */
+.mode-card{
+  border-radius:18px;padding:16px;margin:14px 0;
+  background:var(--panel);border:1px solid var(--line);backdrop-filter:blur(10px);
+}
+.mode-card.void{border-color:rgba(139,92,246,.55)}
+.mode-card.hell{border-color:rgba(255,120,120,.4);opacity:.6}
+.mode-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.mode-icon{font-size:28px;line-height:1}
+.mode-name{font-size:16px;font-weight:900;color:#e8eefc}
+.mode-soon{font-size:10px;color:#ffb020;margin-left:6px;font-weight:800}
+.mode-desc{font-size:11px;color:#8b98ad;margin-top:3px}
+.mode-rules{list-style:none;padding:0;margin:0 0 14px;font-size:11.5px;color:#c8d4ea;line-height:2}
+.mode-rules b{color:#ffd86b}
+.mode-btn{
+  width:100%;padding:13px;font-size:14px;font-weight:900;letter-spacing:.1em;
+  background:linear-gradient(180deg,#8b5cf6,#5b21b6);color:#fff;border:none;border-radius:12px;cursor:pointer;
+  font-family:inherit;
+}
+.mode-btn:disabled{filter:grayscale(.6) brightness(.7);cursor:not-allowed}
+.mode-card.locked .mode-btn{background:rgba(255,255,255,.1);color:#7c89a5}
+.void-shop-notice{
+  text-align:center;font-size:12px;font-weight:800;color:#c8b4ff;
+  padding:10px;border-radius:12px;margin-bottom:14px;
+  background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.35);
+}
+
 </style>
 </head>
 <body>
@@ -1139,7 +1168,6 @@ body::after{
 </div>
 
 <script>
-(function(){
 'use strict';
 
 const RARITIES = [
@@ -1314,6 +1342,20 @@ function getPetTraits(){
     if(p.richPup) total.coin += 0.001;
   }
   return total;
+}
+
+/* ═══ 虚空模式：最终增益缩放 ═══
+ * 倍数 x → 保留25%效能，下限锁0.75（蚕大蛇负值也安全，绝不为负、不扣钱）
+ *   100x → 25.75x ≈ 25x
+ */
+function voidScale(x) {
+  if (!state.voidMode) return x;
+  var v = (x - 1) * 0.25 + 1;
+  return Math.max(v, 0.75);
+}
+/* 虚空模式：抽奖结果是否被吞噬（25%概率） */
+function rollDevoured() {
+  return state.voidMode && Math.random() < 0.25;
 }
 
 function genPet(qualityId, speciesId){
@@ -1522,6 +1564,7 @@ const REBIRTH_TIERS = [
 ];
 
 const EVENTS = [
+  { id:'idle', name:'虚空沉寂', emoji:'🕳️', desc:'虚空之中，万籁俱寂', color:'#8b5cf6', dur:9999999 },
   { id:'none',    name:'平静时期', emoji:'☁️', desc:'风平浪静，蓄势待发',   color:'#8b98ad', dur:300 },
   { id:'coin',    name:'金币狂潮', emoji:'💰', desc:'金币倍率 x2',          color:'#ffc93c', coinMult:2,   dur:300 },
   { id:'luck',    name:'幸运女神', emoji:'🍀', desc:'幸运 +3',              color:'#00ff88', luck:3,       dur:300 },
@@ -1601,6 +1644,7 @@ const ACHIEVEMENTS = [
   { id:'true_rebirth_1',     name:'逆转乾坤', emoji:'☯️', desc:'完成第一次真重生',              check:() => state.trueRebirths >= 1 },
   { id:'true_rebirth_5',     name:'轮回尽头', emoji:'♻️', desc:'完成 5 次真重生',                check:() => state.trueRebirths >= 5 },
   { id:'true_rebirth_10',    name:'万古长存', emoji:'🌌', desc:'完成 10 次真重生',               check:() => state.trueRebirths >= 10 },
+  { id:'void_cleared',    name:'虚空征服者', emoji:'🌌', desc:'在虚空模式中达成真重生，通关虚空',  check:() => false },
   { id:'pet_draw_luck_1000', name:'驯兽宗师', emoji:'🐾', desc:'宠物抽奖幸运达到 1000',           check:() => getTotalPetDrawLuck() >= 1000 },
   { id:'pet_draw_luck_10000',name:'万兽之主', emoji:'👑', desc:'宠物抽奖幸运达到 10000',          check:() => getTotalPetDrawLuck() >= 10000 },
   /* 🕳️ 源质深渊成就 */
@@ -1854,7 +1898,7 @@ function getShopCoinMult(){
   for(const b of state.buffs) if(b.coinMult) v *= b.coinMult;
   const ev = getEvent();
   if(ev.coinMult) v *= ev.coinMult;
-  return v;
+  return voidScale(v);
 }
 
 function getShopLuckMult(){
@@ -1928,6 +1972,7 @@ function refreshShop(){
 
 function buyShopItem(id){
   const item = SHOP_POOL.find(x => x.id === id);
+  if(state.voidMode){ toast('虚空模式：商城不可用', '#ff6b6b'); return; }
   if(!item){ toast('❌ 商品不存在'); return; }
   const bought = (state.shopBought && state.shopBought[id]) || 0;
   if(bought >= item.limit){ toast('❌ 今日已售罄'); beep(220, .12, 'square', .04); return; }
@@ -1979,6 +2024,10 @@ const state = {
   deviceVibrate: true,  // 偏好：设备震动（移动端 navigator.vibrate）
   particles: true,      // 偏好：抽卡 / 升级粒子特效
   upgradeMode: 10,      // 升级模式：点击节点一次升几级（1 / 5 / 10）
+
+  /* ═══ 虚空 / 地狱模式 ═══ */
+  voidMode: false,      // 虚空模式（消耗1次真重生开启）
+  hellMode: false,      // 地狱模式（暂未开放，仅占位）
   page: 'roll', shopTab: 'coins', invTab: 'base',
   petTab: 'draw', petSelection: [],
   petLevelupTarget: null, petLevelupMaterials: [],
@@ -2066,6 +2115,7 @@ function getEvent(){
   return e;
 }
 function rollEvent(manual){
+  if(state.voidMode){ state.event = 'idle'; renderEventPage(); return; } // 虚空：永不轮换
   const pool = EVENTS.filter(e => e.id !== 'none');
   const ev = pool[Math.floor(Math.random() * pool.length)];
   state.event = ev.id;
@@ -2087,6 +2137,7 @@ function rollEvent(manual){
   if(state.page === 'event') renderEventPage();
 }
 setInterval(() => {
+  if(state.voidMode){ state.event = 'idle'; return; } // 虚空：活动永远空闲
   const ev = getEvent();
   if(ev.id === 'none'){
     if(state.event !== 'none' && Date.now() > state.eventUntil){
@@ -2111,7 +2162,7 @@ function markDirty(){ saveDirty = true; }
 
 function getSaveData(){
   return {
-    v: 10, ts: Date.now(),
+    v: 11, ts: Date.now(),
     coins: state.coins, gems: state.gems,
     rolls: state.rolls, rollCount: state.rollCount, pity: state.pity,
     tree: state.tree,
@@ -2149,6 +2200,8 @@ function getSaveData(){
     /* 👑 VIP / SVIP */
     vip: state.vip,
     vipDailyClaim: state.vipDailyClaim,
+    voidMode: state.voidMode,
+    hellMode: state.hellMode,
     vipTree: state.vipTree,
     /* 🕳️ 源质深渊 */
     abyssFloor: state.abyssFloor,
@@ -2184,6 +2237,8 @@ function applySaveData(d){
   if(typeof d.screenShake === 'boolean') state.screenShake = d.screenShake;
   if(typeof d.deviceVibrate === 'boolean') state.deviceVibrate = d.deviceVibrate;
   if(typeof d.particles === 'boolean') state.particles = d.particles;
+  if(typeof d.voidMode === 'boolean') state.voidMode = d.voidMode;
+  if(typeof d.hellMode === 'boolean') state.hellMode = d.hellMode;
   // 向后兼容：旧存档只有 vibrate 字段 → 映射到 deviceVibrate
   if(typeof d.vibrate === 'boolean' && typeof d.deviceVibrate !== 'boolean') state.deviceVibrate = d.vibrate;
   if(typeof d.rechargeUnlocked === 'boolean') state.rechargeUnlocked = d.rechargeUnlocked;
@@ -2472,7 +2527,9 @@ let confirmCb = null;
 function openConfirm(emoji, title, desc, cb){
   $('#cfEmoji').textContent = emoji;
   $('#cfTitle').textContent = title;
-  $('#cfDesc').textContent = desc;
+  // ═══ 支持 \n 换行（转 <br>），内容仍走 textContent 防 XSS ═══
+  const safe = String(desc).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\n/g,'<br>');
+  $('#cfDesc').innerHTML = safe;
   confirmCb = cb;
   $('#confirmOverlay').classList.add('on');
 }
@@ -2609,7 +2666,7 @@ function getLuckMult(){
     return p && p.species === 'worm';
   });
   if(hasWorm) v *= 0.01;
-  return v;
+  return voidScale(v);
 }
 function getCoinMult(){
   let v = 1;
@@ -2633,7 +2690,7 @@ function getCoinMult(){
   for(const b of state.buffs) if(b.coinMult) v *= b.coinMult;
   const ev = getEvent();
   if(ev.coinMult) v *= ev.coinMult;
-  return v;
+  return voidScale(v);
 }
 function getAutoInterval(){
   let r = 0;
@@ -2831,7 +2888,7 @@ function initAbyssFloor(floor){
   state.abyssRerollLeft = getAbyssRerollMax();
 }
 function ensureAbyssInit(){
-  if(state.trueRebirths < 1) return;
+  if(state.trueRebirths < 1 && !state.voidMode) return;
   if(state.abyssFloor <= 0){
     state.abyssFloor = 1;
     state.abyssBest = Math.max(state.abyssBest, 1);
@@ -2886,7 +2943,7 @@ function showAbyssHit(dmg, isCrit){
   setTimeout(() => el.remove(), 1000);
 }
 function applyAbyssDamageFromRoll(idx, aMult, diceMult){
-  if(state.trueRebirths < 1) return;
+  if(state.trueRebirths < 1 && !state.voidMode) return;
   if(state.abyssFloor <= 0) return;
 
   if(state.abyssHp <= 0 || state.abyssMaxHp <= 0){
@@ -3238,9 +3295,16 @@ function shake(level){
   setTimeout(() => app.classList.remove('shaking'), 460);
 }
 let toastTimer = null;
-function toast(msg){
+function toast(msg, color){
   const el = $('#toast');
   el.textContent = msg;
+    if(color){
+      el.style.borderColor = color;
+      el.style.color = color;
+    }else{
+      el.style.borderColor = '';
+      el.style.color = '';
+    }
   el.classList.add('on');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => { el.classList.remove('on'); el.classList.remove('ach'); el.classList.remove('event'); }, 1800);
@@ -3316,7 +3380,7 @@ function updateHUD(){
   /* 🕳️ 深渊层数 chip */
   const abyssChip = $('#hAbyssChip');
   if(abyssChip){
-    if(state.trueRebirths >= 1){
+    if(state.trueRebirths >= 1 || state.voidMode){
       abyssChip.style.display = '';
       const ha = $('#hAbyss');
       if(ha) ha.textContent = state.abyssBest || 1;
@@ -3873,15 +3937,19 @@ function bindBuyModeBar(){
 function renderShopPage(){
   const tab = state.shopMainTab || 'main';
   let h = '<div class="page-title"><h2>商城</h2><p>常规商城 · 源质充值 · 赌注抽奖</p></div>';
-  h += '<div class="subtabs">' +
-    '<div class="subtab' + (tab==='main'?' on':'') + '" data-shoptab="main">🛒 商城</div>' +
-    '<div class="subtab' + (tab==='recharge'?' on':'') + '" data-shoptab="recharge">💠 源质充值</div>' +
-    '<div class="subtab' + (tab==='gamble'?' on':'') + '" data-shoptab="gamble">🎲 赌注抽奖</div>' +
-  '</div>';
-
-  if(tab === 'main') h += renderShopMain();
-  else if(tab === 'recharge') h += renderShopRecharge();
-  else h += renderShopGamble();
+  if(state.voidMode){
+    h += '<div class="void-shop-notice">🕳️ 虚空模式：仅保留「赌注抽奖」，商城与源质充值已禁用</div>';
+    h += renderShopGamble();
+  } else {
+    h += '<div class="subtabs">' +
+      '<div class="subtab' + (tab==='main'?' on':'') + '" data-shoptab="main">🛒 商城</div>' +
+      '<div class="subtab' + (tab==='recharge'?' on':'') + '" data-shoptab="recharge">💠 源质充值</div>' +
+      '<div class="subtab' + (tab==='gamble'?' on':'') + '" data-shoptab="gamble">🎲 赌注抽奖</div>' +
+    '</div>';
+    if(tab === 'main') h += renderShopMain();
+    else if(tab === 'recharge') h += renderShopRecharge();
+    else h += renderShopGamble();
+  }
 
   $('#pageShop').innerHTML = h;
 }
@@ -4078,6 +4146,7 @@ function renderShopGamble(){
 /* ═══════════ 💠 充值 / 🎲 赌注 核心逻辑 ═══════════ */
 function buyRechargePack(id){
   const p = RECHARGE_PACKS.find(x => x.id === id);
+  if(state.voidMode){ toast('虚空模式：源质充值不可用', '#ff6b6b'); return; }
   if(!p) return;
   if(p.needVip && state.vip < 1){
     toast('❌ 需要先购买 VIP'); beep(220,.12,'square',.04); return;
@@ -4133,6 +4202,14 @@ function doGamble(typeId, pick){
   if(state.coins < amount){ toast('❌ 金币不足'); beep(220,.12,'square',.04); return; }
 
   state.coins -= amount;
+
+  // ═══ 虚空模式：25%概率结果被吞噬（赌注照扣，无奖励）═══
+  if(rollDevoured()){
+    toast('🕳️ 赌注被虚空吞噬了…', '#8b5cf6');
+    burst('#8b5cf6', 26, innerWidth / 2, innerHeight / 2);
+    updateHUD(); renderShopPage(); markDirty(); saveGame();
+    return;
+  }
 
   let win = false;
   let resultText = '';
@@ -4833,12 +4910,119 @@ function renderRebPage(){
     '<span style="color:#c85aff">☯️ 真重生会清空金币、普通技能树、三种重生次数、宠物与装备，但保留图鉴、永久树、成就、源质深渊进度与宠物抽奖幸运。</span>' +
   '</div></div>';
 
+  /* ═══════════ 虚空 / 地狱 模式入口 ═══════════ */
+  h += '<div class="mode-card void">' +
+    '<div class="mode-head"><span class="mode-icon">🕳️</span>' +
+      '<div><div class="mode-name">虚空模式</div>' +
+        '<div class="mode-desc">消耗 1 次真重生次数开启 · 重置图鉴与成就以外的一切</div></div></div>' +
+    '<ul class="mode-rules">' +
+      '<li>源质深渊无需真重生即可开启</li>' +
+      '<li>所有最终增益减少 75%（下限 0.75x，不扣钱）</li>' +
+      '<li>宠物 / 赌注 / 正常抽奖 25% 概率被吞噬</li>' +
+      '<li>吞噬宠物结果 → 替换为「蚕大蛇」</li>' +
+      '<li>禁用商城商品与源质充值，仅保留赌注抽奖</li>' +
+      '<li>活动永远空闲</li>' +
+      '<li>达成真重生即 <b>通关</b>，解除限制并获得成就</li>' +
+    '</ul>' +
+    '<button class="mode-btn" id="btnVoid"' + (state.voidMode ? ' disabled' : '') + '>' +
+      (state.voidMode ? '虚空模式进行中…' : '开启虚空模式（消耗 1 次真重生）') +
+    '</button>' +
+  '</div>';
+
+  h += '<div class="mode-card hell locked" id="cardHell">' +
+    '<div class="mode-head"><span class="mode-icon">🔒</span>' +
+      '<div><div class="mode-name">地狱模式 <span class="mode-soon">敬请期待</span></div>' +
+        '<div class="mode-desc">消耗 1 次真重生次数开启（开发中）</div></div></div>' +
+    '<ul class="mode-rules"><li>更严苛的规则（开发中）</li></ul>' +
+    '<button class="mode-btn" id="btnHell" disabled>暂未开放</button>' +
+  '</div>';
+
   h += '</div>';
   $('#pageReb').innerHTML = h;
 }
 
+/* ═══ 开启虚空模式 ═══ */
+function startVoidMode(){
+  if(state.voidMode){ toast('已在虚空模式中'); return; }
+  if(state.trueRebirths < 1){ toast('❌ 需要至少 1 次真重生次数'); beep(220,.12,'square',.04); return; }
+  // ═══ 用游戏内确认弹窗（不依赖浏览器 confirm，移动端更稳）═══
+  const desc = '将消耗 1 次真重生次数，并重置「图鉴与成就」以外的全部进度。\n\n' +
+               '· 包含：金币、技能树、三种重生次数、宠物、装备，以及【永久树 / 二阶永久树】\n' +
+               '· 源质深渊无需真重生即可开启\n' +
+               '· 所有最终增益减少 75%（下限 0.75x）\n' +
+               '· 三种抽奖 25% 概率被吞噬\n' +
+               '· 禁用商城与源质充值，仅保留赌注抽奖\n' +
+               '· 达成真重生即通关，解除限制并获得成就';
+  openConfirm('🕳️', '开启虚空模式', desc, () => {
+    state.trueRebirths--;
+    resetForVoid();
+    state.voidMode = true;
+    saveGame();
+    toast('🕳️ 虚空模式已开启', '#8b5cf6');
+    burst('#8b5cf6', 40, innerWidth / 2, innerHeight / 2);
+    state.page = 'reb';
+    buildNav();
+    updateHUD();
+    renderPage();
+  });
+}
+
+/* 重置：保留 inv / unlockedAch / 永久树 / 源质深渊进度 + 偏好 */
+function resetForVoid(){
+  var keep = {
+    inv: state.inv, unlockedAch: state.unlockedAch,
+    ptree: { PROOT:1 }, ptree2: { P2ROOT:1 }, /* 虚空：永久树清空，仅留根节点 */
+    abyssFloor: state.abyssFloor, abyssBest: state.abyssBest,
+    abyssHp: state.abyssHp, abyssMaxHp: state.abyssMaxHp,
+    abyssMods: state.abyssMods, abyssRerollLeft: state.abyssRerollLeft,
+    abyssRolls: state.abyssRolls, abyssFloorDamage: state.abyssFloorDamage,
+    abyssTotalDamage: state.abyssTotalDamage, essence: state.essence, abyssUpg: state.abyssUpg,
+    boss: state.boss,
+    sound: state.sound, rolling: false,
+    screenShake: state.screenShake, deviceVibrate: state.deviceVibrate,
+    particles: state.particles, upgradeMode: state.upgradeMode
+  };
+  var resetKeys = [
+    'coins','gems','rolls','rollCount','pity','tree','rebirths','ascends','transcends',
+    'petDrawLuck','petInv','petEquipped','petSelection','petLevelupTarget','petLevelupMaterials',
+    'recent','buffs','auto','page','shopTab','invTab','petTab','daily','rechargeUnlocked',
+    'shopDate','shopSlots','shopBought','forceAffix','event','eventUntil','devUnlocked',
+    'specialCodes','shopMainTab','gambleHistory','rechargeBought','vip','vipDailyClaim','vipTree',
+    'svipExtrasQueue','stats','potionStock'
+  ];
+  for(var ri=0; ri<resetKeys.length; ri++){ delete state[resetKeys[ri]]; }
+  Object.assign(state, keep);
+  // ═══ 关键：被 delete 的字段必须全部补回默认值，否则后续调用会因 undefined 抛异常 ═══
+  // 之前的 bug：auto / eventUntil / daily.progress / vip 等字段被删后未重建，
+  // 导致 trackDaily 抛 TypeError → resolveRoll 的 setTimeout 回调中断 →
+  // state.rolling=false 与 btn.disabled=false 永远不执行 → 抽卡按钮永久锁死。
+  if(state.coins === undefined){
+    Object.assign(state, {
+      coins:0, gems:0, rolls:0, rollCount:0, pity:0, tree:{root:1},
+      rebirths:0, ascends:0, transcends:0, petDrawLuck:0, petInv:[], petEquipped:[],
+      petSelection:[], petLevelupTarget:null, petLevelupMaterials:[],
+      recent:[], buffs:[], gambleHistory:[], rechargeBought:{}, shopBought:{}, specialCodes:{},
+      stats:{ totalAffix:0,totalDouble:0,shinyCommon:0,shinyCommonDouble:0,chaoticCommon:0,
+              goldDice:0,diamondDice:0,emeraldDice:0,rainbowDice:0 },
+      event:'idle', eventUntil:0, page:'roll', shopTab:'main', shopMainTab:'main',
+      invTab:'all', petTab:'inv', daily:{progress:{}}, rechargeUnlocked:false,
+      shopDate:'', shopSlots:[], forceAffix:false, devUnlocked:false,
+      svipExtrasQueue:[], potionStock:[],
+      vip:0, vipDailyClaim:0, vipTree:{},
+      auto:false, rolling:false
+    });
+  }
+}
+
+/* 通关后解除限制 */
+function clearVoidMode(){ state.voidMode = false;  saveGame(); }
+
+/* ═══ 地狱模式（占位，暂不可进）═══ */
+function startHellMode(){ toast('🔒 地狱模式暂未开放', '#ff6b6b'); }
+
+
 function renderChallengeTabs(current){
-  const abyssUnlocked = state.trueRebirths >= 1;
+  const abyssUnlocked = state.trueRebirths >= 1 || state.voidMode;
   return '<div class="subtabs" style="max-width:760px">' +
     '<div class="subtab' + (current === 'abyss' ? ' on' : '') + (abyssUnlocked ? '' : ' locked') + '" ' +
       (abyssUnlocked ? 'data-challenge="abyss"' : 'data-challenge-locked="1"') + '>' +
@@ -4850,7 +5034,7 @@ function renderChallengeTabs(current){
 
 /* ═══════════ 🕳️ 源质深渊页面 ═══════════ */
 function renderAbyssPage(){
-  if(state.trueRebirths < 1){
+  if(state.trueRebirths < 1 && !state.voidMode){
     $('#pageAbyss').innerHTML =
       '<div class="page-title"><h2>源质深渊</h2><p>真重生解锁</p></div>' +
       '<div class="empty">☯️ 完成一次真重生后解锁源质深渊<br>无尽爬塔 · 随机变异 · 源质永久升级</div>';
@@ -5497,9 +5681,9 @@ function switchPage(id){
     // 已经在挑战页里，不重复切换
     if(state.page === 'abyss' || state.page === 'boss') return;
     // 有真重生优先进深渊，否则进 Boss
-    id = (state.trueRebirths >= 1) ? 'abyss' : 'boss';
+    id = (state.trueRebirths >= 1 || state.voidMode) ? 'abyss' : 'boss';
   }
-  if(id === 'abyss' && state.trueRebirths < 1){
+  if(id === 'abyss' && state.trueRebirths < 1 && !state.voidMode){
     toast('要想进入沙杨马之深渊，需掌握逆转乾坤之术。');
     beep(220, .12, 'square', .04);
     shake(2);
@@ -5639,6 +5823,13 @@ function resolveRoll(result){
   const base = result.base;
   const affixes = result.affixes || [];
   const idx = RARITIES.indexOf(base);
+
+  // ═══ 虚空模式：25%概率结果被吞噬（不给任何奖励）═══
+  if(rollDevoured()){
+    toast('🕳️ 结果被虚空吞噬了…', '#8b5cf6');
+    burst('#8b5cf6', 26, innerWidth / 2, innerHeight / 2);
+    return;
+  }
 
   state.rolls++;
   state.rollCount++;
@@ -5837,7 +6028,7 @@ requestAnimationFrame(autoLoop);
 function buyNode(id){
   const n = ALL_NODES.find(x => x.id === id);
   if(!n || n.id === 'root' || n.id === 'PROOT' || n.id === 'P2ROOT') return;
-  if(n.perma2 && state.trueRebirths < 1){ toast('🌌 需要完成真重生才能升级二阶永久树'); beep(220, .12, 'square', .04); return; }
+  if(n.perma2 && state.trueRebirths < 1 && !state.voidMode){ toast('🌌 需要完成真重生才能升级二阶永久树'); beep(220, .12, 'square', .04); return; }
 
   // ── 批量升级：按 upgradeMode（1 / 5 / 10）一次性升满目标次数 ──
   let target = Math.max(1, state.upgradeMode || 1);
@@ -5893,16 +6084,31 @@ function drawPets(count){
     return;
   }
   state.gems -= cost;
-  const results = [];
+  let results = [];
   for(let i = 0; i < count; i++){
     const q = rollPetQuality();
     results.push(genPet(q, rollSpecies()));
   }
-  for(const pet of results){
-    state.petInv.push(pet);
+  // ═══ 虚空模式：25%概率吞噬 → 整批替换为蚕大蛇 ═══
+  if(rollDevoured()){
+    var wormPet = { species:'worm', quality:'N', star:1, exp:0, shiny:false, rainbow:false, richPup:false,
+                    uid:'pet_worm_' + Date.now() };
+    results = [wormPet];
+    state.petInv.push(wormPet);
+    setTimeout(function(){
+      toast('🐛 召唤被吞噬，只留下蚕大蛇…', '#8b5cf6');
+      beep(180, .5, 'sawtooth', .05);
+      setTimeout(function(){ beep(120, .6, 'sawtooth', .05); }, 220);
+      burst('#7c8f3a', 25);
+      shake(7);
+    }, 400);
+  } else {
+    for(const pet of results){
+      state.petInv.push(pet);
+    }
   }
   const gotWorm = results.some(p => p.species === 'worm');
-  if(gotWorm){
+  if(gotWorm && !state.voidMode){
     setTimeout(() => {
       toast('🐛 诅咒降临！你抽到了 蚕大蛇……');
       beep(180, .5, 'sawtooth', .05);
@@ -6249,15 +6455,28 @@ function doTrueRebirth(){
   }
   if(state.coins < cost){ toast('金币不足，需要 💰' + fmt(cost)); beep(200, .12, 'square', .04); return; }
 
-  openConfirm('☯️', '真重生',
+  // ═══ 虚空模式：走完整真重生流程，"通关"只在真重生真正完成后触发 ═══
+  const isVoidClear = state.voidMode;   // 本次真重生若在虚空模式下完成 → 即通关
+  const confirmTitle = isVoidClear ? '🕳️ 虚空 · 真重生（通关）' : '☯️ 真重生';
+  let confirmDesc = 
     '⚠️ 将重置：金币、普通技能树、三种重生次数（重生/进阶/超级）、全部宠物与装备。\n' +
     '✅ 保留：图鉴、永久树、二阶永久树、成就、宠物抽奖幸运、源质深渊进度。\n' +
     '🎁 获得：金币倍率 ×' + TRUE_REBIRTH.coinMultPer + '（累积）、幸运 +' + TRUE_REBIRTH.luckPer +
     '、宠物抽奖幸运 +' + TRUE_REBIRTH.petLuckPer + '、宠物抽奖折扣 -15%。\n' +
     '🕳️ 解锁源质深渊（如未解锁）。\n\n' +
-    '确定执行第 ' + (state.trueRebirths + 1) + ' 次真重生吗？',
+    '确定执行第 ' + (state.trueRebirths + 1) + ' 次真重生吗？';
+  if(isVoidClear){
+    confirmDesc =
+      '🕳️ 你在【虚空模式】下即将完成一次真重生 —— 这将视为【通关虚空】。\n\n' +
+      '通关后将：解除全部虚空限制（商城 / 充值 / 活动 / 吞噬规则恢复）、保留本次真重生收益、解锁成就「虚空征服者」。\n\n' +
+      '⚠️ 真重生的常规重置依然生效（金币、技能树、重生次数、宠物与装备会被重置）。\n\n' +
+      '确定执行这次真重生并通关吗？';
+  }
+
+  openConfirm('☯️', confirmTitle, confirmDesc,
     () => {
       state.coins = 0;
+      state.gems = 0;
       state.tree = { root:1 };
       state.rebirths = 0;
       state.ascends = 0;
@@ -6270,7 +6489,7 @@ function doTrueRebirth(){
       state.trueRebirths++;
       state.petDrawLuck += TRUE_REBIRTH.petLuckPer;
 
-      /* 首次真重生解锁深渊 */
+      /* 首次真重生解锁深渊（虚空通关时深渊已解锁，此处仅兜底） */
       if(state.abyssFloor <= 0){
         state.abyssFloor = 1;
         state.abyssBest = Math.max(state.abyssBest, 1);
@@ -6285,7 +6504,14 @@ function doTrueRebirth(){
       burst('#00ffc8', 80);
       shake(11);
 
-      toast('☯️ 逆转乾坤！完成第 ' + state.trueRebirths + ' 次真重生');
+      // ═══ 虚空通关结算：真重生真正完成后再解除限制 + 给成就 ═══
+      if(isVoidClear){
+        clearVoidMode();
+        unlockAch('void_cleared');
+        toast('🌌 虚空模式 通关！所有限制已解除', '#ffd86b');
+      }
+
+      toast('☯️ 逆转乾坤！完成第 ' + state.trueRebirths + ' 次真重生' + (isVoidClear ? ' · 虚空已通关' : ''));
       setTimeout(() => toast('🐾 宠物抽奖幸运 +' + TRUE_REBIRTH.petLuckPer + ' · 当前 ' + fmt(state.petDrawLuck)), 1800);
 
       buildNav();
@@ -6335,6 +6561,12 @@ $('#ovInput').addEventListener('keydown', e => { if(e.key === 'Enter') confirmOv
 $('#overlay').addEventListener('click', e => { if(e.target.id === 'overlay') closeOverlay(); });
 
 document.addEventListener('click', e => {
+  // ═══ 虚空 / 地狱 模式（最高优先，避免被页面内其他分支拦截）═══
+  const cardVoid = e.target.closest && e.target.closest('.mode-card.void');
+  const cardHell = e.target.closest && e.target.closest('.mode-card.hell');
+  if(cardVoid){ const b = $('#btnVoid'); if(b && !b.disabled){ startVoidMode(); } return; }
+  if(cardHell){ const b = $('#btnHell');  if(b && !b.disabled){ startHellMode(); } return; }
+
   const nav = e.target.closest('.nav-btn, .side-btn');
   if(nav && nav.dataset.page){ switchPage(nav.dataset.page); return; }
 
@@ -7610,6 +7842,22 @@ window.symrng.panel        = open;
 window.symrng['后台']      = open;
 window.symrng.closeAdmin   = close;
 
+/* ═══ 暴露内部 API 到 window（控制台调试 + 自动化测试用）═══ */
+window.state           = state;
+window.ACHIEVEMENTS    = ACHIEVEMENTS;
+window.renderRebPage   = renderRebPage;
+window.doTrueRebirth   = doTrueRebirth;
+window.startVoidMode   = startVoidMode;
+window.startHellMode   = startHellMode;
+window.clearVoidMode   = clearVoidMode;
+window.resetForVoid    = resetForVoid;
+window.voidScale       = voidScale;
+
+window.symrng.startVoidMode  = startVoidMode;
+window.symrng.startHellMode  = startHellMode;
+window.symrng.clearVoidMode  = clearVoidMode;
+window.symrng.voidScale      = voidScale;
+
 if(!window.symrng.addCoins){
   window.symrng.addCoins = function(n){
     n = Number(n);
@@ -7672,8 +7920,6 @@ try{
     'color:#ff5f5f;font-size:12px'
   );
 }catch(e){}
-
-})();
 
 })();
 </script>
