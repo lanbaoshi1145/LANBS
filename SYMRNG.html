@@ -249,6 +249,19 @@ body{
   opacity:0;transform:translateY(4px);transition:opacity .12s,transform .12s;
 }
 #nodeTip.on{opacity:1;transform:translateY(0)}
+
+#loreTip{
+  position:fixed;z-index:190;pointer-events:none;
+  max-width:min(90vw,360px);
+  background:linear-gradient(165deg,rgba(24,34,64,.98),rgba(10,16,34,.98));
+  border:1px solid rgba(120,170,255,.45);
+  border-radius:14px;padding:14px 16px;
+  box-shadow:0 20px 50px -18px #000,0 0 30px -10px rgba(80,140,255,.4);
+  opacity:0;transform:translateY(4px);transition:opacity .15s,transform .15s;
+}
+#loreTip.on{opacity:1;transform:translateY(0)}
+#loreTip .lt-name{font-size:13px;font-weight:900;margin-bottom:6px;letter-spacing:.03em;}
+#loreTip .lt-text{color:#c8d4ea;font-size:12px;line-height:1.75;word-break:break-word;}
 #nodeTip .nt-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
 #nodeTip .nt-emoji{font-size:20px;line-height:1}
 #nodeTip .nt-name{font-size:14px;font-weight:900;color:#fff;letter-spacing:.03em;}
@@ -1139,9 +1152,10 @@ body{
  * v13.1.2 → v13.1.3：T17 改为统计主 subtype（新增 state.dive._lastMainSubtype）并放大样本至 10 万次
  * v13.1.3 → v13.1.4：修 applySaveData 老存档兼容漏洞（dive/boss 缺 else）；加玩家昵称系统（与公开版对齐）
  * v13.1.4 → v13.2.0：深渊探索加默认锁 + 后台解锁开关（abyssExploreUnlocked）
+ * v13.2.0 → v13.3.0：图鉴「稀有度」tab 加 hover/点击 lore tip
  */
 body::after{
-  content: "v13.2.0";
+  content: "v13.3.0";
   position: fixed;
   left: 8px;
   top: 8px;
@@ -1227,6 +1241,7 @@ body::after{
 <nav class="bottom-nav" id="bottomNav"></nav>
 <div id="toast"></div>
 <div id="nodeTip"></div>
+<div id="loreTip"></div>
 
 <div class="overlay" id="overlay">
   <div class="overlay-box">
@@ -1299,6 +1314,35 @@ const AFFIXES = [
   { id:'genesis',  name:'创世', emoji:'🌟', mult:100000,w:0.5,    color:'#ffffff' }
 ];
 const CHAOTIC_INDEX = 9;
+
+const RARITY_LORE = {
+  N:     '普通沙杨马坐在椅子上，对着路过的人说：你好，我叫沙杨马——最普通的沙杨马。有人说过："人生就像一盒...话还没说完，那人便走开了。这样的事情每天都在发生，因为没有人会在意一个普通的沙杨马，没有人会愿意抽到他，你也是如此。',
+  R:     '你要知道一件事——很多写着稀有的东西并不稀有。',
+  SR:    'SR 史诗沙杨马在被抽到的那一刻会大喊一声"史诗！"。抽到它的人通常说"还行吧"，然后继续抽。哦对了，我说的是荒野乱斗里的史诗星妙惊喜。',
+  SSR:   '当一个新手在网吧的角落里第一次按下抽取键，传说沙杨马落地的那一秒，整个网吧安静了一下。不是因为它有多稀有，而是因为在那一刻，那个新手没有意识到——这是他这辈子唯一一次，第一抽就出传说。因为这是游戏内品质倒数第四低的沙杨马，很好出。',
+  UR:    '很多游戏玩家一直苦恼于一个问题——是神话更稀有还是传说更稀有，我认为传说更稀有，但我还是把神话排在了传说上面。',
+  SYM:   '小知识：你知道吗？本源沙杨马是游戏内最早的沙杨马，他的存在源自于沙杨马RNG最早的版本里，那时，游戏内只有几种稀有度：普通，稀有，史诗，传说，神话——和沙杨马。',
+  ASYM:  '据野史记载，侏罗纪时期就有沙杨马RNG这款游戏了，它的开发者是一位老....我不说了。',
+  DSYM:  '暗影沙杨马是最早获得黑暗词条的沙杨马，但当时有bug，这词条在他身上洗不掉了，久而久之，它就变成了现在这样。',
+  HSYM:  '明明名字很有逼格，却吃了出的太早的亏。',
+  CSYM:  '湮灭沙杨马可以湮灭一切，比如你现在去设置里找到清空存档那个按钮，那就是湮灭沙杨马的手笔。',
+  LKYM:  '我不知道为什么裂空沙杨马比湮灭沙杨马更牛逼，也许是他撕裂空间降落于此的样子很有压迫感吧。',
+  VSYM:  'VSYM 星海沙杨马在虚空里飘了很久才被人抽到。抽到它的人说"终于出了"，它想说"我也等了很久"，但它不会说话。',
+  JXYM:  'JXYM 机械沙杨马是造出来的，不是抽出来的——至少它自己这么认为。它运算过，随机是不确定的，而它不应该是不确定的。但它至少对了一半，因为他确实是被硬造出来以填充稀有度列表的。',
+  QSYM:  '如果我是DJ，是DJ，是DJ，是DJ....',
+  GSYM:  'GSYM 起源沙杨马是白色的。不是因为设计成白色，而是因为它出现的时候还没有别的颜色。它是第一只被定义出来的沙杨马。后来的每一只都在它之后。',
+  LGYM:  '另类沙杨马是个另类。但是有一群小众逼看上了他，因此他就获得了这么高的位置。',
+  ISYM:  '当你在虚空模式作为白板并受到三只蚕大蛇诅咒的情况下不断的抽奖，直到抽出1个永恒沙杨马时，永恒才过了他的第一秒....',
+  ESYM:  '他曾经站在沙杨马的顶峰，试图终焉一切，但很快就被起源沙杨马下克上制裁了，掉了好几个位置。',
+  GNYM:  'GNYM 归一沙杨马是所有沙杨马的最后一只，也是第一只。抽到它的人说"终于"，它说"不，是开始"。',
+  TSYM:  '超脱沙杨马的精神境界已经不是稀有度列表可以限制的住的了——它在列表之外看列表。它偶尔出现在某个玩家的背包里，玩家说"这个没见过"，关掉，再也不打开。',
+  ZSYM:  '至臻？这名字像是那种游戏中需要充一堆钱才能得来的东西。',
+  LJYM:  '凌驾沙杨马在稀有度列表的上面，低头看着下面所有沙杨马。什么，你问他为什么不在最上面？因为在动漫里，这种凌驾于一切的大首领一般要被弄死，把自己弄低是花位置消灾。',
+  XSYM:  'XSYM 无尽沙杨马没有尽头。它知道自己叫"无尽"是因为稀有度数字后面的零多到系统自己都不想数了，所以系统用的科学计数法。',
+  OMSYM: '全能沙杨马除了一件事什么都会。它会抽卡、会升级、会重生、会打 boss。但因为那一件事，从来没有人多看过他一眼。（那件他不会的事是给玩家加爆率）',
+  ABSYM: 'ABSYM 绝对沙杨马是白色的——跟起源一样白。但它们的白不一样。起源的白是"还没有颜色"，绝对的白是"已经不需要颜色"。抽到绝对沙杨马的人，通常只做一件事：截图，然后沉默。',
+  '8FQ': '哦对了，李不要念辣个，辣个是骂人的，也不要去搜。'
+};
 
 const PET_QUALITIES = [
   { id:'N',   name:'普通', color:'#8b98ad', mult:2   },
@@ -3841,6 +3885,40 @@ function showNodeTip(node, clientX, clientY){
 }
 function hideNodeTip(){ if(tipEl) tipEl.classList.remove('on'); }
 
+let loreTipEl = null;
+let loreTipCurrent = null;
+function showLoreTip(id, cx, cy){
+  if(!loreTipEl) loreTipEl = document.getElementById('loreTip');
+  if(!loreTipEl) return;
+  const r = RARITIES.find(x => x.id === id);
+  if(!r) return;
+  const text = RARITY_LORE[id];
+  if(!text) return;
+  loreTipEl.innerHTML =
+    '<div class="lt-name" style="color:' + r.color + '">' + r.name + '沙杨马</div>' +
+    '<div class="lt-text">' + esc(text) + '</div>';
+  loreTipEl.classList.add('on');
+  const tw = loreTipEl.offsetWidth, th = loreTipEl.offsetHeight;
+  let x, y;
+  if(cx === undefined){
+    x = (window.innerWidth - tw) / 2;
+    y = window.innerHeight * 0.32;
+  } else {
+    x = cx + 16; y = cy + 16;
+    if(x + tw > window.innerWidth - 8) x = cx - tw - 16;
+    if(y + th > window.innerHeight - 8) y = cy - th - 16;
+  }
+  if(x < 8) x = 8;
+  if(y < 8) y = 8;
+  loreTipEl.style.left = x + 'px';
+  loreTipEl.style.top  = y + 'px';
+}
+function hideLoreTip(){
+  if(!loreTipEl) return;
+  loreTipEl.classList.remove('on');
+  loreTipCurrent = null;
+}
+
 function renderTreePage(){
   $('#pageTree').innerHTML = `
     <div class="page-title"><h2>升级路线</h2><p>普通树 · 永久树（金）· 二阶永久树（紫）· 拖拽 / 滚轮缩放</p></div>
@@ -4923,7 +5001,7 @@ function renderInvPage(){
       const pTxt = prob >= 1 ? prob.toFixed(2) + '%'
                  : prob >= 0.01 ? prob.toFixed(4) + '%'
                  : prob.toExponential(1) + '%';
-      body += '<div class="item" style="' + (c ? '' : 'opacity:.42') + '">' +
+      body += '<div class="item" data-lore="' + r.id + '" style="' + (c ? '' : 'opacity:.42') + '">' +
         '<div class="ic" style="color:' + r.color + '">' + r.id + '</div>' +
         '<div class="info">' +
           '<div class="nm" style="color:' + r.color + '">' + r.name + '沙杨马</div>' +
@@ -8410,6 +8488,39 @@ window.addEventListener('keydown', e => {
     }
   }
 });
+
+/* ═══ 图鉴 lore tip ═══ */
+(function(){
+  const canHover = window.matchMedia && window.matchMedia('(hover: hover)').matches;
+  if(canHover){
+    document.addEventListener('mouseover', e => {
+      const card = e.target.closest('[data-lore]');
+      if(!card) return;
+      showLoreTip(card.dataset.lore, e.clientX, e.clientY);
+    });
+    document.addEventListener('mouseout', e => {
+      const card = e.target.closest('[data-lore]');
+      if(!card) return;
+      const to = e.relatedTarget && e.relatedTarget.closest ? e.relatedTarget.closest('[data-lore]') : null;
+      if(to === card) return;
+      hideLoreTip();
+    });
+  } else {
+    document.addEventListener('click', e => {
+      const card = e.target.closest('[data-lore]');
+      if(!card){
+        hideLoreTip();
+        return;
+      }
+      if(loreTipCurrent === card){
+        hideLoreTip();
+      } else {
+        loreTipCurrent = card;
+        showLoreTip(card.dataset.lore);
+      }
+    });
+  }
+})();
 
 document.addEventListener('touchstart', function once(){
   if(!audioCtx){
