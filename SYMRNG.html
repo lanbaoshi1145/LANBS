@@ -1048,6 +1048,79 @@ body{
 .boss-reward .br-btn:disabled{filter:grayscale(.8) brightness(.55);cursor:not-allowed}
 .boss-reward .br-btn.claimed{background:rgba(255,255,255,.1);color:#7c89a5}
 
+/* ═══ 🌊 深渊探索 ═══ */
+.dive-slot{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 14px;margin-bottom:8px;border-radius:13px;
+  background:rgba(255,255,255,.04);border:1.5px solid rgba(139,92,246,.35);
+  cursor:pointer;transition:.15s;
+}
+.dive-slot:hover{border-color:rgba(200,160,255,.7);background:rgba(139,92,246,.08)}
+.dive-slot.active{border-color:rgba(200,160,255,.9);box-shadow:0 0 20px -8px rgba(139,92,246,.6)}
+.dive-slot .ds-emoji{font-size:24px;line-height:1;flex:none}
+.dive-slot .ds-info{flex:1;min-width:0}
+.dive-slot .ds-lb{font-size:10.5px;color:#8b98ad;font-weight:800;letter-spacing:.05em}
+.dive-slot .ds-vl{font-size:13.5px;font-weight:900;color:#e8eefc;margin-top:2px}
+.dive-slot .ds-vl.empty{color:#5a6580;font-style:italic}
+.dive-slot .ds-arr{color:#a78bd4;font-size:16px;flex:none}
+
+.dive-picker{
+  margin-top:6px;margin-bottom:12px;padding:8px;
+  border-radius:12px;background:rgba(0,0,0,.3);
+  border:1px solid rgba(139,92,246,.3);
+  max-height:260px;overflow-y:auto;
+}
+.dive-picker-item{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 10px;border-radius:9px;cursor:pointer;
+  transition:.12s;
+}
+.dive-picker-item:hover{background:rgba(139,92,246,.15)}
+.dive-picker-item .dpi-emoji{font-size:18px;line-height:1;flex:none}
+.dive-picker-item .dpi-name{flex:1;font-size:12.5px;font-weight:800;color:#dde6f7}
+.dive-picker-item .dpi-tag{font-size:10.5px;color:#8ff0c4;font-weight:900}
+
+.dive-room-grid{
+  display:grid;grid-template-columns:1fr;gap:10px;
+  max-width:620px;margin:0 auto;
+}
+.dive-room-card{
+  padding:14px 16px;border-radius:16px;cursor:pointer;
+  background:linear-gradient(165deg,rgba(139,92,246,.12),rgba(255,255,255,.012));
+  border:1.5px solid rgba(139,92,246,.4);
+  transition:.15s;
+  display:flex;align-items:center;gap:12px;
+}
+.dive-room-card:hover{transform:translateY(-2px);border-color:rgba(200,160,255,.8);box-shadow:0 0 26px -10px rgba(139,92,246,.7)}
+.dive-room-card.withdraw{
+  background:linear-gradient(165deg,rgba(0,255,200,.12),rgba(255,255,255,.012));
+  border-color:rgba(0,255,200,.5);
+}
+.dive-room-card .drc-emoji{font-size:30px;line-height:1;flex:none}
+.dive-room-card .drc-info{flex:1;min-width:0}
+.dive-room-card .drc-name{font-size:14px;font-weight:900;color:#e8eefc}
+.dive-room-card .drc-desc{font-size:11.5px;color:#8b98ad;margin-top:3px;line-height:1.5}
+.dive-room-card .drc-tag{
+  font-size:10.5px;font-weight:900;padding:3px 8px;border-radius:6px;
+  background:rgba(139,92,246,.25);color:#c8a8ff;flex:none;
+}
+.dive-room-card.withdraw .drc-tag{background:rgba(0,255,200,.2);color:#7dffe0}
+
+.dive-hud{
+  display:flex;flex-wrap:wrap;gap:8px;justify-content:center;
+  max-width:760px;margin:0 auto 14px;
+}
+.dive-hud-chip{
+  display:flex;align-items:center;gap:5px;
+  padding:7px 12px;border-radius:10px;
+  background:rgba(139,92,246,.14);
+  border:1px solid rgba(139,92,246,.35);
+  font-size:12px;font-weight:900;color:#e8eefc;
+}
+.dive-hud-chip b{color:#c8a8ff;font-variant-numeric:tabular-nums}
+.dive-hud-chip.hp{background:rgba(255,95,95,.14);border-color:rgba(255,95,95,.35)}
+.dive-hud-chip.hp b{color:#ff8a8a}
+
 /* ═══ 版本号 ═══
  * 格式：v主版本.修改次数.修订次数
  *   - 主版本：存档版本（存档结构/字段变更时 +1，需考虑存档兼容）
@@ -1055,10 +1128,20 @@ body{
  *   - 修订次数：小修小补 / bug 修复的次数
  * 由作者手动维护，AI 助手下次改动时需按此规则同步递增对应位数字。
  * v10.3.1 → v11.0.0：存档版本升至 11（虚空模式新增字段），公开版本号同步跟进
- * v11.0.0 → v12SP：新增玩家昵称系统（本地存储，非账号系统）
+ * v11.0.0 → v12.0.0：存档新增 dive 字段（深渊探索），新增玩法模块
+ * v12.0.0 → v12.0.1：死亡结算更新历史最佳 / 宠物名中文化 / 探索隐藏导航 / 修吸收·分解·VIP 基线 bug
+ * v12.0.1 → v12.1.0：深渊探索阶段 3（战斗房 + 三选一临时词条，combat 不落盘故存档结构不变）
+ * v12.1.0 → v12.2.0：修复战斗 _fired 死锁 / d.hp 不同步 / 词条跨战斗丢失（combatBuffs 引用方案）/ 反击统一每 5 抽 / 6 词条表重定 / 删除 dead 死代码
+ * v12.2.0 → v13.0.0：深渊探索阶段 3.5（装备系统 + 战斗公式重做，存档新增 gearInv / gearUid）
+ * v13.0.0 → v13.1.0：深渊探索阶段 4a（撤离点 3 变体 + 商人房 + 付费撤离）
+ * v13.1.0 → v13.1.1：修 drop 先发奖再丢弃 / 付费撤赠品提前入库白嫖 / drop 返回不消耗 / drop 缺二次确认 / 大门 BOSS 标签 / pendingGate 重置；恢复后台装备库存入口 + 新增 4a 调试
+ * v13.1.1 → v13.1.2：修 T7/T15/T18 测试断言；后台新增「本局印记」入口
+ * v13.1.2 → v13.1.3：T17 改为统计主 subtype（新增 state.dive._lastMainSubtype）并放大样本至 10 万次
+ * v13.1.3 → v13.1.4：修 applySaveData 老存档兼容漏洞（dive/boss 缺 else）；加玩家昵称系统（与公开版对齐）
+ * v13.1.4 → v13.2.0：深渊探索加默认锁 + 后台解锁开关（abyssExploreUnlocked）
  */
 body::after{
-  content: "v12SP";
+  content: "v13.2.0";
   position: fixed;
   left: 8px;
   top: 8px;
@@ -1423,9 +1506,9 @@ function autoSelectLevelup(){
 }
 
 function absorbPets(){
-  if(target.richPup){ toast('💰「有钱人养的」小狗不能进阶'); return; }
   const target = state.petInv.find(p => p.uid === state.petLevelupTarget);
   if(!target){ toast('请先选主宠物'); return; }
+  if(target.richPup){ toast('💰「有钱人养的」小狗不能进阶'); return; }
   const mats = state.petLevelupMaterials
     .map(uid => state.petInv.find(p => p.uid === uid))
     .filter(Boolean);
@@ -2072,6 +2155,34 @@ const state = {
     hp:0, maxHp:0, totalDamage:0, killed:false, kills:0,
     weekKills:0,          // ✅ 本周击杀数，跨周重置
     claimedRewards:[], charges:0
+  },
+
+  /* 🕳️ 深渊探索开关 */
+  abyssExploreUnlocked: false,
+
+  /* 🌊 深渊探索 */
+  dive: {
+    active: false,
+    phase: 'idle',
+    hp: 3,
+    maxHp: 3,
+    layer: 1,
+    essence: 0,
+    tempAffixes: [],
+    combatBuffs: [],
+    pendingFirstRare: false,
+    gearInv: [],
+    runGearPicked: [],
+    loadout: { gearUid: null, affix: null, dice: null },
+    room: null,
+    roomOptions: [],
+    history: [],
+    best: { layer: 0, essence: 0 },
+    pickingSlot: null,
+    combat: null,
+    withdrawSubtype: null,
+    gateInfo: null,
+    shopState: null
   }
 };
 RARITIES.forEach(r => state.inv[r.id] = 0);
@@ -2166,7 +2277,7 @@ function markDirty(){ saveDirty = true; }
 
 function getSaveData(){
   return {
-    v: '12SP', ts: Date.now(),
+    v: 11, ts: Date.now(),
     coins: state.coins, gems: state.gems,
     rolls: state.rolls, rollCount: state.rollCount, pity: state.pity,
     tree: state.tree,
@@ -2220,7 +2331,9 @@ function getSaveData(){
     abyssTotalDamage: state.abyssTotalDamage,
     essence: state.essence,
     abyssUpg: state.abyssUpg,
-    boss: state.boss
+    boss: state.boss,
+    dive: state.dive,
+    abyssExploreUnlocked: state.abyssExploreUnlocked
   };
 }
 
@@ -2404,6 +2517,65 @@ function applySaveData(d){
     state.abyssUpg = u;
   } else state.abyssUpg = {};
 
+  /* 🌊 深渊探索 */
+  if(d.dive && typeof d.dive === 'object'){
+    state.dive = {
+      active: false,
+      phase: 'idle',
+      hp: Math.max(1, Math.floor(num(d.dive.hp, 3))),
+      maxHp: Math.max(1, Math.floor(num(d.dive.maxHp, 3))),
+      layer: Math.max(1, Math.floor(num(d.dive.layer, 1))),
+      essence: Math.max(0, num(d.dive.essence, 0)),
+      tempAffixes: [],
+      combatBuffs: [],
+      gearInv: Array.isArray(d.dive.gearInv) ? d.dive.gearInv.filter(g => g && g.uid && g.rarity).map(g => ({
+        uid: g.uid,
+        rarity: g.rarity,
+        name: String(g.name || '').slice(0, 20),
+        emoji: String(g.emoji || '🗡️').slice(0, 4),
+        mult: Math.max(0.1, Math.min(20, Number(g.mult) || 1))
+      })).slice(0, 500) : [],
+      runGearPicked: [],
+      loadout: { gearUid: null, affix: null, dice: null },
+      withdrawSubtype: null,
+      gateInfo: null,
+      shopState: null,
+      room: null,
+      roomOptions: [],
+      history: Array.isArray(d.dive.history) ? d.dive.history.slice(0, 20) : [],
+      best: {
+        layer: Math.max(0, Math.floor(num(d.dive.best && d.dive.best.layer, 0))),
+        essence: Math.max(0, num(d.dive.best && d.dive.best.essence, 0))
+      },
+      pendingFirstRare: false,
+      pickingSlot: null
+    };
+  } else {
+    // 老存档（v12.0.0 之前）没有 dive 字段：必须重置，否则会残留上一局的房间/印记/装备
+    state.dive = {
+      active: false,
+      phase: 'idle',
+      hp: 3,
+      maxHp: 3,
+      layer: 1,
+      essence: 0,
+      tempAffixes: [],
+      combatBuffs: [],
+      pendingFirstRare: false,
+      gearInv: [],
+      runGearPicked: [],
+      loadout: { gearUid: null, affix: null, dice: null },
+      withdrawSubtype: null,
+      gateInfo: null,
+      shopState: null,
+      room: null,
+      roomOptions: [],
+      history: [],
+      best: { layer: 0, essence: 0 },
+      pickingSlot: null
+    };
+  }
+
   /* 👹 世界 Boss */
   if(d.boss && typeof d.boss === 'object'){
     state.boss = {
@@ -2422,7 +2594,16 @@ function applySaveData(d){
       claimedRewards: Array.isArray(d.boss.claimedRewards) ? d.boss.claimedRewards.slice(0, 10) : [],
       charges: Math.max(0, Math.min(10, Math.floor(num(d.boss.charges, 0))))
     };
+  } else {
+    state.boss = {
+      weekId:'', bossId:'', emoji:'🐉', name:'', desc:'', weakness:'',
+      hp:0, maxHp:0, totalDamage:0, killed:false, kills:0,
+      weekKills:0, claimedRewards:[], charges:0
+    };
   }
+
+  /* 🕳️ 深渊探索开关 */
+  state.abyssExploreUnlocked = !!d.abyssExploreUnlocked;
 
   /* 👑 VIP / SVIP */
   state.vip           = Math.max(0, Math.min(2, Math.floor(num(d.vip, 0))));
@@ -4052,7 +4233,7 @@ function renderShopRecharge(){
         '</div></div>';
     }
     h += '</div>';
-    h += '<button id="vipClaimBtn" data-vipclaim="1" onclick="claimVipDaily()" ' +
+    h += '<button id="vipClaimBtn" data-vipclaim="1" ' +
       (canClaim ? '' : 'disabled ') +
       'style="width:100%;margin-top:11px;padding:13px;border:none;border-radius:13px;cursor:' +
       (canClaim ? 'pointer' : 'not-allowed') + ';font-family:inherit;font-weight:900;letter-spacing:.08em;font-size:13px;' +
@@ -4988,10 +5169,25 @@ function resetForVoid(){
     abyssRolls: state.abyssRolls, abyssFloorDamage: state.abyssFloorDamage,
     abyssTotalDamage: state.abyssTotalDamage, essence: state.essence, abyssUpg: state.abyssUpg,
     boss: state.boss,
+    abyssExploreUnlocked: state.abyssExploreUnlocked,
     sound: state.sound, rolling: false,
     playerName: state.playerName,
     screenShake: state.screenShake, deviceVibrate: state.deviceVibrate,
-    particles: state.particles, upgradeMode: state.upgradeMode
+    particles: state.particles, upgradeMode: state.upgradeMode,
+    dive: {
+      active: false, phase: 'idle',
+      hp: 3, maxHp: 3, layer: 1, essence: 0,
+      tempAffixes: [], combatBuffs: [], pendingFirstRare: false,
+      gearInv: state.dive && state.dive.gearInv ? state.dive.gearInv : [],
+      runGearPicked: [],
+      loadout: { gearUid: null, affix: null, dice: null },
+      withdrawSubtype: null, gateInfo: null, shopState: null,
+      room: null, roomOptions: [], history: state.dive && state.dive.history ? state.dive.history.slice(0, 20) : [],
+      best: state.dive && state.dive.best ? {
+        layer: Math.max(0, Math.floor((state.dive.best.layer) || 0)),
+        essence: Math.max(0, Math.floor((state.dive.best.essence) || 0))
+      } : { layer: 0, essence: 0 }
+    }
   };
   var resetKeys = [
     'coins','gems','rolls','rollCount','pity','tree','rebirths','ascends','transcends',
@@ -5044,6 +5240,1002 @@ function renderChallengeTabs(current){
 }
 
 /* ═══════════ 🕳️ 源质深渊页面 ═══════════ */
+function bindDiveEvents(){}
+
+function startDive(){
+  if(state.dive.active){ toast('已在探索中'); return; }
+  state.dive.active = true;
+  state.dive.phase = 'prep';
+  state.dive.hp = 3;
+  state.dive.maxHp = 3;
+  state.dive.layer = 1;
+  state.dive.essence = 0;
+  state.dive.tempAffixes = [];
+  state.dive.combatBuffs = [];
+  state.dive.pendingFirstRare = false;
+  state.dive.runGearPicked = [];
+  state.dive.withdrawSubtype = null;
+  state.dive.gateInfo = null;
+  state.dive.shopState = null;
+  state.dive.pendingGate = false;
+  state.dive.loadout = { gearUid: null, affix: null, dice: null };
+  state.dive.room = null;
+  state.dive.roomOptions = [];
+  state.dive.history = [];
+  state.dive.pickingSlot = null;
+  state.dive.combat = null;
+  // 自动选最强装备（若库存非空）
+  if(state.dive.gearInv.length){
+    var best = state.dive.gearInv.slice().sort(function(a, b){ return b.mult - a.mult; })[0];
+    state.dive.loadout.gearUid = best.uid;
+  }
+  buildNav();
+  updateHUD();
+  renderAbyssPage();
+  beep(900, .15, 'sine', .05);
+}
+
+function exitDive(){
+  state.dive.active = false;
+  state.dive.phase = 'idle';
+  state.dive.combat = null;
+  buildNav();
+  updateHUD();
+  renderAbyssPage();
+}
+
+function renderDivePage(){
+  var d = state.dive;
+  if(!d.active){
+    return '<div class="empty">探索未开启</div>';
+  }
+  if(d.phase === 'prep')      return renderDivePrep();
+  if(d.phase === 'map')       return renderDiveMap();
+  if(d.phase === 'combat')    return renderDiveCombat();
+  if(d.phase === 'picking')   return renderDiveCombat();
+  if(d.phase === 'room')      return renderDiveRoom();
+  if(d.phase === 'gate_prep') return renderDiveGate();
+  if(d.phase === 'shop')      return renderDiveShop();
+  if(d.phase === 'withdraw')  return renderDiveWithdraw();
+  return '<div class="empty">未知状态</div>';
+}
+
+function renderDiveHUD(){
+  var d = state.dive;
+  var s = '<div class="dive-hud">';
+  s += '<div class="dive-hud-chip">🏔️ 第 <b>' + d.layer + '</b> 层</div>';
+  s += '<div class="dive-hud-chip hp">' + '❤'.repeat(d.hp) + ' 生命 <b>' + d.hp + '/' + d.maxHp + '</b></div>';
+  s += '<div class="dive-hud-chip">💠 <b>' + fmt(d.essence) + '</b> 印记</div>';
+  s += '<div class="dive-hud-chip">✦ <b>' + d.combatBuffs.length + '</b> 词条</div>';
+  var eqGear = d.loadout.gearUid ? getGearById(d.loadout.gearUid) : null;
+  if(eqGear){
+    s += '<div class="dive-hud-chip" style="border-color:' + getDiveGearColor(eqGear.rarity) + '">' +
+      '⚔️ <b style="color:' + getDiveGearColor(eqGear.rarity) + '">×' + eqGear.mult + '</b> ' + esc(eqGear.name) + '</div>';
+  }
+  s += '</div>';
+  return s;
+}
+
+function renderDiveSlot(label, slot, value){
+  var d = state.dive;
+  var open = d.pickingSlot === slot;
+  var emoji = '⬜', name = '未选择';
+  if(value && value.emoji) emoji = value.emoji;
+  if(value && value.rarity){
+    emoji = value.emoji || '🗡️';
+    name = value.name + '（' + getDiveGearRarityName(value.rarity) + ' ×' + value.mult + '）';
+  }
+  else if(value && value.name) name = value.name;
+  else if(value && value.species){
+    var _sp = getSpecies(value.species);
+    var _q = getQuality(value.quality);
+    name = _sp.name + ' · ' + _q.name + ' ' + value.star + '★';
+    emoji = _sp.emoji;
+  }
+  var h = '<div class="dive-slot' + (open ? ' active' : '') + '" data-dive-slot="' + slot + '">';
+  h += '<div class="ds-emoji">' + emoji + '</div>';
+  h += '<div class="ds-info">';
+  h += '<div class="ds-lb">' + label + '</div>';
+  h += '<div class="ds-vl' + (value ? '' : ' empty') + '">' + esc(name) + '</div>';
+  h += '</div>';
+  h += '<div class="ds-arr">' + (open ? '▲' : '▶') + '</div>';
+  h += '</div>';
+  if(open){
+    h += renderDivePicker(slot);
+  }
+  return h;
+}
+
+function renderDivePicker(slot){
+  var d = state.dive, h = '<div class="dive-picker">';
+  var list = divePickList(slot);
+  if(!list.length){
+    h += '<div class="empty" style="padding:14px;font-size:11.5px">没有可选' + slot + '</div>';
+  } else {
+    for(var i = 0; i < list.length; i++){
+      var it = list[i];
+      h += '<div class="dive-picker-item" data-dive-pick="' + i + '">';
+      h += '<div class="dpi-emoji">' + (it.emoji || '⬜') + '</div>';
+      h += '<div class="dpi-name">' + esc(it.name || '?') + '</div>';
+      if(it.color){ h += '<div class="dpi-tag" style="color:' + it.color + '">' + esc(it.tag) + '</div>'; }
+      else if(it.tag){ h += '<div class="dpi-tag">' + esc(it.tag) + '</div>'; }
+      h += '</div>';
+    }
+  }
+  h += '</div>';
+  return h;
+}
+
+function divePickList(slot){
+  var out = [];
+  if(slot === 'gear'){
+    var inv = state.dive.gearInv || [];
+    for(var i = 0; i < inv.length; i++){
+      var g = inv[i];
+      out.push({
+        gear: g,
+        emoji: g.emoji,
+        name: g.name + ' · ' + getDiveGearRarityName(g.rarity),
+        tag: '×' + g.mult,
+        color: getDiveGearColor(g.rarity)
+      });
+    }
+  } else if(slot === 'affix'){
+    for(var j = 0; j < AFFIXES.length; j++){
+      var a = AFFIXES[j];
+      out.push({ affix: a, emoji: a.emoji, name: a.name, tag: 'x' + a.mult });
+    }
+  } else if(slot === 'dice'){
+    var order = ['gold', 'diamond', 'emerald', 'rainbow'];
+    for(var k = 0; k < order.length; k++){
+      var id = order[k];
+      var node = id === 'diamond' ? 'DD' : (id === 'emerald' ? 'DE' : 'DR');
+      if(id === 'gold' || treeLv(node) >= 1){
+        var dd = DICE_DEFS[id];
+        out.push({ dice: id, emoji: dd.emoji, name: dd.name, tag: id });
+      }
+    }
+  }
+  return out;
+}
+
+function openDiveSlotPicker(slot){
+  if(state.dive.pickingSlot === slot){ state.dive.pickingSlot = null; }
+  else { state.dive.pickingSlot = slot; }
+  renderAbyssPage();
+}
+
+function startDiveRun(){
+  if(!state.dive.loadout.gearUid){ toast('⚠️ 至少需要携带 1 件装备'); beep(220, .12, 'square', .04); return; }
+  state.dive.phase = 'map';
+  rollDiveRooms();
+  renderAbyssPage();
+}
+
+function renderDivePrep(){
+  var d = state.dive;
+  var h = '<div class="page-title"><h2>🌊 深渊探索 · 战备</h2><p>搜打撤 · Roguelike</p></div>';
+  h += '<div style="max-width:520px;margin:0 auto">';
+  h += renderDiveSlot('出战装备', 'gear', d.loadout.gearUid ? getGearById(d.loadout.gearUid) : null);
+  h += renderDiveSlot('临时词条', 'affix', d.loadout.affix);
+  h += renderDiveSlot('骰子', 'dice', d.loadout.dice);
+  h += '<div style="display:flex;gap:10px;margin-top:10px">';
+  h += '<button class="btn auto-btn" id="diveBackBtn" data-dive-back="1" style="flex:1;max-width:none">返 回</button>';
+  h += '<button class="btn roll-btn" id="diveStartBtn" data-dive-start="1" style="flex:2;max-width:none"' +
+    (d.loadout.gearUid ? '' : ' disabled') + '>进 入 深 渊</button>';
+  h += '</div>';
+  h += '</div>';
+  return h;
+}
+
+const DIVE_ROOMS = [
+  { id:'battle',  name:'战斗房', emoji:'🗡️', w:40, desc:'抽卡对决，赢了继续' },
+  { id:'elite',   name:'精英房', emoji:'💀', w:15, desc:'更强，必掉临时词条', minLayer:3 },
+  { id:'shop',    name:'商人房', emoji:'🧳', w:12, desc:'用印记买临时强化' },
+  { id:'gamble',  name:'赌徒房', emoji:'🎲', w:8,  desc:'押印记，赢翻倍' },
+  { id:'shrine',  name:'祭坛房', emoji:'🕯️', w:8,  desc:'献祭生命换永久增益' },
+  { id:'chest',   name:'宝箱房', emoji:'🎁', w:10, desc:'免费战利品' },
+  { id:'curse',   name:'诅咒房', emoji:'☠️', w:5,  desc:'丰厚掉落 + 一个负面效果' }
+];
+
+const DIVE_ENEMIES = [
+  { id:'slime',     name:'深渊史莱姆', emoji:'🟢', hpBase:100,  hpMul:1.18 },
+  { id:'bat',       name:'暗影蝙蝠',   emoji:'🦇', hpBase:130,  hpMul:1.19 },
+  { id:'skeleton',  name:'骷髅战士',   emoji:'💀', hpBase:170,  hpMul:1.20 },
+  { id:'ghost',     name:'游荡幽灵',   emoji:'👻', hpBase:220,  hpMul:1.21 },
+  { id:'golem',     name:'岩石魔像',   emoji:'🗿', hpBase:300,  hpMul:1.22 },
+  { id:'wraith',    name:'深渊怨魂',   emoji:'🌑', hpBase:400,  hpMul:1.23 },
+  { id:'ogre',      name:'深渊食人魔', emoji:'👹', hpBase:540,  hpMul:1.24 },
+  { id:'specter',   name:'噬魂妖',     emoji:'👁️', hpBase:720,  hpMul:1.25 },
+  { id:'basilisk',  name:'石化蜥蜴',   emoji:'🦎', hpBase:950,  hpMul:1.26 },
+  { id:'chimera',   name:'深渊奇美拉', emoji:'🦁', hpBase:1260, hpMul:1.27 },
+  { id:'minotaur',  name:'深渊牛头人', emoji:'🐂', hpBase:1680, hpMul:1.28 },
+  { id:'harpy',     name:'深渊鸟身女妖', emoji:'🦅', hpBase:2240, hpMul:1.29 },
+  { id:'manticore', name:'蝎尾狮',     emoji:'🦂', hpBase:2980, hpMul:1.30 },
+  { id:'kraken',    name:'深渊海妖',   emoji:'🐙', hpBase:3960, hpMul:1.31 },
+  { id:'dragon',    name:'深渊幼龙',   emoji:'🐲', hpBase:5280, hpMul:1.32 },
+  { id:'behemoth',  name:'深渊巨兽',   emoji:'🦣', hpBase:7020, hpMul:1.33 },
+  { id:'leviathan', name:'深海利维坦', emoji:'🐳', hpBase:9340, hpMul:1.34 },
+  { id:'phoenix',   name:'深渊不死鸟', emoji:'🔥', hpBase:12430, hpMul:1.35 },
+  { id:'griffin',   name:'深渊狮鹫',   emoji:'🦅', hpBase:16540, hpMul:1.36 },
+  { id:'serpent',   name:'深渊巨蟒',   emoji:'🐍', hpBase:22000, hpMul:1.37 },
+  { id:'mummy',     name:'深渊木乃伊', emoji:'🏺', hpBase:29260, hpMul:1.38 },
+  { id:'vampire',   name:'深渊吸血鬼', emoji:'🧛', hpBase:38920, hpMul:1.39 },
+  { id:'werewolf',  name:'深渊狼人',   emoji:'🐺', hpBase:51770, hpMul:1.40 },
+  { id:'banshee',   name:'深渊女妖',   emoji:'🧞', hpBase:68840, hpMul:1.41 },
+  { id:'djinn',     name:'深渊神灵',   emoji:'🧞', hpBase:91570, hpMul:1.42 },
+  { id:'titan',     name:'深渊泰坦',   emoji:'🗿', hpBase:121790, hpMul:1.43 },
+  { id:'demon',     name:'深渊恶魔',   emoji:'😈', hpBase:162000, hpMul:1.44 },
+  { id:'archlich',  name:'深渊巫妖王', emoji:'☠️', hpBase:215500, hpMul:1.45 },
+  { id:'eldritch',  name:'深渊旧日支配', emoji:'🐙', hpBase:286700, hpMul:1.46 },
+  { id:'oblivion',  name:'深渊终焉之兽', emoji:'🌌', hpBase:381500, hpMul:1.47 }
+];
+
+const DIVE_BUFFS = [
+  { id:'锐', emoji:'🗡️', name:'锐', desc:'战斗伤害 ×1.15' },
+  { id:'贪', emoji:'💰', name:'贪', desc:'战斗印记 +40%' },
+  { id:'稳', emoji:'🛡️', name:'稳', desc:'反击间隔 5→4 抽' },
+  { id:'狂', emoji:'😡', name:'狂', desc:'每抽伤害 +4%，上限 +40%' },
+  { id:'愈', emoji:'💚', name:'愈', desc:'击杀回复 1 心（不超上限）' },
+  { id:'预', emoji:'🔮', name:'预', desc:'下一场首抽至少 SR' }
+];
+
+const DIVE_GEAR_RARITIES = [
+  { id:'common', name:'普通', color:'#8b98ad', mult:1.0, w:5000 },
+  { id:'fine',   name:'精良', color:'#3fa9ff', mult:1.5, w:2500 },
+  { id:'epic',   name:'史诗', color:'#a45cff', mult:2.5, w:1200 },
+  { id:'legend', name:'传说', color:'#ffb020', mult:4.0, w:300 },
+  { id:'myth',   name:'神话', color:'#ff3d6e', mult:6.0, w:50 }
+];
+
+// 每个稀有度的名字模板（掉落时随机抽一个）
+const DIVE_GEAR_NAMES = {
+  common: [['破旧铁剑','🗡️'], ['生锈匕首','🔪'], ['木棍','🪵'], ['石斧','🪓']],
+  fine:   [['精铁长剑','⚔️'], ['猎手短刀','🗡️'], ['铁质重锤','🔨'], ['猎弓','🏹']],
+  epic:   [['秘银战斧','🪓'], ['附魔长枪','🔱'], ['魔力法杖','🪄'], ['寒霜之刃','❄️']],
+  legend: [['龙牙巨剑','🐉'], ['深渊魔典','📕'], ['星陨弓','☄️'], ['雷神之锤','⚡']],
+  myth:   [['湮灭之刃','🌑'], ['创世权杖','🌟'], ['万物终结者','💥'], ['永恒裁决','♾️']]
+};
+
+// 按层数返回该层的稀有度权重（低层不出高级）
+function getDiveGearWeights(layer){
+  if(layer <= 5)  return { common:5000, fine:2500, epic:0,    legend:0,    myth:0   };
+  if(layer <= 15) return { common:3000, fine:3000, epic:1500, legend:0,    myth:0   };
+  if(layer <= 30) return { common:1500, fine:2500, epic:2500, legend:800,  myth:0   };
+  return              { common:800,  fine:1800, epic:2500, legend:1800, myth:300 };
+}
+
+// 掉落 1 件随机装备
+function rollDiveGear(layer){
+  var weights = getDiveGearWeights(layer);
+  var pool = DIVE_GEAR_RARITIES.map(function(r){
+    return { ref: r, w: weights[r.id] || 0 };
+  }).filter(function(x){ return x.w > 0; });
+  if(!pool.length) pool = [{ ref: DIVE_GEAR_RARITIES[0], w: 1 }];
+  var total = pool.reduce(function(s, x){ return s + x.w; }, 0);
+  var x = Math.random() * total;
+  var chosen = pool[0].ref;
+  for(var i = 0; i < pool.length; i++){
+    x -= pool[i].w;
+    if(x <= 0){ chosen = pool[i].ref; break; }
+  }
+  var names = DIVE_GEAR_NAMES[chosen.id] || [['未知装备', '❓']];
+  var namePick = names[Math.floor(Math.random() * names.length)];
+  return {
+    uid: 'gear_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+    rarity: chosen.id,
+    name: namePick[0],
+    emoji: namePick[1],
+    mult: chosen.mult
+  };
+}
+
+// 装备稀有度取色
+function getDiveGearColor(rarityId){
+  var r = DIVE_GEAR_RARITIES.find(function(x){ return x.id === rarityId; });
+  return r ? r.color : '#8b98ad';
+}
+
+// 装备稀有度取名
+function getDiveGearRarityName(id){
+  var r = DIVE_GEAR_RARITIES.find(function(x){ return x.id === id; });
+  return r ? r.name : '?';
+}
+
+// 按 uid 从库存取装备
+function getGearById(uid){
+  if(!uid) return null;
+  return state.dive.gearInv.find(function(g){ return g.uid === uid; }) || null;
+}
+
+// 撤离点 3 变体定义
+const DIVE_WITHDRAW_TYPES = {
+  normal: { emoji:'🚪', name:'撤离点',   desc:'结束本局，带走战利品' },
+  drop:   { emoji:'🎒', name:'丢包撤离', desc:'保住印记，丢掉本局拾获' },
+  gate:   { emoji:'🏛️', name:'大门撤离', desc:'打赢守卫才能撤离' }
+};
+
+// 撤离点 subtype 权重（随层数变化）
+function getWithdrawWeights(layer){
+  if(layer <= 3)  return { normal:1000, drop:0,   gate:0   };
+  if(layer <= 10) return { normal:700,  drop:200, gate:100 };
+  if(layer <= 20) return { normal:400,  drop:300, gate:300 };
+  return              { normal:200,  drop:350, gate:450 };
+}
+
+// 按 subtype 生成撤离点房间对象
+function makeWithdrawOption(sub){
+  var t = DIVE_WITHDRAW_TYPES[sub] || DIVE_WITHDRAW_TYPES.normal;
+  return { id:'withdraw', special:'withdraw', subtype:sub, name:t.name, emoji:t.emoji, desc:t.desc };
+}
+
+function rollDiveRooms(){
+  var d = state.dive;
+  var pool = DIVE_ROOMS.filter(function(r){ return !r.minLayer || d.layer >= r.minLayer; });
+  var picked = [];
+  // 取"上一个同层房间"作为连续判定基准（跨层不计入）
+  var lastId = null;
+  for(var hi = d.history.length - 1; hi >= 0; hi--){
+    var h = d.history[hi];
+    var rec = (typeof h === 'object' && h !== null) ? h : { id: h, layer: d.layer };
+    if(rec.layer === d.layer){ lastId = rec.id; break; }
+  }
+  while(picked.length < 2 && picked.length < pool.length){
+    var total = 0;
+    for(var i = 0; i < pool.length; i++){ total += pool[i].w; }
+    var x = Math.random() * total;
+    var chosen = pool[0];
+    for(var pi = 0; pi < pool.length; pi++){
+      x -= pool[pi].w;
+      if(x <= 0){ chosen = pool[pi]; break; }
+    }
+    var dup = false;
+    for(var ci = 0; ci < picked.length; ci++){ if(picked[ci] === chosen){ dup = true; break; } }
+    if(dup) continue;
+    if(picked.length === 0 && lastId && chosen.id === lastId) continue;
+    picked.push(chosen);
+  }
+  var wChance = Math.max(0.05, 0.6 - d.layer * 0.03);
+  if(Math.random() < wChance){
+    var ww = getWithdrawWeights(d.layer);
+    var wt = ww.normal + ww.drop + ww.gate;
+    var wx = Math.random() * wt;
+    var sub = 'normal';
+    // 后台调试：强制撤离 subtype
+    if(state.dive._forceWithdrawSubtype){
+      sub = state.dive._forceWithdrawSubtype;
+    } else {
+      wx -= ww.normal;
+      if(wx < 0){ sub = 'normal'; }
+      else { wx -= ww.drop; sub = (wx < 0) ? 'drop' : 'gate'; }
+    }
+    state.dive._lastMainSubtype = sub;
+    picked.push(makeWithdrawOption(sub));
+    // 出了 drop / gate 后，额外 15% 概率再刷一个另一种（drop 带 gate，gate 带 drop）
+    if(sub !== 'normal' && Math.random() < 0.15){
+      picked.push(makeWithdrawOption(sub === 'drop' ? 'gate' : 'drop'));
+    }
+  }
+  var opts = shuffle(picked);
+  // 抽选阶段只保证 picked[0] !== lastId；shuffle 后第二项可能被换到首位，
+  // 故在此二次校验：若展示首项（首个非撤离房间）恰等于同层上一间，则与第二个非撤离房间交换
+  if(lastId && opts.length >= 2){
+    var f1 = -1, f2 = -1;
+    for(var fi = 0; fi < opts.length; fi++){
+      if(opts[fi].special === 'withdraw') continue;
+      if(f1 < 0){ f1 = fi; } else { f2 = fi; break; }
+    }
+    if(f1 >= 0 && f2 >= 0 && opts[f1].id === lastId){
+      var tmp = opts[f1]; opts[f1] = opts[f2]; opts[f2] = tmp;
+    }
+  }
+  d.roomOptions = opts;
+}
+
+function startDiveCombat(room){
+  var d = state.dive;
+  var layer = d.layer;
+  var isElite = (room.id === 'elite');
+  var idx = Math.min(DIVE_ENEMIES.length - 1, Math.floor((layer - 1) / 2));
+  var enemy = DIVE_ENEMIES[idx];
+  var hp = (80 + layer * 40) * (isElite ? 3 : 1);
+
+  var gearMult = 1;
+  if(d.loadout.gearUid){
+    var gear = getGearById(d.loadout.gearUid);
+    if(gear) gearMult = gear.mult;
+  }
+  var diceMult = 1;
+  if(d.loadout.dice){
+    diceMult = { gold: 1.2, diamond: 1.5, emerald: 2.0, rainbow: 3.0 }[d.loadout.dice] || 1;
+  }
+  var affixMult = 1;
+  if(d.loadout.affix && d.loadout.affix.mult){
+    affixMult = Math.min(8.0, d.loadout.affix.mult);  // 上限锁 8x
+  }
+
+  d.combat = {
+    enemyId: enemy.id,
+    enemyName: enemy.name,
+    enemyEmoji: enemy.emoji,
+    enemyHp: hp,
+    enemyMaxHp: hp,
+    playerHp: d.hp,
+    playerMaxHp: d.maxHp,
+    isElite: isElite,
+    drawCount: 0,
+    gearMult: gearMult,
+    diceMult: diceMult,
+    affixMult: affixMult,
+    tempBuffs: d.combatBuffs,
+    pickOptions: [],
+    phase: 'fighting',
+    _fired: false,
+    isGate: false,
+    isGateBoss: false,
+    gateRemaining: 0
+  };
+  // 🏛️ 大门战斗：按 gateInfo 覆盖敌人与剩余数
+  if(d.gateInfo && d.pendingGate){
+    var gi = d.gateInfo;
+    var c2 = d.combat;
+    c2.isGate = true;
+    c2.gateRemaining = gi.remaining;
+    c2.isElite = true;
+    c2.isGateBoss = !!gi.isBoss;
+    if(gi.isBoss){
+      c2.enemyName = '大门守卫 · BOSS';
+      c2.enemyEmoji = '👑';
+      c2.enemyHp = c2.enemyMaxHp = (80 + layer * 40) * 3 * 8;   // 精英 HP × 8
+    } else {
+      c2.enemyHp = c2.enemyMaxHp = (80 + layer * 40) * 3;        // 精英 HP
+    }
+    d.pendingGate = false;
+  }
+  d.phase = 'combat';
+  renderAbyssPage();
+  beep(740, .14, 'sine', .05);
+}
+
+function resolveDiveCombatRoll(result){
+  var d = state.dive;
+  var c = d.combat;
+  if(!c || c.phase !== 'fighting' || c._fired) return;
+  c._fired = true;
+
+  var base = result.base;
+  var idx = RARITIES.indexOf(base);
+
+  // 「预」：下一场首抽至少 SR（idx >= 3）
+  if(d.pendingFirstRare){
+    idx = Math.max(3, idx);
+    d.pendingFirstRare = false;
+  }
+
+  var dmg = (idx + 1) * 10;                             // 稀有度线性：N=10, R=20, ..., 8FQ=260
+  dmg *= 1 + Math.min(2.0, c.drawCount * 0.10);         // 同场抽数加成，上限 ×3
+  dmg *= c.gearMult;                                     // 装备倍率
+  dmg *= c.diceMult;                                     // 骰子倍率
+  dmg *= c.affixMult;                                    // 战备词条倍率（锁 8x）
+
+  // 「锐」×1.15
+  for(var i = 0; i < c.tempBuffs.length; i++){
+    if(c.tempBuffs[i].id === '锐'){ dmg *= 1.15; break; }
+  }
+  // 「狂」每抽 +4%，上限 +40%
+  for(var k = 0; k < c.tempBuffs.length; k++){
+    if(c.tempBuffs[k].id === '狂'){
+      dmg *= (1 + Math.min(0.40, c.drawCount * 0.04));
+      break;
+    }
+  }
+  dmg = Math.floor(dmg);
+
+  c.enemyHp -= dmg;
+  c.drawCount++;
+  burst('#22c98a', 26, innerWidth / 2, innerHeight / 2);
+  toast('🗡️ 造成 ' + fmt(dmg) + ' 伤害', '#22c98a');
+
+  if(c.enemyHp <= 0){
+    // 「贪」印记 +40%（仅战斗房）
+    var essenceGain = (c.isElite ? 60 : 25) * c.playerMaxHp;
+    for(var e = 0; e < c.tempBuffs.length; e++){
+      if(c.tempBuffs[e].id === '贪'){ essenceGain = Math.floor(essenceGain * 1.4); break; }
+    }
+    d.essence += essenceGain;
+    // 精英房 100% 掉装备
+    if(c.isElite){
+      var eg = rollDiveGear(d.layer);
+      state.dive.runGearPicked.push(eg);
+      toast('💀 精英掉落 ' + eg.emoji + ' ' + eg.name + '（' + getDiveGearRarityName(eg.rarity) + '）', getDiveGearColor(eg.rarity));
+    }
+    // 普通战斗房 30% 掉装备
+    else if(Math.random() < 0.30){
+      var ng = rollDiveGear(d.layer);
+      state.dive.runGearPicked.push(ng);
+      toast('🎁 拾获 ' + ng.emoji + ' ' + ng.name + '（' + getDiveGearRarityName(ng.rarity) + '）', getDiveGearColor(ng.rarity));
+    }
+    // 「愈」击杀回复 1 心（不超上限）
+    for(var h2 = 0; h2 < c.tempBuffs.length; h2++){
+      if(c.tempBuffs[h2].id === '愈'){
+        c.playerHp = Math.min(c.playerMaxHp, c.playerHp + 1);
+        break;
+      }
+    }
+    // 🏛️ 大门连续战斗：还有守卫没打完 → 直接进下一只，不弹三选一
+    if(c.isGate && c.gateRemaining > 1){
+      c.gateRemaining--;
+      var ni = Math.min(DIVE_ENEMIES.length - 1, Math.floor((d.layer - 1) / 2));
+      var ne = DIVE_ENEMIES[ni];
+      c.enemyName = ne.name;
+      c.enemyEmoji = ne.emoji;
+      c.enemyHp = c.enemyMaxHp = (80 + d.layer * 40) * 3;   // 精英 HP
+      c.drawCount = 0;
+      c.phase = 'fighting';
+      toast('🏛️ 守卫倒下！还剩 ' + c.gateRemaining + ' 位', '#c8a8ff');
+      renderAbyssPage();
+      return;
+    }
+    // 🏛️ 大门全部打完 → 走正常撤离结算
+    if(c.isGate){
+      d.withdrawSubtype = 'gate';
+      d.phase = 'withdraw';
+      d.combat = null;
+      renderAbyssPage();
+      return;
+    }
+    c.phase = 'won';
+    c.pickOptions = pickDiveBuffChoices(3);
+  } else {
+    // 反击：每 5 抽（持有「稳」则为 4 抽）掉 1 心
+    var interval = 5;
+    for(var s = 0; s < c.tempBuffs.length; s++){
+      if(c.tempBuffs[s].id === '稳'){ interval = 4; break; }
+    }
+    if(c.drawCount % interval === 0){
+      c.playerHp -= 1;
+      if(c.playerHp <= 0){
+        c.playerHp = 0;
+        c.phase = 'lost';
+      } else {
+        toast('💢 敌人反击！-1 心', '#ff8a8a');
+      }
+    }
+  }
+  renderAbyssPage();
+}
+
+function pickDiveBuffChoices(count){
+  var pool = DIVE_BUFFS.slice();
+  var out = [];
+  for(var i = 0; i < count && pool.length; i++){
+    var r = Math.floor(Math.random() * pool.length);
+    out.push(pool.splice(r, 1)[0]);
+  }
+  return out;
+}
+
+function pickDiveBuff(id){
+  var d = state.dive;
+  var c = d.combat;
+  if(!c || c.phase !== 'won') return;
+  var b = DIVE_BUFFS.find(function(x){ return x.id === id; });
+  if(!b) return;
+  // tempBuffs 是 d.combatBuffs 的引用，push 到 tempBuffs 即同步 combatBuffs
+  c.tempBuffs.push({ id: b.id, name: b.name, emoji: b.emoji });
+  // 「预」置下一场首抽至少 SR 的跨房标记
+  if(b.id === '预') d.pendingFirstRare = true;
+  c.phase = 'done';
+  continueDiveAfterCombat();
+}
+
+function continueDiveAfterCombat(){
+  var d = state.dive;
+  var c = d.combat;
+  if(!c) return;
+  if(c.phase === 'lost'){
+    if(d.layer > d.best.layer) d.best.layer = d.layer;
+    if(d.essence > d.best.essence) d.best.essence = d.essence;
+  } else {
+    d.hp = c.playerHp;
+    d.phase = 'map';
+    d.layer++;
+    rollDiveRooms();
+  }
+  d.combat = null;
+  renderAbyssPage();
+}
+
+
+function renderDiveMap(){
+  var d = state.dive;
+  var h = renderDiveHUD();
+  h += '<div class="page-title"><h2>🌊 第 ' + d.layer + ' 层</h2><p>选择你的道路</p></div>';
+  h += '<div class="dive-room-grid">';
+  for(var i = 0; i < d.roomOptions.length; i++){
+    var r = d.roomOptions[i];
+    var isW = r.special === 'withdraw';
+    var sub = r.subtype || 'normal';
+    var tagTxt = isW ? (sub === 'drop' ? '丢包' : (sub === 'gate' ? '大门' : '撤离')) : '进入';
+    var extraCls = isW ? (sub === 'normal' ? ' withdraw' : ' withdraw sub-' + sub) : '';
+    h += '<div class="dive-room-card' + extraCls + '" data-dive-room="1" data-dive-room-idx="' + i + '">';
+    h += '<div class="drc-emoji">' + r.emoji + '</div>';
+    h += '<div class="drc-info">';
+    h += '<div class="drc-name">' + esc(r.name) + '</div>';
+    h += '<div class="drc-desc">' + esc(r.desc || '') + '</div>';
+    h += '</div>';
+    h += '<div class="drc-tag">' + tagTxt + '</div>';
+    h += '</div>';
+  }
+  h += '</div>';
+  h += '<div style="text-align:center;margin-top:14px">';
+  h += '<button class="btn auto-btn" data-dive-abort="1" style="max-width:240px">放弃探索</button>';
+  h += '</div>';
+  return h;
+}
+
+function enterDiveRoom(room){
+  var d = state.dive;
+  if(d._entering) return;
+  d._entering = true;
+  d.room = room;
+  // 记录"进入时的层数"，用于判定 history 中的相邻房间是否为同层（跨层不算连续）
+  d.history.push({ id: room.id, layer: d.layer });
+  if(room.id === 'battle' || room.id === 'elite'){
+    startDiveCombat(room);
+  } else if(room.id === 'chest'){
+    var cg = rollDiveGear(d.layer);
+    state.dive.runGearPicked.push(cg);
+    toast('🎁 宝箱开启！' + cg.emoji + ' ' + cg.name + '（' + getDiveGearRarityName(cg.rarity) + '）', getDiveGearColor(cg.rarity));
+    d.phase = 'room';
+  } else if(room.id === 'withdraw'){
+    var sub = room.subtype || 'normal';
+    d.withdrawSubtype = sub;
+    if(sub === 'gate'){
+      d.gateInfo = rollDiveGateInfo(d.layer);
+      d.phase = 'gate_prep';
+    } else {
+      d.phase = 'withdraw';
+    }
+  } else if(room.id === 'shop'){
+    d.shopState = { items: rollShopItems(), refreshed: 0, bought: [] };
+    d.phase = 'shop';
+  } else {
+    d.phase = 'room';
+  }
+  renderAbyssPage();
+  setTimeout(function(){ d._entering = false; }, 120);
+  beep(700, .08, 'sine', .04);
+}
+
+function renderDiveRoom(){
+  var d = state.dive;
+  var h = renderDiveHUD();
+  h += '<div class="card" style="max-width:620px;margin:0 auto">' +
+    '<div class="card-body" style="text-align:center;padding:26px 18px">' +
+      '<div style="font-size:44px;line-height:1;margin-bottom:10px">' + d.room.emoji + '</div>' +
+      '<div style="font-size:16px;font-weight:900;color:#c8a8ff;letter-spacing:.08em">' + esc(d.room.name) + '</div>' +
+      '<div style="font-size:12px;color:#8b98ad;margin-top:8px;line-height:1.6">' + esc(d.room.desc) + '</div>' +
+      '<div style="font-size:11px;color:#7c89a5;margin-top:12px">（房间逻辑将在后续阶段实现）</div>' +
+      '<button class="abyss-btn" data-dive-next="1" data-dive-room-idx="0" ' +
+        'style="max-width:280px;margin:14px auto 0;background:linear-gradient(180deg,#8b5cf6,#4c1d95);color:#fff">' +
+        '继 续 下 潜' +
+      '</button>' +
+    '</div>' +
+  '</div>';
+  return h;
+}
+
+function renderDiveWithdraw(){
+  var d = state.dive;
+  var mult = 1 + d.layer * 0.15;
+  var gain = Math.floor(d.essence * mult);
+  var sub = d.withdrawSubtype || 'normal';
+
+  // 🎒 丢包撤离：拾获全丢，携带保留，双按钮
+  if(sub === 'drop'){
+    var carryName = '—';
+    if(d.loadout.gearUid){
+      var cg = getGearById(d.loadout.gearUid);
+      if(cg) carryName = cg.emoji + ' ' + esc(cg.name);
+    }
+    return '<div class="card" style="max-width:620px;margin:0 auto;border-color:rgba(255,180,80,.45)">' +
+      '<div class="card-body" style="text-align:center;padding:30px 18px">' +
+        '<div style="font-size:52px;line-height:1;margin-bottom:12px">🎒</div>' +
+        '<div style="font-size:16px;font-weight:900;color:#ffc93c;letter-spacing:.1em">丢 包 撤 离</div>' +
+        '<div style="font-size:12.5px;color:#c8d4ea;margin-top:12px;line-height:2">' +
+          '本局拾获 <b style="color:#ff8a8a">' + d.runGearPicked.length + '</b> 件 → <b style="color:#ff8a8a">将全部丢失</b><br>' +
+          '携带装备 <b style="color:#7dffe0">1</b> 件 → <b style="color:#22c98a">保留</b>（' + carryName + '）<br>' +
+          '印记 <b>' + fmt(d.essence) + '</b> × 倍率 <b>' + mult.toFixed(2) + '</b> → 源质 <b style="color:#7dffe0">+' + fmt(gain) + '</b>' +
+        '</div>' +
+        '<div style="display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap">' +
+          '<button class="abyss-btn" data-dive-wback="1" ' +
+            'style="max-width:200px;background:linear-gradient(180deg,#4a5875,#2a3550);color:#e8eefc">' +
+            '返 回 地 图' +
+          '</button>' +
+          '<button class="abyss-btn" data-dive-exit="1" ' +
+            'style="max-width:200px;background:linear-gradient(180deg,#ffc93c,#b8860b);color:#2a1f00">' +
+            '确 认 丢 包' +
+          '</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  // 🚪 普通撤离 / 🏛️ 大门打赢后（走同一结算）
+  return '<div class="card" style="max-width:620px;margin:0 auto">' +
+    '<div class="card-body" style="text-align:center;padding:30px 18px">' +
+      '<div style="font-size:52px;line-height:1;margin-bottom:12px">' + (sub === 'gate' ? '🏛️' : '🌊') + '</div>' +
+      '<div style="font-size:16px;font-weight:900;color:#7dffe0;letter-spacing:.1em">' +
+        (sub === 'gate' ? '大 门 通 过' : '撤离成功') + '</div>' +
+      '<div style="font-size:12.5px;color:#c8d4ea;margin-top:10px;line-height:2">' +
+        '最深 <b style="color:#c8a8ff">' + d.layer + '</b> 层<br>' +
+        '本局拾获 <b style="color:#7dffe0">' + d.runGearPicked.length + '</b> 件 → 全部入库<br>' +
+        '印记 <b>' + fmt(d.essence) + '</b> × 倍率 <b>' + mult.toFixed(2) + '</b> → 源质 <b style="color:#7dffe0">+' + fmt(gain) + '</b>' +
+      '</div>' +
+      '<button class="abyss-btn" data-dive-exit="1" ' +
+        'style="max-width:280px;margin:16px auto 0;background:linear-gradient(180deg,#22c98a,#0d8557);color:#03150e">' +
+        '确 认' +
+      '</button>' +
+    '</div>' +
+  '</div>';
+}
+
+// 大门类型权重：多精英 vs 单 boss
+function getGateBossChance(layer){
+  if(layer <= 10) return 0.20;
+  if(layer <= 20) return 0.35;
+  if(layer <= 30) return 0.50;
+  if(layer <= 40) return 0.60;
+  return 0.70;
+}
+
+// 多精英数量：N = max(1, floor(layer/10) + 1)
+function getGateEliteCount(layer){
+  return Math.max(1, Math.floor(layer / 10) + 1);
+}
+
+// 生成大门守卫信息
+function rollDiveGateInfo(layer){
+  var isBoss;
+  // 后台调试：强制大门类型
+  if(state.dive._forceGateType === 'boss'){ isBoss = true; }
+  else if(state.dive._forceGateType === 'multi'){ isBoss = false; }
+  else { isBoss = Math.random() < getGateBossChance(layer); }
+  var idx = Math.min(DIVE_ENEMIES.length - 1, Math.floor((layer - 1) / 2));
+  return {
+    isGate: true,
+    isBoss: isBoss,
+    enemyIdx: idx,
+    totalEnemies: isBoss ? 1 : getGateEliteCount(layer),
+    remaining: isBoss ? 1 : getGateEliteCount(layer)
+  };
+}
+
+// 🏛️ 大门守卫准备页
+function renderDiveGate(){
+  var d = state.dive;
+  var gi = d.gateInfo;
+  if(!gi) return '<div class="empty">大门数据丢失</div>';
+  var h = renderDiveHUD();
+  h += '<div class="card" style="max-width:620px;margin:0 auto;border-color:rgba(200,160,255,.45)">' +
+    '<div class="card-body" style="text-align:center;padding:28px 18px">' +
+      '<div style="font-size:52px;line-height:1;margin-bottom:12px">🏛️</div>' +
+      '<div style="font-size:16px;font-weight:900;color:#c8a8ff;letter-spacing:.1em">大 门 守 卫</div>' +
+      '<div style="font-size:12.5px;color:#c8d4ea;margin-top:12px;line-height:1.9">' +
+        (gi.isBoss
+          ? '<b style="color:#ff9bd8">单 BOSS</b> · HP 为精英 ×8'
+          : '<b style="color:#ff9bd8">多精英</b> · 共 <b>' + gi.totalEnemies + '</b> 位守卫') +
+        '<br>打赢全部守卫才能撤离，失败则失去一切' +
+      '</div>' +
+      '<div style="display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap">' +
+        '<button class="abyss-btn" data-dive-gate-back="1" ' +
+          'style="max-width:200px;background:linear-gradient(180deg,#4a5875,#2a3550);color:#e8eefc">' +
+          '返 回 地 图' +
+        '</button>' +
+        '<button class="abyss-btn" data-dive-gate-start="1" ' +
+          'style="max-width:200px;background:linear-gradient(180deg,#8b5cf6,#4c1d95);color:#fff">' +
+          '挑 战' +
+        '</button>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+  return h;
+}
+
+// 付费撤离出现概率（断崖式衰减）
+function getPayWithdrawChance(layer){
+  if(layer <= 20) return 0.50;
+  if(layer <= 25) return 0.25;
+  if(layer <= 30) return 0.10;
+  return 0.02;
+}
+
+// 付费撤离赠送的武器：保底 +1 档，15% 再 +1 档
+function rollPayWithdrawGear(layer){
+  var baseGear = rollDiveGear(layer);
+  var idx = DIVE_GEAR_RARITIES.findIndex(function(r){ return r.id === baseGear.rarity; });
+  if(idx < 0) idx = 0;
+  idx = Math.min(DIVE_GEAR_RARITIES.length - 1, idx + 1);
+  if(Math.random() < 0.15) idx = Math.min(DIVE_GEAR_RARITIES.length - 1, idx + 1);
+  var finalRar = DIVE_GEAR_RARITIES[idx];
+  var names = DIVE_GEAR_NAMES[finalRar.id] || [['未知装备', '❓']];
+  var pick = names[Math.floor(Math.random() * names.length)];
+  return {
+    uid: 'gear_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+    rarity: finalRar.id,
+    name: pick[0],
+    emoji: pick[1],
+    mult: finalRar.mult
+  };
+}
+
+// 刷新成本：源质 + 印记
+function getShopRefreshCost(refreshed){
+  return {
+    source: 10 + Math.floor(refreshed / 2) * 5,
+    mark: refreshed >= 1 ? Math.floor(20 * Math.pow(2, refreshed - 1)) : 0
+  };
+}
+
+// 生成商品：装备 1 件（必有）+ 付费撤（概率）+ 第 3 槽再 1 件装备
+function rollShopItems(){
+  var d = state.dive;
+  var items = [];
+  var layer = d.layer;
+  // 槽 1：装备
+  var g1 = rollDiveGear(layer);
+  items.push({
+    kind: 'gear',
+    uid: 'item_' + items.length + '_' + Math.random().toString(36).slice(2, 7),
+    gear: g1,
+    mark: 100 + layer * 20,
+    source: 20 + layer * 3
+  });
+  // 槽 2：付费撤（概率）
+  if(state.dive._forcePayWithdraw || Math.random() < getPayWithdrawChance(layer)){
+    items.push({
+      kind: 'pay',
+      uid: 'item_' + items.length + '_' + Math.random().toString(36).slice(2, 7),
+      mark: 500 + layer * 80,
+      source: 100 + layer * 15,
+      gift: layer <= 20
+    });
+  }
+  // 槽 3：再 1 件装备
+  var g2 = rollDiveGear(layer);
+  items.push({
+    kind: 'gear',
+    uid: 'item_' + items.length + '_' + Math.random().toString(36).slice(2, 7),
+    gear: g2,
+    mark: 100 + layer * 20,
+    source: 20 + layer * 3
+  });
+  return items;
+}
+
+// 🧳 商人房
+function renderDiveShop(){
+  var d = state.dive;
+  var s = d.shopState;
+  if(!s) return '<div class="empty">商人数据丢失</div>';
+  var h = renderDiveHUD();
+  h += '<div class="page-title"><h2>🧳 商人房</h2><p>第 ' + d.layer + ' 层 · 不推进层数</p></div>';
+  h += '<div style="max-width:620px;margin:0 auto">';
+  for(var i = 0; i < s.items.length; i++){
+    var it = s.items[i];
+    var bought = s.bought.indexOf(it.uid) >= 0;
+    if(it.kind === 'gear'){
+      var color = getDiveGearColor(it.gear.rarity);
+      h += '<div class="dive-room-card" style="margin-bottom:10px;cursor:default;border-color:' + color + '55">';
+      h += '<div class="drc-emoji">' + it.gear.emoji + '</div>';
+      h += '<div class="drc-info">';
+      h += '<div class="drc-name" style="color:' + color + '">' + esc(it.gear.name) + ' · ' + getDiveGearRarityName(it.gear.rarity) + ' ×' + it.gear.mult + '</div>';
+      h += '<div class="drc-desc">💠 ' + fmt(it.mark) + ' 印记 + 🔹 ' + fmt(it.source) + ' 源质</div>';
+      h += '</div>';
+      h += '<button class="abyss-btn" data-dive-shop-buy="' + it.uid + '"' + (bought ? ' disabled style="opacity:.4;max-width:120px"' : ' style="max-width:120px"') + '>' +
+        (bought ? '已购买' : '购买') + '</button>';
+      h += '</div>';
+    } else if(it.kind === 'pay'){
+      h += '<div class="dive-room-card withdraw" style="margin-bottom:10px;cursor:default">';
+      h += '<div class="drc-emoji">🚪</div>';
+      h += '<div class="drc-info">';
+      h += '<div class="drc-name">付费撤离' + (it.gift ? '（赠武器）' : '') + '</div>';
+      h += '<div class="drc-desc">💠 ' + fmt(it.mark) + ' 印记 + 🔹 ' + fmt(it.source) + ' 源质<br>' +
+        (it.gift ? '赠送 1 件高稀有度武器，直接入库' : '仅撤离，无赠品') + '</div>';
+      h += '</div>';
+      h += '<button class="abyss-btn" data-dive-pay-withdraw="' + it.uid + '"' + (bought ? ' disabled style="opacity:.4;max-width:120px"' : ' style="max-width:120px"') + '>' +
+        (bought ? '已购买' : '买走') + '</button>';
+      h += '</div>';
+    }
+  }
+  var rc = getShopRefreshCost(s.refreshed);
+  h += '<div style="display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap">';
+  h += '<button class="abyss-btn" data-dive-shop-refresh="1" style="max-width:300px;background:linear-gradient(180deg,#3fa9ff,#1d5fbf);color:#fff">' +
+    '🔄 刷新（🔹 ' + fmt(rc.source) + ' 源质' + (rc.mark > 0 ? ' + 💠 ' + fmt(rc.mark) + ' 印记' : '') + '）</button>';
+  h += '<button class="abyss-btn" data-dive-shop-leave="1" style="max-width:200px;background:linear-gradient(180deg,#4a5875,#2a3550);color:#e8eefc">离 开</button>';
+  h += '</div>';
+  h += '<div style="text-align:center;margin-top:10px;font-size:11px;color:#7c89a5">当前：💠 ' + fmt(d.essence) + ' 印记 · 🔹 ' + fmt(state.essence) + ' 源质</div>';
+  h += '</div>';
+  return h;
+}
+
+function renderDiveCombat(){
+  var d = state.dive;
+  var c = d.combat;
+  if(!c) return '<div class="empty">战斗数据丢失</div>';
+
+  var h = renderDiveHUD();
+  var hpPct = c.enemyMaxHp > 0 ? Math.max(0, Math.min(100, c.enemyHp / c.enemyMaxHp * 100)) : 0;
+
+  h += '<div class="abyss-enemy" style="margin:0 auto 12px">' +
+    '<div class="enemy-head">' +
+      '<span class="enemy-emoji">' + c.enemyEmoji + '</span>' +
+      '<span class="enemy-name">' + esc(c.enemyName) + ' · 第 ' + d.layer + ' 层' +
+        (c.isGateBoss ? ' <span style="color:#ffd86b">[BOSS]</span>' :
+         (c.isElite ? ' <span style="color:#ff9bd8">[精英]</span>' : '')) + '</span>' +
+      '<span style="margin-left:auto;font-size:11px;color:#8b98ad;font-weight:800">已抽 ' + c.drawCount + '</span>' +
+    '</div>' +
+    '<div class="enemy-hp-bar"><i style="width:' + hpPct + '%"></i></div>' +
+    '<div class="enemy-hp-text">' + fmt(Math.max(0, c.enemyHp)) + ' / ' + fmt(c.enemyMaxHp) + '</div>' +
+  '</div>';
+
+  h += '<div style="text-align:center;font-size:20px;font-weight:900;letter-spacing:6px;margin-bottom:14px">' +
+    '❤'.repeat(Math.max(0, c.playerHp)) + '<span style="opacity:.25">' + '❤'.repeat(Math.max(0, c.playerMaxHp - c.playerHp)) + '</span>' +
+    ' <span style="font-size:12px;color:#8b98ad;letter-spacing:0">' + c.playerHp + '/' + c.playerMaxHp + '</span>' +
+  '</div>';
+
+  if(c.phase === 'fighting'){
+    h += '<div class="abyss-actions" style="max-width:420px;margin:0 auto 14px">' +
+      '<button class="abyss-btn primary" id="diveCombatRollBtn">抽 取 · 攻 击</button>' +
+    '</div>';
+  }
+
+  if(c.tempBuffs.length){
+    h += '<div class="abyss-mods" style="margin-bottom:14px">';
+    for(var i = 0; i < c.tempBuffs.length; i++){
+      var b = c.tempBuffs[i];
+      h += '<div class="abyss-mod">' + b.emoji + ' ' + esc(b.name) + '</div>';
+    }
+    h += '</div>';
+  }
+
+  if(c.phase === 'won'){
+    h += '<div class="card" style="max-width:620px;margin:0 auto;border-color:rgba(0,255,200,.5);box-shadow:0 0 30px -12px rgba(0,255,200,.6)">' +
+      '<div class="card-body" style="text-align:center;padding:22px 16px">' +
+        '<div style="font-size:14px;font-weight:900;color:#7dffe0;letter-spacing:.1em;margin-bottom:12px">击 杀 · 三 选 一</div>' +
+        '<div class="dive-room-grid" style="grid-template-columns:1fr;gap:8px">';
+    var opts = c.pickOptions || [];
+    for(var j = 0; j < opts.length; j++){
+      var o = opts[j];
+      h += '<div class="dive-room-card" data-dive-buff="' + o.id + '" style="cursor:pointer">' +
+        '<div class="drc-emoji">' + o.emoji + '</div>' +
+        '<div class="drc-info">' +
+          '<div class="drc-name">' + esc(o.name) + '</div>' +
+          '<div class="drc-desc">' + esc(o.desc) + '</div>' +
+        '</div></div>';
+    }
+    h += '</div></div></div>';
+  }
+
+  if(c.phase === 'lost'){
+    h += '<div class="card" style="max-width:620px;margin:0 auto;border-color:rgba(255,95,95,.5)">' +
+      '<div class="card-body" style="text-align:center;padding:26px 18px">' +
+        '<div style="font-size:46px;line-height:1;margin-bottom:10px">💀</div>' +
+        '<div style="font-size:15px;font-weight:900;color:#ff8a8a">战 斗 失 败</div>' +
+        '<div style="font-size:12px;color:#c8d4ea;margin-top:10px">你在第 <b>' + d.layer + '</b> 层倒下</div>' +
+        '<button class="abyss-btn" data-dive-exit="1" style="max-width:260px;margin:16px auto 0;background:linear-gradient(180deg,#ff5f5f,#b81c1c);color:#fff">确 认</button>' +
+      '</div></div>';
+  }
+
+  setTimeout(function(){
+    var btn = document.getElementById('diveCombatRollBtn');
+    if(btn) btn.addEventListener('click', doRoll);
+  }, 0);
+
+  return h;
+}
+
 function renderAbyssPage(){
   if(state.trueRebirths < 1 && !state.voidMode){
     $('#pageAbyss').innerHTML =
@@ -5052,6 +6244,14 @@ function renderAbyssPage(){
     return;
   }
   ensureAbyssInit();
+
+  if(state.dive.active){
+    $('#pageAbyss').innerHTML =
+      '<div class="page-title"><h2>🌊 深渊探索</h2><p>搜打撤 · Roguelike</p></div>' +
+      renderDivePage();
+    bindDiveEvents();
+    return;
+  }
 
   const mods = getAbyssMods();
   const hpPct = state.abyssMaxHp > 0 ? Math.max(0, Math.min(100, state.abyssHp / state.abyssMaxHp * 100)) : 0;
@@ -5136,12 +6336,19 @@ function renderAbyssPage(){
       '<div style="font-size:36px;line-height:1;margin-bottom:8px;filter:drop-shadow(0 0 16px rgba(160,120,255,.8))">🌊</div>' +
       '<div style="font-size:15px;font-weight:900;color:#c8a8ff;letter-spacing:.1em">深渊探索</div>' +
       '<div style="font-size:11.5px;color:#8b98ad;line-height:1.7;margin-top:6px">' +
-        '二次真重生解锁 · 深入杨马内部<br>' +
-        '<span style="color:#a78bd4">（新模式开发中，敬请期待）</span>' +
+        '搜打撤 · Roguelike · 深入杨马内部<br>' +
+        '<span style="color:#a78bd4">带进去的越弱，带出来的越多</span>' +
+      '</div>' +
+      '<div style="margin:10px auto 0;font-size:11px;color:#7c89a5;font-weight:800;letter-spacing:.05em">' +
+        '历史最佳：最深 <b style="color:#c8a8ff">' + state.dive.best.layer + '</b> 层 · ' +
+        '最富 <b style="color:#c8a8ff">' + (state.dive.best.essence > 0 ? fmt(state.dive.best.essence) : '—') + '</b> 印记' +
+      '</div>' +
+      '<div style="margin:8px auto 0;font-size:11px;color:#7c89a5;font-weight:800;letter-spacing:.05em">' +
+        '📦 装备库存 <b style="color:#c8a8ff">' + state.dive.gearInv.length + '</b> 件' +
       '</div>' +
       '<button class="abyss-btn" id="abyssExploreBtn" ' +
         'style="max-width:320px;margin:12px auto 0;background:linear-gradient(180deg,#8b5cf6,#4c1d95);color:#fff;border:1px solid rgba(200,160,255,.5);box-shadow:0 12px 30px -12px #8b5cf6">' +
-        '敬 请 期 待' +
+        '进 入 深 渊' +
       '</button>' +
     '</div>' +
   '</div>';
@@ -5162,9 +6369,13 @@ function renderAbyssPage(){
   if(rr) rr.addEventListener('click', rerollAbyssMods);
   const ae = $('#abyssExploreBtn');
   if(ae) ae.addEventListener('click', () => {
-    toast('🌊 深渊探索：新模式开发中，敬请期待');
-    beep(880, .12, 'sine', .05);
-    setTimeout(() => beep(1200, .18, 'sine', .045), 100);
+    if(state.abyssExploreUnlocked){
+      startDive();
+    } else {
+      toast('🌊 深渊探索：新模式开发中，敬请期待');
+      beep(880, .12, 'sine', .05);
+      setTimeout(() => beep(1200, .18, 'sine', .045), 100);
+    }
   });
 }
 function updateAbyssUI(){
@@ -5718,6 +6929,9 @@ function buildNav(){
   }).join('');
 }
 function switchPage(id){
+  if(state.dive && state.dive.pickingSlot !== null && state.dive.active){
+    state.dive.pickingSlot = null;
+  }
   if(id === 'challenge'){
     // 已经在挑战页里，不重复切换
     if(state.page === 'abyss' || state.page === 'boss') return;
@@ -5766,6 +6980,11 @@ function switchPage(id){
   hideNodeTip();
   renderPage();
   beep(620, .06, 'sine', .025);
+
+  var hide = !!(state.dive && state.dive.active);
+  var bn = $('#bottomNav'), sn = $('#sideNav');
+  if(bn) bn.style.display = hide ? 'none' : '';
+  if(sn) sn.style.display = hide ? 'none' : '';
 }
 function renderPage(){
   switch(state.page){
@@ -5857,10 +7076,18 @@ function doRoll(){
     const bbtn2 = $('#bossRollBtn');
     if(bbtn2) bbtn2.disabled = false;
     if(state.page === 'boss') updateBossUI();
+    // 战斗防重入标志复位：一次点击 → 一次 resolveRoll → 此处复位 → 下次点击生效
+    if(state.dive && state.dive.combat) state.dive.combat._fired = false;
   }, ROLL_ANIM);
 }
 
 function resolveRoll(result){
+  // ═══ 深渊探索 · 战斗分支（独立流程，不写主世界任何状态）═══
+  if(state.dive.active && state.dive.combat && state.dive.combat.phase === 'fighting'){
+    resolveDiveCombatRoll(result);
+    return;
+  }
+
   const base = result.base;
   const affixes = result.affixes || [];
   const idx = RARITIES.indexOf(base);
@@ -6280,9 +7507,9 @@ function tryMergePets(){
 const DECOMPOSE_RATE = 10000;
 
 function decomposePets(){
-  if(sel.some(p => p.richPup)){ toast('💰「有钱人养的」小狗不能分解'); beep(220,.12,'square',.04); return; }
   const sel = state.petSelection.map(uid => state.petInv.find(p => p.uid === uid)).filter(Boolean);
   if(!sel.length){ toast('请先选择要分解的宠物'); return; }
+  if(sel.some(p => p.richPup)){ toast('💰「有钱人养的」小狗不能分解'); beep(220,.12,'square',.04); return; }
 
   const equipped = sel.filter(p => state.petEquipped.includes(p.uid));
   if(equipped.length){ toast('装备中的宠物不能分解，请先卸下'); beep(220, .12, 'square', .04); return; }
@@ -6602,6 +7829,286 @@ $('#ovInput').addEventListener('keydown', e => { if(e.key === 'Enter') confirmOv
 $('#overlay').addEventListener('click', e => { if(e.target.id === 'overlay') closeOverlay(); });
 
 document.addEventListener('click', e => {
+  // ═══ 深渊探索 ═══
+  const diveSlot = e.target.closest('[data-dive-slot]');
+  if(diveSlot){
+    openDiveSlotPicker(diveSlot.dataset.diveSlot);
+    return;
+  }
+  const divePick = e.target.closest('[data-dive-pick]');
+  if(divePick){
+    var dpSlot = state.dive.pickingSlot;
+    var dpIdx = parseInt(divePick.dataset.divePick, 10);
+    var dpList = divePickList(dpSlot);
+    if(dpList[dpIdx]){
+      var dpIt = dpList[dpIdx];
+      if(dpIt.gear)     state.dive.loadout.gearUid = dpIt.gear.uid;
+      else if(dpIt.affix) state.dive.loadout.affix = dpIt.affix;
+      else if(dpIt.dice)  state.dive.loadout.dice = dpIt.dice;
+    }
+    state.dive.pickingSlot = null;
+    renderAbyssPage();
+    return;
+  }
+  if(e.target.closest('[data-dive-start]')){ startDiveRun(); return; }
+  if(e.target.closest('[data-dive-back]')){  exitDive();    return; }
+  if(e.target.closest('[data-dive-buff]')){
+    pickDiveBuff(e.target.closest('[data-dive-buff]').dataset.diveBuff);
+    return;
+  }
+  if(e.target.closest('[data-dive-combat-continue]')){
+    continueDiveAfterCombat();
+    return;
+  }
+  const diveRoom = e.target.closest('[data-dive-room]');
+  if(diveRoom){
+    var dri = parseInt(diveRoom.dataset.diveRoomIdx, 10);
+    var dr = state.dive.roomOptions[dri];
+    if(dr) enterDiveRoom(dr);
+    return;
+  }
+  if(e.target.closest('[data-dive-next]')){
+    if(state.dive._advancing) return;
+    state.dive._advancing = true;
+    state.dive.layer++;
+    rollDiveRooms();
+    state.dive.phase = 'map';
+    renderAbyssPage();
+    setTimeout(function(){ state.dive._advancing = false; }, 200);
+    return;
+  }
+  if(e.target.closest('[data-dive-abort]')){
+    openConfirm('🚪', '放弃探索', '将丢失本局所有战利品，确定吗？', () => {
+      state.dive.active = false;
+      state.dive.phase = 'idle';
+      buildNav(); updateHUD(); renderAbyssPage();
+    });
+    return;
+  }
+  if(e.target.closest('[data-dive-exit]')){
+    // 🎒 drop 变体：二次确认，避免误触（本局拾获全清代价大）
+    if(state.dive.phase === 'withdraw' && state.dive.withdrawSubtype === 'drop'){
+      openConfirm('🎒', '确认丢包', '将丢弃本局拾获的全部装备（' + state.dive.runGearPicked.length + ' 件），确定吗？', function(){
+        runDiveExitSettle();
+      });
+      return;
+    }
+    runDiveExitSettle();
+    return;
+  }
+
+  function runDiveExitSettle(){
+    if(state.dive.layer > state.dive.best.layer) state.dive.best.layer = state.dive.layer;
+    if(state.dive.essence > state.dive.best.essence) state.dive.best.essence = state.dive.essence;
+    if(state.dive.phase === 'withdraw'){
+      var wmult = 1 + state.dive.layer * 0.15;
+      var wgain = Math.floor(state.dive.essence * wmult);
+      state.essence += wgain;
+      // 撤离额外掉落 1 件（🎒 drop 变体不给，避免先发奖再丢弃）
+      if(state.dive.withdrawSubtype !== 'drop'){
+        var bonusGear = rollDiveGear(state.dive.layer + 5);  // 层数 +5 提升稀有度
+        state.dive.runGearPicked.push(bonusGear);
+        toast('🚪 撤离奖励：' + bonusGear.emoji + ' ' + bonusGear.name, getDiveGearColor(bonusGear.rarity));
+      }
+    }
+    // 撤离成功：携带 + 拾获 全部入库（🎒 drop 变体：拾获不入，只入携带）
+    if(state.dive.phase === 'withdraw'){
+      var incoming = [];
+      // 出战装备（如果还在）
+      if(state.dive.loadout.gearUid){
+        var eq = state.dive.gearInv.find(function(g){ return g.uid === state.dive.loadout.gearUid; });
+        if(eq) incoming.push(eq);
+      }
+      // 本局拾获（drop 变体跳过）
+      if(state.dive.withdrawSubtype === 'drop'){
+        toast('🎒 本局拾获 ' + state.dive.runGearPicked.length + ' 件已丢弃', '#ff8a8a');
+        state.dive.runGearPicked = [];
+      } else {
+        for(var i = 0; i < state.dive.runGearPicked.length; i++){
+          incoming.push(state.dive.runGearPicked[i]);
+        }
+      }
+      // 入库：先把出战装备从原库存删掉（避免重复），再把 incoming 全部加入
+      if(state.dive.loadout.gearUid){
+        state.dive.gearInv = state.dive.gearInv.filter(function(g){ return g.uid !== state.dive.loadout.gearUid; });
+      }
+      for(var j = 0; j < incoming.length; j++){
+        state.dive.gearInv.push(incoming[j]);
+      }
+      if(incoming.length) toast('📦 已入库 ' + incoming.length + ' 件装备', '#7dffe0');
+    }
+    // 撤离失败：本局拾获全丢，出战装备从库存里删掉
+    else if(state.dive.phase === 'combat' && state.dive.combat && state.dive.combat.phase === 'lost'){
+      // runGearPicked 直接丢弃（不入库）
+      state.dive.runGearPicked = [];
+      // 出战装备从库存里移除
+      if(state.dive.loadout.gearUid){
+        state.dive.gearInv = state.dive.gearInv.filter(function(g){ return g.uid !== state.dive.loadout.gearUid; });
+        toast('💀 出战装备已丢失', '#ff8a8a');
+      }
+    }
+    state.dive.loadout = { gearUid: null, affix: null, dice: null };
+    state.dive.runGearPicked = [];
+    state.dive.withdrawSubtype = null;
+    state.dive.gateInfo = null;
+    state.dive.shopState = null;
+    state.dive.active = false;
+    state.dive.phase = 'idle';
+    buildNav(); updateHUD(); renderAbyssPage();
+    saveGame();
+    return;
+  }
+
+  // ═══ 🎒 丢包撤离页「返回地图」═══
+  if(e.target.closest('[data-dive-wback]')){
+    // 返回地图时移除该 drop 撤离点，避免反复进出永不消耗
+    state.dive.roomOptions = state.dive.roomOptions.filter(function(r){
+      return !(r.special === 'withdraw' && r.subtype === 'drop');
+    });
+    state.dive.withdrawSubtype = null;
+    state.dive.phase = 'map';
+    renderAbyssPage();
+    return;
+  }
+
+  // ═══ 🏛️ 大门：挑战 ═══
+  if(e.target.closest('[data-dive-gate-start]')){
+    state.dive.pendingGate = true;
+    startDiveCombat({ id:'elite' });
+    state.dive.pendingGate = false;
+    return;
+  }
+
+  // ═══ 🏛️ 大门：返回地图（大门撤离点消失）═══
+  if(e.target.closest('[data-dive-gate-back]')){
+    state.dive.gateInfo = null;
+    state.dive.withdrawSubtype = null;
+    state.dive.roomOptions = state.dive.roomOptions.filter(function(r){
+      return !(r.special === 'withdraw' && r.subtype === 'gate');
+    });
+    state.dive.phase = 'map';
+    renderAbyssPage();
+    return;
+  }
+
+  // ═══ 🧳 商人房：购买 ═══
+  const shopBuy = e.target.closest('[data-dive-shop-buy]');
+  if(shopBuy){
+    var buyUid = shopBuy.dataset.diveShopBuy;
+    var sObj = state.dive.shopState;
+    if(sObj){
+      var buyItem = sObj.items.find(function(x){ return x.uid === buyUid; });
+      if(buyItem && sObj.bought.indexOf(buyUid) < 0){
+        if(state.dive.essence >= buyItem.mark && state.essence >= buyItem.source){
+          state.dive.essence -= buyItem.mark;
+          state.essence -= buyItem.source;
+          sObj.bought.push(buyUid);
+          // 买的装备算本局拾获（撤离成功才入库，死亡则丢失）
+          state.dive.runGearPicked.push(buyItem.gear);
+          toast('✅ 购入 ' + buyItem.gear.emoji + ' ' + buyItem.gear.name, getDiveGearColor(buyItem.gear.rarity));
+          beep(900, .14, 'sine', .05);
+          saveGame();
+        } else {
+          toast('❌ 印记或源质不足');
+          beep(220, .12, 'square', .04);
+        }
+      }
+    }
+    renderAbyssPage();
+    return;
+  }
+
+  // ═══ 🧳 商人房：刷新 ═══
+  if(e.target.closest('[data-dive-shop-refresh]')){
+    var sr = state.dive.shopState;
+    if(sr){
+      var cost = getShopRefreshCost(sr.refreshed);
+      if(state.dive.essence >= cost.mark && state.essence >= cost.source){
+        state.dive.essence -= cost.mark;
+        state.essence -= cost.source;
+        sr.refreshed++;
+        sr.items = rollShopItems();
+        sr.bought = [];
+        toast('🔄 已刷新商品');
+        beep(760, .12, 'sine', .05);
+        saveGame();
+      } else {
+        toast('❌ 刷新资源不足');
+        beep(220, .12, 'square', .04);
+      }
+    }
+    renderAbyssPage();
+    return;
+  }
+
+  // ═══ 🧳 商人房：离开（不推进层数）═══
+  if(e.target.closest('[data-dive-shop-leave]')){
+    state.dive.shopState = null;
+    state.dive.phase = 'map';
+    renderAbyssPage();
+    return;
+  }
+
+  // ═══ 🚪 付费撤离 ═══
+  const payW = e.target.closest('[data-dive-pay-withdraw]');
+  if(payW){
+    var pUid = payW.dataset.divePayWithdraw;
+    var ps = state.dive.shopState;
+    if(ps){
+      var pItem = ps.items.find(function(x){ return x.uid === pUid; });
+      if(pItem && ps.bought.indexOf(pUid) < 0){
+        if(state.dive.essence >= pItem.mark && state.essence >= pItem.source){
+          state.dive.essence -= pItem.mark;
+          state.essence -= pItem.source;
+          ps.bought.push(pUid);
+          // 前 20 层送武器 → 直接入 gearInv（视为已撤离，不占 runGearPicked）
+          if(pItem.gift){
+            var giftGear = rollPayWithdrawGear(state.dive.layer);
+            state.dive.gearInv.push(giftGear);
+            toast('🎁 赠品 ' + giftGear.emoji + ' ' + giftGear.name + '（' + getDiveGearRarityName(giftGear.rarity) + '）', getDiveGearColor(giftGear.rarity));
+          }
+          // 方案 B：直接结算走人，跳过 withdraw 页（不给刷新留白嫖窗口）
+          var pwmult = 1 + state.dive.layer * 0.15;
+          var pwGain = Math.floor(state.dive.essence * pwmult);
+          state.essence += pwGain;
+          var pwIn = [];
+          if(state.dive.loadout.gearUid){
+            var pwEq = state.dive.gearInv.find(function(g){ return g.uid === state.dive.loadout.gearUid; });
+            if(pwEq) pwIn.push(pwEq);
+          }
+          for(var pwI = 0; pwI < state.dive.runGearPicked.length; pwI++){
+            pwIn.push(state.dive.runGearPicked[pwI]);
+          }
+          if(state.dive.loadout.gearUid){
+            state.dive.gearInv = state.dive.gearInv.filter(function(g){ return g.uid !== state.dive.loadout.gearUid; });
+          }
+          for(var pwJ = 0; pwJ < pwIn.length; pwJ++){
+            state.dive.gearInv.push(pwIn[pwJ]);
+          }
+          if(state.dive.layer > state.dive.best.layer) state.dive.best.layer = state.dive.layer;
+          if(state.dive.essence > state.dive.best.essence) state.dive.best.essence = state.dive.essence;
+          toast('🚪 付费撤离完成！已入库 ' + pwIn.length + ' 件 · 源质 +' + fmt(pwGain), '#7dffe0');
+          beep(880, .16, 'sine', .05);
+          // 清空局内状态并退出
+          state.dive.shopState = null;
+          state.dive.withdrawSubtype = null;
+          state.dive.gateInfo = null;
+          state.dive.loadout = { gearUid: null, affix: null, dice: null };
+          state.dive.runGearPicked = [];
+          state.dive.combat = null;
+          state.dive.active = false;
+          state.dive.phase = 'idle';
+          saveGame();
+        } else {
+          toast('❌ 印记或源质不足');
+          beep(220, .12, 'square', .04);
+        }
+      }
+    }
+    renderAbyssPage();
+    return;
+  }
+
   // ═══ 虚空 / 地狱 模式（最高优先，避免被页面内其他分支拦截）═══
   const cardVoid = e.target.closest && e.target.closest('.mode-card.void');
   const cardHell = e.target.closest && e.target.closest('.mode-card.hell');
@@ -7333,12 +8840,81 @@ function build(){
         '</div>' +
       '</div>' +
       '<div class="sa-sec">' +
+        '<div class="sa-st">装备库存</div>' +
+        '<div class="sa-row">' +
+          '<span class="sa-lb">稀有度</span>' +
+          '<select id="saGearRarity">' +
+            '<option value="common">普通 ×1.0</option>' +
+            '<option value="fine">精良 ×1.5</option>' +
+            '<option value="epic">史诗 ×2.5</option>' +
+            '<option value="legend">传说 ×4.0</option>' +
+            '<option value="myth">神话 ×6.0</option>' +
+          '</select>' +
+          '<input type="text" id="saGearCount" value="1" style="max-width:60px">' +
+          '<button class="sa-btn g" data-act="spawnGear">生成</button>' +
+        '</div>' +
+        '<div class="sa-row">' +
+          '<button class="sa-btn y" data-act="gearGodRoll">造 10 件神话</button>' +
+          '<button class="sa-btn r" data-act="gearClear">清空库存</button>' +
+        '</div>' +
+        '<div class="sa-out" id="saGearOut"></div>' +
+      '</div>' +
+      '<div class="sa-sec">' +
+        '<div class="sa-st">本局印记</div>' +
+        '<div class="sa-row">' +
+          '<span class="sa-lb">印记</span>' +
+          '<input type="text" id="saMark" placeholder="0">' +
+          '<button class="sa-btn p" data-act="setDiveMark">设为</button>' +
+          '<button class="sa-btn y" data-act="addDiveMark">+1000</button>' +
+          '<button class="sa-btn g" data-act="maxDiveMark">拉满</button>' +
+          '<button class="sa-btn s" data-act="clearDiveMark">归零</button>' +
+        '</div>' +
+        '<div class="sa-note">印记 = state.dive.essence，仅探索局内有效。<br>进深渊后才有值，退出探索会被清空。</div>' +
+      '</div>' +
+      '<div class="sa-sec">' +
+        '<div class="sa-st">4a 调试</div>' +
+        '<div class="sa-row">' +
+          '<span class="sa-lb">撤离 subtype</span>' +
+          '<select id="saForceSubtype">' +
+            '<option value="">不强制</option>' +
+            '<option value="normal">normal 普通</option>' +
+            '<option value="drop">drop 丢包</option>' +
+            '<option value="gate">gate 大门</option>' +
+          '</select>' +
+          '<button class="sa-btn" data-act="forceSubtype">应用</button>' +
+        '</div>' +
+        '<div class="sa-row">' +
+          '<button class="sa-btn y" data-act="forcePayWithdraw">强制 100% 刷付费撤</button>' +
+          '<button class="sa-btn s" data-act="clearPayWithdraw">恢复随机</button>' +
+        '</div>' +
+        '<div class="sa-row">' +
+          '<span class="sa-lb">大门类型</span>' +
+          '<select id="saForceGateType">' +
+            '<option value="">随机</option>' +
+            '<option value="multi">多精英</option>' +
+            '<option value="boss">单 BOSS</option>' +
+          '</select>' +
+          '<button class="sa-btn" data-act="forceGateType">应用</button>' +
+        '</div>' +
+        '<div class="sa-row">' +
+          '<button class="sa-btn g" data-act="rerollShop">重刷当前商人房商品</button>' +
+        '</div>' +
+        '<div class="sa-out" id="saDbgOut"></div>' +
+      '</div>' +
+      '<div class="sa-sec">' +
         '<div class="sa-st">深渊实时信息</div>' +
         '<div class="sa-out" id="saAbyssOut"></div>' +
       '</div>' +
     '</div>' +
 
     '<div class="sa-pane" data-pane="misc">' +
+      '<div class="sa-sec">' +
+        '<div class="sa-st">🕳️ 深渊探索开关</div>' +
+        '<div class="sa-row">' +
+          '<button class="sa-btn y" data-act="toggleAbyssExplore">🔒 深渊探索：关</button>' +
+        '</div>' +
+        '<div class="sa-note">关闭时挑战页点「进入深渊」只弹提示，不真正进探索。<br>开启后正常进入。</div>' +
+      '</div>' +
       '<div class="sa-sec">' +
         '<div class="sa-st">成就</div>' +
         '<div class="sa-row">' +
@@ -7466,6 +9042,29 @@ function refresh(){
       '源质 ' + fmt(state.essence) + '\n' +
       '升级 ' + ABYSS_UPGRADES.map(u => u.name + ' Lv.' + (state.abyssUpg[u.id] || 0)).join(' · ');
   }
+
+  const go = q('#saGearOut');
+  if(go){
+    const inv = state.dive.gearInv || [];
+    const counts = {};
+    for(const g of inv) counts[g.rarity] = (counts[g.rarity] || 0) + 1;
+    go.textContent =
+      '装备总数 ' + inv.length + '\n' +
+      DIVE_GEAR_RARITIES.map(r => r.name + ': ' + (counts[r.id] || 0)).join(' · ');
+  }
+
+  const dbo = q('#saDbgOut');
+  if(dbo){
+    dbo.textContent =
+      '强制 subtype: ' + (state.dive._forceWithdrawSubtype || '不强制') + '\n' +
+      '强制付费撤: ' + (state.dive._forcePayWithdraw ? '是' : '否') + '\n' +
+      '强制大门类型: ' + (state.dive._forceGateType === 'boss' ? '单 BOSS' : (state.dive._forceGateType === 'multi' ? '多精英' : '随机')) + '\n' +
+      '当前 phase: ' + state.dive.phase + ' · 商人房' + (state.dive.phase === 'shop' ? '可重刷' : '不可用') + '\n' +
+      '本局印记: ' + fmt(state.dive.essence || 0);
+  }
+
+  const abBtn = q('[data-act="toggleAbyssExplore"]');
+  if(abBtn) abBtn.textContent = state.abyssExploreUnlocked ? '🔓 深渊探索：开' : '🔒 深渊探索：关';
 
   const svo = q('#saSaveOut');
   if(svo) svo.textContent = JSON.stringify({
@@ -7724,6 +9323,99 @@ function act(a){
       toast('💠 源质升级全部满级');
       break;
     }
+    case 'spawnGear': {
+      const rarity = q('#saGearRarity') ? q('#saGearRarity').value : 'common';
+      let n = vInt('#saGearCount', 1);
+      n = Math.max(1, Math.min(50, n));
+      const rDef = DIVE_GEAR_RARITIES.find(r => r.id === rarity) || DIVE_GEAR_RARITIES[0];
+      const names = DIVE_GEAR_NAMES[rDef.id] || [['未知装备', '❓']];
+      for(let i = 0; i < n; i++){
+        const pick = names[Math.floor(Math.random() * names.length)];
+        state.dive.gearInv.push({
+          uid: 'gear_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+          rarity: rDef.id,
+          name: pick[0],
+          emoji: pick[1],
+          mult: rDef.mult
+        });
+      }
+      toast('✅ 已生成 ' + n + ' 件 ' + rDef.name + '装备');
+      break;
+    }
+    case 'gearGodRoll': {
+      for(let i = 0; i < 10; i++){
+        const names = DIVE_GEAR_NAMES.myth;
+        const pick = names[Math.floor(Math.random() * names.length)];
+        state.dive.gearInv.push({
+          uid: 'gear_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+          rarity: 'myth',
+          name: pick[0],
+          emoji: pick[1],
+          mult: 6.0
+        });
+      }
+      toast('✅ 已生成 10 件神话装备');
+      break;
+    }
+    case 'gearClear': {
+      state.dive.gearInv = [];
+      toast('🧹 已清空装备库存');
+      break;
+    }
+    case 'setDiveMark': {
+      const v = vNum('#saMark');
+      if(isNaN(v)) return toast('❌ 请输入有效数字');
+      state.dive.essence = Math.max(0, v);
+      toast('💠 本局印记设为 ' + fmt(state.dive.essence));
+      break;
+    }
+    case 'addDiveMark': {
+      state.dive.essence = Math.max(0, (state.dive.essence || 0) + 1000);
+      toast('💠 本局印记 +1000 → ' + fmt(state.dive.essence));
+      break;
+    }
+    case 'maxDiveMark': {
+      state.dive.essence = 1e12;
+      toast('💠 本局印记拉满 → ' + fmt(state.dive.essence));
+      break;
+    }
+    case 'clearDiveMark': {
+      state.dive.essence = 0;
+      toast('💠 本局印记归零');
+      break;
+    }
+    case 'forceSubtype': {
+      const sel = q('#saForceSubtype');
+      state.dive._forceWithdrawSubtype = (sel && sel.value) ? sel.value : null;
+      toast(state.dive._forceWithdrawSubtype ? ('🎯 撤离 subtype 强制为 ' + state.dive._forceWithdrawSubtype) : '🎲 撤离 subtype 恢复随机');
+      break;
+    }
+    case 'forcePayWithdraw': {
+      state.dive._forcePayWithdraw = true;
+      toast('🎯 付费撤离已强制 100% 刷出');
+      break;
+    }
+    case 'clearPayWithdraw': {
+      state.dive._forcePayWithdraw = false;
+      toast('🎲 付费撤离恢复随机概率');
+      break;
+    }
+    case 'forceGateType': {
+      const sel = q('#saForceGateType');
+      state.dive._forceGateType = (sel && sel.value) ? sel.value : null;
+      toast(state.dive._forceGateType ? ('🎯 大门类型强制为 ' + (state.dive._forceGateType === 'boss' ? '单 BOSS' : '多精英')) : '🎲 大门类型恢复随机');
+      break;
+    }
+    case 'rerollShop': {
+      if(state.dive.phase !== 'shop' || !state.dive.shopState){
+        toast('❌ 只在商人房内可用');
+        break;
+      }
+      state.dive.shopState.items = rollShopItems();
+      state.dive.shopState.bought = [];
+      toast('🔄 已重刷当前商人房商品');
+      break;
+    }
 
     case 'achAll': {
       const now = Date.now();
@@ -7768,6 +9460,11 @@ function act(a){
       state.buffs = [];
       renderBuffBar();
       toast('🧹 已清空 Buff');
+      break;
+
+    case 'toggleAbyssExplore':
+      state.abyssExploreUnlocked = !state.abyssExploreUnlocked;
+      toast(state.abyssExploreUnlocked ? '🔓 深渊探索已解锁' : '🔒 深渊探索已锁定');
       break;
 
     case 'tSound':
@@ -7961,6 +9658,683 @@ try{
     'color:#ff5f5f;font-size:12px'
   );
 }catch(e){}
+
+})();
+
+/* ═══════════════════════════════════════════════════════
+   🧪 自测套件（仅当 URL 带 ?test=1 时执行）
+   ═══════════════════════════════════════════════════════ */
+(function(){
+if(location.search.indexOf('test=1') < 0) return;
+
+var R = [];
+function assert(name, cond, msg){
+  R.push({ name: name, ok: !!cond, msg: msg || '' });
+}
+function backup(){ try{ return JSON.stringify(getSaveData()); }catch(e){ return null; } }
+function restore(s){ if(!s) return; try{ applySaveData(JSON.parse(s)); }catch(e){} }
+
+// 确保挑战页可见，且深渊已解锁
+(function init(){
+  if(state.trueRebirths < 1 && !state.voidMode) state.trueRebirths = 1;
+  if(state.abyssFloor < 1){ state.abyssFloor = 1; state.abyssBest = 1; initAbyssFloor(1); }
+  if(state.page !== 'abyss') switchPage('abyss');
+})();
+
+// ── T1 撤离概率分布 ──
+(function(){
+  var bak = backup();
+  var ok = true, worst = '';
+  var layers = [1, 5, 10, 15, 20, 30];
+  for(var li = 0; li < layers.length; li++){
+    var layer = layers[li];
+    state.dive.layer = layer;
+    state.dive.history = [];
+    var hit = 0, N = 5000;
+    for(var i = 0; i < N; i++){
+      rollDiveRooms();
+      if(state.dive.roomOptions.some(function(r){ return r.special === 'withdraw'; })) hit++;
+    }
+    var rate = hit / N;
+    var expect = Math.max(0.05, 0.6 - layer * 0.03);
+    if(Math.abs(rate - expect) > 0.025){
+      ok = false;
+      worst += ' [层' + layer + ' 实测' + rate.toFixed(4) + ' 期望' + expect.toFixed(4) + ']';
+    }
+  }
+  restore(bak);
+  assert('T1 撤离概率 60%→5%', ok, worst);
+})();
+
+// ── T2 房间不重复 / 不连续 / 精英门槛 ──
+(function(){
+  var bak = backup();
+  var ok = true, worst = '';
+  var layers = [1, 2, 3, 4, 10];
+  for(var li = 0; li < layers.length; li++){
+    var layer = layers[li];
+    state.dive.layer = layer;
+    for(var t = 0; t < 500; t++){
+      state.dive.history = [];
+      rollDiveRooms();
+      // 防连续只在抽选阶段(picked)生效，与 shuffle 后的展示顺序无关；
+      // 因此这里直接检查 picked 首位 不等于 本层 history 末尾的房间。
+      var ids = state.dive.roomOptions.filter(function(r){ return !r.special; }).map(function(r){ return r.id; });
+      if(new Set(ids).size !== ids.length){ ok = false; worst += ' 层' + layer + '重复'; break; }
+      if(layer < 3 && ids.indexOf('elite') >= 0){ ok = false; worst += ' 层' + layer + '出精英'; break; }
+    }
+    if(!ok) break;
+  }
+  // 同层连续：history 末尾是同一层的 battle，抽选首位绝不重 battle
+  state.dive.layer = 5;
+  state.dive.history = [{ id:'battle', layer:5 }];
+  for(var t2 = 0; t2 < 5000 && ok; t2++){
+    rollDiveRooms();
+    var nonW = state.dive.roomOptions.filter(function(r){ return !r.special; });
+    if(nonW.length && nonW[0].id === 'battle'){ ok = false; worst += ' 连续 battle'; break; }
+  }
+  // 跨层：上一层是 battle 但已换层，新层允许再出 battle（不算连续）
+  state.dive.layer = 6;
+  state.dive.history = [{ id:'battle', layer:5 }];
+  var cross = 0;
+  for(var t3 = 0; t3 < 1000; t3++){
+    rollDiveRooms();
+    var nw = state.dive.roomOptions.filter(function(r){ return !r.special; });
+    if(nw.length && nw[0].id === 'battle') cross++;
+  }
+  restore(bak);
+  assert('T2 房间不重复 / 不连续 / 精英门槛', ok, worst + (cross > 0 ? ' [跨层允许重复×' + cross + ']' : ''));
+})();
+
+// ── T3 存档往返 ──
+(function(){
+  var bak = backup();
+  state.dive.active = true;
+  state.dive.phase = 'map';
+  state.dive.layer = 17;
+  state.dive.essence = 1234;
+  state.dive.hp = 2;
+  state.dive.history = ['battle', 'chest', 'shop'];
+  state.dive.best = { layer: 25, essence: 9999 };
+  state.dive.loadout = { gearUid: '__t3_gear', affix: AFFIXES[0], dice: 'gold' };
+  state.dive.roomOptions = [{ id: 'battle' }];
+
+  var json = JSON.parse(JSON.stringify(getSaveData()));
+  var ok1 = json.dive && typeof json.dive === 'object';
+  applySaveData(json);
+  var ok = ok1
+    && state.dive.active === false
+    && state.dive.phase === 'idle'
+    && state.dive.best.layer === 25
+    && state.dive.best.essence === 9999
+    && state.dive.loadout.gearUid === null
+    && state.dive.loadout.affix === null
+    && state.dive.loadout.dice === null
+    && state.dive.roomOptions.length === 0
+    && state.dive.history.length === 3;
+  var msg = 'active=' + state.dive.active + ' phase=' + state.dive.phase
+    + ' best=' + JSON.stringify(state.dive.best)
+    + ' loadoutGearUid=' + (state.dive.loadout.gearUid === null ? 'null' : 'non-null')
+    + ' roomOptions=' + state.dive.roomOptions.length
+    + ' history=' + state.dive.history.length;
+  restore(bak);
+  assert('T3 存档往返（active/phase 强制重置）', ok, ok ? '' : msg);
+})();
+
+// ── T4 老存档兼容（无 dive 字段）──
+(function(){
+  var bak = backup();
+  var legacy = getSaveData();
+  delete legacy.dive;
+  applySaveData(legacy);
+  var ok = state.dive
+    && state.dive.active === false
+    && state.dive.hp === 3
+    && state.dive.maxHp === 3
+    && state.dive.best && state.dive.best.layer === 0;
+  restore(bak);
+  assert('T4 老存档向后兼容', ok, ok ? '' : 'dive 未正确初始化');
+})();
+
+// ── T5 resetForVoid 保留 dive.best ──
+(function(){
+  var bak = backup();
+  state.dive.active = false;
+  state.dive.phase = 'idle';
+  state.dive.best = { layer: 33, essence: 7777 };
+  state.dive.layer = 5;
+  resetForVoid();
+  var ok = state.dive
+    && state.dive.best.layer === 33
+    && state.dive.best.essence === 7777
+    && state.dive.active === false;
+  var msg = state.dive ? 'best=' + JSON.stringify(state.dive.best) + ' active=' + state.dive.active : 'dive undefined';
+  restore(bak);
+  assert('T5 虚空重置保留 dive.best', ok, ok ? '' : msg);
+})();
+
+// ── T6 探索中开虚空 → active 应重置 ──
+(function(){
+  var bak = backup();
+  state.dive.active = true;
+  state.dive.phase = 'map';
+  state.dive.layer = 12;
+  resetForVoid();
+  var ok = state.dive && state.dive.active === false && state.dive.phase === 'idle';
+  var msg = 'active=' + state.dive.active + ' phase=' + state.dive.phase;
+  restore(bak);
+  assert('T6 探索中开虚空 → dive 强制退出', ok, ok ? '' : 'BUG: ' + msg);
+})();
+
+// ── T7 连点「继续下潜」是否跳多层 ──
+(function(){
+  var bak = backup();
+  state.dive.gearInv = [{ uid:'__t7_gear', rarity:'common', name:'测试剑', emoji:'🗡️', mult:1 }];
+  state.dive.active = false;
+  startDive();
+  state.dive.loadout.gearUid = '__t7_gear';
+  startDiveRun();
+  state.dive.roomOptions = [{ id:'chest', name:'宝箱房', emoji:'🎁', desc:'免费战利品' }];
+  enterDiveRoom(state.dive.roomOptions[0]);
+  var before = state.dive.layer;
+  var btn = document.querySelector('[data-dive-next]');
+  if(!btn){ restore(bak); buildNav(); renderAbyssPage(); assert('T7 连点继续下潜', false, '按钮未找到'); return; }
+  btn.click(); btn.click(); btn.click();
+  var after = state.dive.layer;
+  var ok = (after - before) === 1;
+  var msg = '点 3 次，层数 ' + before + ' → ' + after + '（期望 +1）';
+  restore(bak); buildNav();
+  if(state.page !== 'abyss') switchPage('abyss'); else renderAbyssPage();
+  assert('T7 连点「继续下潜」防抖', ok, ok ? '' : 'BUG: ' + msg);
+})();
+
+// ── T8 事件委托优先级 ──
+(function(){
+  var bak = backup();
+  state.dive.gearInv = [{ uid:'__t8_gear', rarity:'common', name:'测试剑', emoji:'🗡️', mult:1 }];
+  state.dive.active = false;
+  startDive();
+  var slot = document.querySelector('[data-dive-slot="gear"]');
+  if(!slot){ restore(bak); buildNav(); renderAbyssPage(); assert('T8 事件委托优先级', false, '装备槽未找到'); return; }
+  slot.click();
+  var ok1 = state.dive.pickingSlot === 'gear';
+  var pick = document.querySelector('[data-dive-pick="0"]');
+  if(!pick){ restore(bak); buildNav(); renderAbyssPage(); assert('T8 事件委托优先级', false, '选项未找到'); return; }
+  pick.click();
+  var ok2 = state.dive.pickingSlot === null;
+  var ok3 = state.dive.loadout.gearUid === '__t8_gear';
+  var ok = ok1 && ok2 && ok3;
+  var msg = '展开=' + ok1 + ' 收起=' + ok2 + ' 选中=' + ok3;
+  restore(bak); buildNav();
+  if(state.page !== 'abyss') switchPage('abyss'); else renderAbyssPage();
+  assert('T8 事件委托优先级', ok, ok ? '' : msg);
+})();
+
+// ── T9 切页后 pickingSlot 残留 ──
+(function(){
+  var bak = backup();
+  state.petInv.push({ uid:'__tfox', species:'fox', quality:'SR', star:3, exp:0, shiny:false, rainbow:false, richPup:false });
+  state.dive.active = false;
+  startDive();
+  var slot = document.querySelector('[data-dive-slot="affix"]');
+  if(!slot){ restore(bak); buildNav(); renderAbyssPage(); assert('T9 切页后 picker 残留', false, '词条槽未找到'); return; }
+  slot.click();
+  var ok1 = state.dive.pickingSlot === 'affix';
+  switchPage('roll');
+  switchPage('abyss');
+  var ok2 = state.dive.pickingSlot === null;
+  var ok = ok1 && ok2;
+  var msg = '展开=' + ok1 + ' 切页后清空=' + ok2;
+  restore(bak); buildNav();
+  if(state.page !== 'abyss') switchPage('abyss'); else renderAbyssPage();
+  assert('T9 切页后 picker 不残留', ok, ok ? '' : 'BUG: ' + msg);
+})();
+
+// ── T10 死亡结算 → best 持久化 ──
+(function(){
+  var bak = backup();
+  state.dive.active = true;
+  state.dive.phase = 'combat';
+  state.dive.layer = 40;
+  state.dive.essence = 500;
+  state.dive.best = { layer: 0, essence: 0 };
+  state.dive.history = [];
+  // 构造真实战斗失败状态（走 renderDiveCombat 的 lost 卡片，而非已删除的 dead 分支）
+  state.dive.combat = {
+    enemyId: 'slime', enemyName: '深渊史莱姆', enemyEmoji: '🟢',
+    enemyHp: 100, enemyMaxHp: 100,
+    playerHp: 0, playerMaxHp: 3,
+    isElite: false, drawCount: 5,
+    gearMult: 1, diceMult: 1, affixMult: 1,
+    tempBuffs: [], pickOptions: [],
+    phase: 'lost', _fired: false
+  };
+  if(state.page !== 'abyss') switchPage('abyss');
+  renderAbyssPage();
+  var btn = document.querySelector('[data-dive-exit]');
+  if(!btn){ restore(bak); buildNav(); if(state.page !== 'abyss') switchPage('abyss'); else renderAbyssPage(); assert('T10 死亡结算 → best 持久化', false, '确认按钮未找到'); return; }
+  btn.click();
+  saveGame();
+  var stored = {};
+  try{ stored = JSON.parse(localStorage.getItem(SAVE_KEY) || '{}'); }catch(e){}
+  var ok = stored.dive && stored.dive.best && stored.dive.best.layer === 40;
+  var msg = 'stored.dive.best=' + JSON.stringify(stored.dive && stored.dive.best);
+  restore(bak); buildNav();
+  if(state.page !== 'abyss') switchPage('abyss'); else renderAbyssPage();
+  assert('T10 死亡结算 → best 持久化', ok, ok ? '' : 'BUG: ' + msg);
+})();
+
+// ── T11 悬垂引用（提醒，不算 bug）──
+(function(){
+  var bak = backup();
+  state.dive.gearInv = [{ uid:'__tdangle', rarity:'epic', name:'悬垂之刃', emoji:'🔱', mult:2.5 }];
+  state.dive.active = false;
+  startDive();
+  state.dive.loadout.gearUid = '__tdangle';
+  startDiveRun();
+  // 从库存删掉出战装备，制造悬垂
+  state.dive.gearInv = state.dive.gearInv.filter(function(g){ return g.uid !== '__tdangle'; });
+  var stillUid = state.dive.loadout.gearUid === '__tdangle';
+  var lookup = getGearById('__tdangle');
+  // 按 uid 重查应返回 null（不崩溃），gearMult 降级为 1
+  startDiveCombat({ id:'battle' });
+  var gMult = state.dive.combat ? state.dive.combat.gearMult : null;
+  var ok = stillUid && lookup === null && gMult === 1;
+  var msg = 'gearUid仍指向已删=' + stillUid + ' getGearById=' + lookup + ' gearMult降级=' + gMult;
+  restore(bak); buildNav();
+  if(state.page !== 'abyss') switchPage('abyss'); else renderAbyssPage();
+  assert('T11 装备悬垂：按 uid 重查安全降级', ok, ok ? msg : 'BUG: ' + msg);
+})();
+
+// ── T12 骰子解锁边界 ──
+(function(){
+  var bak = backup();
+  var origDD = state.tree.DD || 0, origDE = state.tree.DE || 0, origDR = state.tree.DR || 0;
+  state.tree.DD = 0; state.tree.DE = 0; state.tree.DR = 0;
+  var l1 = divePickList('dice');
+  var ok1 = l1.length === 1 && l1[0].dice === 'gold';
+  state.tree.DD = 1;
+  var l2 = divePickList('dice');
+  var ok2 = l2.length === 2 && l2.some(function(x){ return x.dice === 'diamond'; });
+  state.tree.DD = 1; state.tree.DE = 1;
+  var l3 = divePickList('dice');
+  var ok3 = l3.length === 3 && l3.some(function(x){ return x.dice === 'emerald'; });
+  state.tree.DD = 1; state.tree.DE = 1; state.tree.DR = 1;
+  var l4 = divePickList('dice');
+  var ok4 = l4.length === 4 && l4.some(function(x){ return x.dice === 'rainbow'; });
+  var ok = ok1 && ok2 && ok3 && ok4;
+  var msg = '0阶=' + l1.length + ' / DD=' + l2.length + ' / DE=' + l3.length + ' / DR=' + l4.length;
+  state.tree.DD = origDD; state.tree.DE = origDE; state.tree.DR = origDR;
+  restore(bak);
+  assert('T12 骰子解锁判定', ok, ok ? '' : msg);
+})();
+
+// ── T13 装备掉落权重随层数 ──
+(function(){
+  var bak = backup();
+  var ok = true, worst = '';
+  var rar = ['common','fine','epic','legend','myth'];
+
+  // 层 1：只出 common / fine
+  var s1 = {};
+  for(var i = 0; i < 2000; i++){
+    var g1 = rollDiveGear(1);
+    s1[g1.rarity] = (s1[g1.rarity] || 0) + 1;
+    if(g1.rarity === 'epic' || g1.rarity === 'legend' || g1.rarity === 'myth'){ ok = false; worst += ' 层1出' + g1.rarity; }
+  }
+  // 层 20：应能出 epic（legend/myth 仍为 0）
+  var s20 = {};
+  for(var j = 0; j < 2000; j++){
+    var g20 = rollDiveGear(20);
+    s20[g20.rarity] = (s20[g20.rarity] || 0) + 1;
+    if(g20.rarity === 'myth'){ ok = false; worst += ' 层20出myth'; }
+  }
+  var ok20 = s20.epic > 0;
+  if(!ok20){ ok = false; worst += ' 层20未出epic'; }
+  // 层 50：5 档都可能出
+  var s50 = {};
+  for(var k = 0; k < 3000; k++){
+    var g50 = rollDiveGear(50);
+    s50[g50.rarity] = (s50[g50.rarity] || 0) + 1;
+  }
+  var ok50 = s50.legend > 0 && s50.myth > 0;
+  if(!ok50){ ok = false; worst += ' 层50缺legend/myth'; }
+  var msg = '层1=' + JSON.stringify(s1) + ' 层20=' + JSON.stringify(s20) + ' 层50=' + JSON.stringify(s50);
+  restore(bak);
+  assert('T13 装备掉落权重随层数', ok, ok ? msg : 'BUG: ' + worst + ' ' + msg);
+})();
+
+// ── T14 战斗伤害不受主世界宠物影响 ──
+(function(){
+  var bak = backup();
+  var ok = true, msg = '';
+  // 造 2 件装备（同倍率），确保 gearMult 一致
+  var gA = { uid:'__tg_a', rarity:'common', name:'测试剑', emoji:'🗡️', mult:2 };
+  state.dive.gearInv = [gA];
+  state.petInv.push({ uid:'__tp1', species:'dog', quality:'GOD', star:6, exp:0, shiny:false, rainbow:false, richPup:false });
+  state.petInv.push({ uid:'__tp2', species:'dog', quality:'GOD', star:6, exp:0, shiny:false, rainbow:false, richPup:false });
+  state.petInv.push({ uid:'__tp3', species:'dog', quality:'GOD', star:6, exp:0, shiny:false, rainbow:false, richPup:false });
+
+  // 带 3 只 6★ GOD 宠物，抽一次记伤害
+  state.dive.loadout = { gearUid: '__tg_a', affix: null, dice: null };
+  state.dive.layer = 1;
+  startDiveCombat({ id:'battle' });
+  var c1 = state.dive.combat;
+  var idx1 = 2; // 固定 SR
+  var dmg1 = (idx1 + 1) * 10 * (1 + Math.min(2.0, c1.drawCount * 0.10)) * c1.gearMult * c1.diceMult * c1.affixMult;
+
+  // 卸下所有宠物，再抽一次
+  state.petInv = state.petInv.filter(function(p){ return p.uid.indexOf('__tp') !== 0; });
+  startDiveCombat({ id:'battle' });
+  var c2 = state.dive.combat;
+  var dmg2 = (idx1 + 1) * 10 * (1 + Math.min(2.0, c2.drawCount * 0.10)) * c2.gearMult * c2.diceMult * c2.affixMult;
+
+  ok = (Math.abs(dmg1 - dmg2) < 0.0001);
+  msg = '带宠=' + dmg1.toFixed(4) + ' 卸宠=' + dmg2.toFixed(4) + ' gearMult=' + c1.gearMult + '/' + c2.gearMult;
+  restore(bak);
+  assert('T14 战斗伤害不受主世界宠物影响', ok, ok ? msg : 'BUG: ' + msg);
+})();
+
+// ── T15 撤离成功 → 装备入库 ──
+(function(){
+  var bak = backup();
+  var A = { uid:'__g_A', rarity:'common', name:'A', emoji:'🗡️', mult:1 };
+  var B = { uid:'__g_B', rarity:'fine',   name:'B', emoji:'⚔️', mult:1.5 };
+  var C = { uid:'__g_C', rarity:'epic',   name:'C', emoji:'🔱', mult:2.5 };
+  var D = { uid:'__g_D', rarity:'legend', name:'D', emoji:'🐉', mult:4 };
+  var E = { uid:'__g_E', rarity:'myth',   name:'E', emoji:'🌑', mult:6 };
+  state.dive.gearInv = [A, B, C];
+  state.dive.loadout = { gearUid: '__g_A', affix: null, dice: null };
+  state.dive.runGearPicked = [D, E];
+  state.dive.phase = 'withdraw';
+  state.dive.active = true;
+  state.dive.layer = 10;
+  state.dive.essence = 100;
+  if(state.page !== 'abyss') switchPage('abyss');
+  renderAbyssPage();
+  var btn = document.querySelector('[data-dive-exit]');
+  var ok = false, msg = '按钮未找到';
+  if(btn){
+    btn.click();
+    // 账：初始 3 件（A/B/C），出战 A 从原库存删掉 → 剩 B/C 共 2 件
+    //     入 A + D + E + bonus = 4 件 → 总共 6 件
+    ok = (state.dive.gearInv.length === 6);
+    var hasA = state.dive.gearInv.some(function(g){ return g.uid === '__g_A'; });
+    var hasD = state.dive.gearInv.some(function(g){ return g.uid === '__g_D'; });
+    var hasE = state.dive.gearInv.some(function(g){ return g.uid === '__g_E'; });
+    ok = ok && hasA && hasD && hasE;
+    msg = 'gearInv=' + state.dive.gearInv.length + '（期望6） A=' + hasA + ' D=' + hasD + ' E=' + hasE;
+  }
+  restore(bak); buildNav();
+  if(state.page !== 'abyss') switchPage('abyss'); else renderAbyssPage();
+  assert('T15 撤离成功 → 装备入库', ok, ok ? msg : 'BUG: ' + msg);
+})();
+
+// ── T16 撤离失败 → 携带 + 拾获全丢，库存其余保留 ──
+(function(){
+  var bak = backup();
+  var A = { uid:'__g_A', rarity:'common', name:'A', emoji:'🗡️', mult:1 };
+  var B = { uid:'__g_B', rarity:'fine',   name:'B', emoji:'⚔️', mult:1.5 };
+  var C = { uid:'__g_C', rarity:'epic',   name:'C', emoji:'🔱', mult:2.5 };
+  var D = { uid:'__g_D', rarity:'legend', name:'D', emoji:'🐉', mult:4 };
+  var E = { uid:'__g_E', rarity:'myth',   name:'E', emoji:'🌑', mult:6 };
+  state.dive.gearInv = [A, B, C];
+  state.dive.loadout = { gearUid: '__g_A', affix: null, dice: null };
+  state.dive.runGearPicked = [D, E];
+  state.dive.active = true;
+  state.dive.phase = 'combat';
+  state.dive.layer = 12;
+  state.dive.essence = 300;
+  state.dive.combat = {
+    enemyId:'slime', enemyName:'深渊史莱姆', enemyEmoji:'🟢',
+    enemyHp:100, enemyMaxHp:100,
+    playerHp:0, playerMaxHp:3,
+    isElite:false, drawCount:5,
+    gearMult:1, diceMult:1, affixMult:1,
+    tempBuffs:[], pickOptions:[], phase:'lost', _fired:false
+  };
+  if(state.page !== 'abyss') switchPage('abyss');
+  renderAbyssPage();
+  var btn = document.querySelector('[data-dive-exit]');
+  var ok = false, msg = '按钮未找到';
+  if(btn){
+    btn.click();
+    ok = (state.dive.gearInv.length === 2);
+    var hasA = state.dive.gearInv.some(function(g){ return g.uid === '__g_A'; });
+    var hasD = state.dive.gearInv.some(function(g){ return g.uid === '__g_D'; });
+    var hasE = state.dive.gearInv.some(function(g){ return g.uid === '__g_E'; });
+    var hasB = state.dive.gearInv.some(function(g){ return g.uid === '__g_B'; });
+    var hasC = state.dive.gearInv.some(function(g){ return g.uid === '__g_C'; });
+    ok = ok && !hasA && !hasD && !hasE && hasB && hasC;
+    msg = 'gearInv=' + state.dive.gearInv.length + ' A=' + hasA + ' B=' + hasB + ' C=' + hasC + ' D=' + hasD + ' E=' + hasE;
+  }
+  restore(bak); buildNav();
+  if(state.page !== 'abyss') switchPage('abyss'); else renderAbyssPage();
+  assert('T16 撤离失败 → 携带+拾获全丢，库存其余保留', ok, ok ? msg : 'BUG: ' + msg);
+})();
+
+// ── T17 撤离 subtype 权重分布 ──
+(function(){
+  var bak = backup();
+  var ok = true, worst = '', detail = '';
+  var cases = [
+    { layer: 1,  exp: { normal:1.00, drop:0.00, gate:0.00 } },
+    { layer: 2,  exp: { normal:1.00, drop:0.00, gate:0.00 } },
+    { layer: 3,  exp: { normal:1.00, drop:0.00, gate:0.00 } },
+    { layer: 10, exp: { normal:0.70, drop:0.20, gate:0.10 } },
+    { layer: 20, exp: { normal:0.40, drop:0.30, gate:0.30 } },
+    { layer: 25, exp: { normal:0.20, drop:0.35, gate:0.45 } }
+  ];
+  for(var ci = 0; ci < cases.length; ci++){
+    var L = cases[ci].layer;
+    var cnt = { normal:0, drop:0, gate:0 }, total = 0;
+    // 统计「主 subtype」：直接读 _lastMainSubtype，绕过双撤离点经 shuffle 后的顺序歧义
+    // 层 20/25 的 wChance 仅 0.05，需大样本（10 万次 → 有效样本约 5000）才能压住抽样噪声
+    for(var i = 0; i < 100000; i++){
+      state.dive.layer = L;
+      state.dive.history = [];
+      state.dive._lastMainSubtype = null;
+      rollDiveRooms();
+      var ms = state.dive._lastMainSubtype;
+      if(ms){ cnt[ms]++; total++; }
+    }
+    if(!total){ ok = false; worst += ' 层' + L + '无撤离点'; continue; }
+    var keys = ['normal','drop','gate'];
+    for(var ki = 0; ki < keys.length; ki++){
+      var rate = cnt[keys[ki]] / total;
+      var e = cases[ci].exp[keys[ki]];
+      if(Math.abs(rate - e) > 0.03){
+        ok = false;
+        worst += ' 层' + L + ' ' + keys[ki] + ' 实测' + (rate * 100).toFixed(1) + '% 期望' + (e * 100).toFixed(0) + '%';
+      }
+    }
+    detail += ' L' + L + '(样本' + total + '):n=' + (cnt.normal / total * 100).toFixed(1)
+      + ',d=' + (cnt.drop / total * 100).toFixed(1)
+      + ',g=' + (cnt.gate / total * 100).toFixed(1);
+  }
+  restore(bak);
+  assert('T17 撤离 subtype 权重分布', ok, ok ? detail : 'BUG: ' + worst + ' |' + detail);
+})();
+
+// ── T18 丢包撤离 ──
+(function(){
+  var bak = backup();
+  var A = { uid:'__g_A', rarity:'common', name:'A', emoji:'🗡️', mult:1 };
+  var D = { uid:'__g_D', rarity:'legend', name:'D', emoji:'🐉', mult:4 };
+  var E = { uid:'__g_E', rarity:'myth',   name:'E', emoji:'🌑', mult:6 };
+  state.dive.gearInv = [A];
+  state.dive.loadout = { gearUid: '__g_A', affix: null, dice: null };
+  state.dive.runGearPicked = [D, E];
+  state.dive.withdrawSubtype = 'drop';
+  state.dive.phase = 'withdraw';
+  state.dive.active = true;
+  state.dive.layer = 10;
+  state.dive.essence = 100;
+  if(state.page !== 'abyss') switchPage('abyss');
+  renderAbyssPage();
+  var btn = document.querySelector('[data-dive-exit]');
+  var ok = false, msg = '按钮未找到';
+  if(btn){
+    btn.click();
+    var cfBtn = document.getElementById('cfConfirm');
+    if(cfBtn) cfBtn.click();
+    // drop：A 入库（去重后仍 1 件），D/E 丢失，runGearPicked 清空
+    var hasA = state.dive.gearInv.some(function(g){ return g.uid === '__g_A'; });
+    var hasD = state.dive.gearInv.some(function(g){ return g.uid === '__g_D'; });
+    var hasE = state.dive.gearInv.some(function(g){ return g.uid === '__g_E'; });
+    ok = hasA && !hasD && !hasE && state.dive.runGearPicked.length === 0;
+    msg = 'gearInv=' + state.dive.gearInv.length + ' A=' + hasA + ' D=' + hasD + ' E=' + hasE + ' runPicked=' + state.dive.runGearPicked.length;
+  }
+  restore(bak); buildNav();
+  if(state.page !== 'abyss') switchPage('abyss'); else renderAbyssPage();
+  assert('T18 丢包撤离 → 携带入库/拾获全丢', ok, ok ? msg : 'BUG: ' + msg);
+})();
+
+// ── T19 大门失败 = 死亡 ──
+(function(){
+  var bak = backup();
+  var A = { uid:'__g_A', rarity:'common', name:'A', emoji:'🗡️', mult:1 };
+  var B = { uid:'__g_B', rarity:'fine',   name:'B', emoji:'⚔️', mult:1.5 };
+  var D = { uid:'__g_D', rarity:'legend', name:'D', emoji:'🐉', mult:4 };
+  var E = { uid:'__g_E', rarity:'myth',   name:'E', emoji:'🌑', mult:6 };
+  state.dive.gearInv = [A, B];
+  state.dive.loadout = { gearUid: '__g_A', affix: null, dice: null };
+  state.dive.runGearPicked = [D, E];
+  state.dive.withdrawSubtype = 'gate';
+  state.dive.active = true;
+  state.dive.phase = 'combat';
+  state.dive.layer = 12;
+  state.dive.essence = 300;
+  state.dive.combat = {
+    enemyId:'gate', enemyName:'大门守卫', enemyEmoji:'🏛️',
+    enemyHp:100, enemyMaxHp:100,
+    playerHp:0, playerMaxHp:3,
+    isElite:true, isGate:true, gateRemaining:1, drawCount:5,
+    gearMult:1, diceMult:1, affixMult:1,
+    tempBuffs:[], pickOptions:[], phase:'lost', _fired:false
+  };
+  if(state.page !== 'abyss') switchPage('abyss');
+  renderAbyssPage();
+  var btn = document.querySelector('[data-dive-exit]');
+  var ok = false, msg = '按钮未找到';
+  if(btn){
+    btn.click();
+    var hasA = state.dive.gearInv.some(function(g){ return g.uid === '__g_A'; });
+    var hasD = state.dive.gearInv.some(function(g){ return g.uid === '__g_D'; });
+    var hasE = state.dive.gearInv.some(function(g){ return g.uid === '__g_E'; });
+    var hasB = state.dive.gearInv.some(function(g){ return g.uid === '__g_B'; });
+    ok = !hasA && !hasD && !hasE && hasB && state.dive.phase === 'idle' && state.dive.active === false;
+    msg = 'gearInv=' + state.dive.gearInv.length + ' A=' + hasA + ' B=' + hasB + ' D=' + hasD + ' E=' + hasE + ' phase=' + state.dive.phase + ' active=' + state.dive.active;
+  }
+  restore(bak); buildNav();
+  if(state.page !== 'abyss') switchPage('abyss'); else renderAbyssPage();
+  assert('T19 大门失败 = 死亡', ok, ok ? msg : 'BUG: ' + msg);
+})();
+
+// ── T20 商人房付费撤概率 ──
+(function(){
+  var bak = backup();
+  var ok = true, worst = '', detail = '';
+  var cases = [
+    { layer: 10, exp: 0.50 },
+    { layer: 20, exp: 0.50 },
+    { layer: 23, exp: 0.25 },
+    { layer: 28, exp: 0.10 },
+    { layer: 35, exp: 0.02 }
+  ];
+  for(var ci = 0; ci < cases.length; ci++){
+    var L = cases[ci].layer;
+    state.dive.layer = L;
+    var hit = 0, N = 5000;
+    for(var i = 0; i < N; i++){
+      var items = rollShopItems();
+      if(items.some(function(x){ return x.kind === 'pay'; })) hit++;
+    }
+    var rate = hit / N;
+    if(Math.abs(rate - cases[ci].exp) > 0.03){
+      ok = false;
+      worst += ' 层' + L + ' 实测' + (rate * 100).toFixed(1) + '% 期望' + (cases[ci].exp * 100).toFixed(0) + '%';
+    }
+    detail += ' L' + L + '=' + (rate * 100).toFixed(1) + '%';
+  }
+  // 商品数量 2~3 件
+  state.dive.layer = 10;
+  var bad = 0;
+  for(var j = 0; j < 2000; j++){
+    var it = rollShopItems();
+    if(it.length < 2 || it.length > 3) bad++;
+  }
+  if(bad > 0){ ok = false; worst += ' 商品数越界 ' + bad + ' 次'; }
+  restore(bak);
+  assert('T20 商人房付费撤概率', ok, ok ? detail : 'BUG: ' + worst + ' |' + detail);
+})();
+
+// ── T21 送武器稀有度 ──
+(function(){
+  var bak = backup();
+  var order = ['common','fine','epic','legend','myth'];
+  state.dive.layer = 10;
+  var cnt = { common:0, fine:0, epic:0, legend:0, myth:0 };
+  var commonCount = 0, legendCount = 0;
+  for(var i = 0; i < 10000; i++){
+    var g = rollPayWithdrawGear(10);
+    cnt[g.rarity]++;
+    if(g.rarity === 'common') commonCount++;
+    if(g.rarity === 'legend') legendCount++;
+  }
+  // 层 10 属于 layer<=15 档，普通掉落池 = common/fine/epic（权重 3000/3000/1500 → 40%/40%/20%）
+  // 保底 +1 档 → 最低产物是 fine，绝不应出现 common
+  var okBase = (commonCount === 0);
+  // 15% 概率再 +1 档：legend 期望 ≈ 40%×15% + 20%×85% = 23%
+  var legendRate = legendCount / 10000;
+  var okLegend = Math.abs(legendRate - 0.23) < 0.03;
+  var ok = okBase && okLegend;
+  var msg = JSON.stringify(cnt) + ' common=' + commonCount + '（应0） legend率=' + (legendRate * 100).toFixed(1) + '%（期望≈23%）';
+  restore(bak);
+  assert('T21 送武器稀有度（保底+1档，层10绝不出 common）', ok, ok ? msg : 'BUG: ' + msg);
+})();
+
+// ═══ 出结果 ═══
+setTimeout(function(){
+  var pass = R.filter(function(r){ return r.ok; }).length;
+  var fail = R.length - pass;
+
+  var html = '<div style="position:fixed;inset:0;z-index:99998;background:rgba(3,6,14,.94);overflow:auto;padding:20px">'
+    + '<div style="max-width:720px;margin:0 auto;background:linear-gradient(165deg,#151f3c,#0a1024);border:1px solid rgba(120,160,255,.4);border-radius:16px;padding:18px;color:#e8eefc;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.6">'
+    + '<div style="font-size:17px;font-weight:900;margin-bottom:12px;color:#fff">🧪 自测结果 · '
+    + '<span style="color:#22c98a">' + pass + ' 通过</span> · '
+    + '<span style="color:#ff5f5f">' + fail + ' 失败</span></div>';
+
+  for(var i = 0; i < R.length; i++){
+    var r = R[i];
+    html += '<div style="padding:8px 0;border-bottom:1px dashed rgba(255,255,255,.08)">'
+      + '<span style="color:' + (r.ok ? '#22c98a' : '#ff5f5f') + ';font-weight:900">'
+      + (r.ok ? '✅' : '❌') + ' ' + r.name + '</span>';
+    if(r.msg) html += '<div style="color:#9aa8c4;padding-left:22px;margin-top:4px;word-break:break-all">' + r.msg + '</div>';
+    html += '</div>';
+  }
+
+  html += '<div style="margin-top:14px;text-align:right">'
+    + '<button id="__testClose" style="padding:9px 18px;border:none;border-radius:8px;background:linear-gradient(180deg,#4a86ff,#1d3fd0);color:#fff;font-weight:900;cursor:pointer;font-family:inherit">关闭</button>'
+    + '</div></div></div>';
+
+  var wrap = document.createElement('div');
+  wrap.innerHTML = html;
+  document.body.appendChild(wrap.firstChild);
+  document.getElementById('__testClose').addEventListener('click', function(){
+    var el = document.getElementById('__testClose');
+    var root = el.closest('div[style*="99998"]');
+    if(root) root.remove();
+  });
+
+  console.log('%c🧪 自测 ' + pass + ' 通过 / ' + fail + ' 失败',
+    'font-size:14px;font-weight:900;color:' + (fail ? '#ff5f5f' : '#22c98a'));
+  for(var j = 0; j < R.length; j++){
+    var x = R[j];
+    console.log('%c' + (x.ok ? '✅' : '❌') + ' ' + x.name + (x.msg ? ' — ' + x.msg : ''),
+      'color:' + (x.ok ? '#22c98a' : '#ff5f5f'));
+  }
+}, 800);
 
 })();
 </script>
