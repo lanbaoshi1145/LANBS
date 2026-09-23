@@ -262,6 +262,29 @@ body{
 #loreTip.on{opacity:1;transform:translateY(0)}
 #loreTip .lt-name{font-size:13px;font-weight:900;margin-bottom:6px;letter-spacing:.03em;}
 #loreTip .lt-text{color:#c8d4ea;font-size:12px;line-height:1.75;word-break:break-word;}
+
+.bd-row{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;border-radius:11px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
+  margin-bottom:7px;cursor:pointer;transition:.15s;
+}
+.bd-row:hover{background:rgba(255,255,255,.07)}
+.bd-row.disabled{opacity:.4;cursor:not-allowed}
+.bd-row.disabled:hover{background:rgba(255,255,255,.04)}
+.bd-row input[type=checkbox]{width:18px;height:18px;accent-color:#22c98a;cursor:pointer;flex:none;margin:0}
+.bd-row .bd-dot{width:10px;height:10px;border-radius:3px;background:var(--qc,#8b98ad);flex:none}
+.bd-row .bd-name{flex:1;font-size:13px;font-weight:900;color:#e8eefc;letter-spacing:.02em}
+.bd-row .bd-count{font-size:11.5px;font-weight:900;color:#7c89a5;font-variant-numeric:tabular-nums}
+.bd-row .bd-count.on{color:#8ff0c4}
+.bd-special-toggle{
+  display:flex;align-items:center;gap:9px;
+  padding:10px 12px;border-radius:11px;
+  background:rgba(255,200,60,.08);border:1px solid rgba(255,200,60,.28);
+  font-size:12px;font-weight:800;color:#ffd86b;
+  cursor:pointer;user-select:none;margin-bottom:12px;
+}
+.bd-special-toggle input{width:18px;height:18px;accent-color:#ffc93c;cursor:pointer;flex:none;margin:0}
 #nodeTip .nt-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
 #nodeTip .nt-emoji{font-size:20px;line-height:1}
 #nodeTip .nt-name{font-size:14px;font-weight:900;color:#fff;letter-spacing:.03em;}
@@ -1153,9 +1176,10 @@ body{
  * v13.1.3 → v13.1.4：修 applySaveData 老存档兼容漏洞（dive/boss 缺 else）；加玩家昵称系统（与公开版对齐）
  * v13.1.4 → v13.2.0：深渊探索加默认锁 + 后台解锁开关（abyssExploreUnlocked）
  * v13.2.0 → v13.3.0：图鉴「稀有度」tab 加 hover/点击 lore tip
+ * v13.3.0 → v13.4.0：宠物背包加「批量分解」（按品质多选，可选含闪耀/炫彩）
  */
 body::after{
-  content: "v13.3.0";
+  content: "v13.4.0";
   position: fixed;
   left: 8px;
   top: 8px;
@@ -1252,6 +1276,24 @@ body::after{
     <div class="ov-btns">
       <button class="ov-btn cancel" id="ovCancel">取消</button>
       <button class="ov-btn confirm" id="ovConfirm">确认</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="batchDecomposeOverlay">
+  <div class="overlay-box" style="width:min(94vw,380px)">
+    <div class="ov-emoji">🗑️</div>
+    <div class="ov-title">批量分解</div>
+    <div class="ov-desc" style="margin-bottom:10px">勾选要分解的品质</div>
+    <div id="bdQualityList" style="text-align:left;margin-bottom:10px"></div>
+    <label class="bd-special-toggle">
+      <input type="checkbox" id="bdIncludeSpecial">
+      <span>同时包含 ✨闪耀 / 🌈炫彩 形态</span>
+    </label>
+    <div id="bdPreview" style="text-align:center;font-size:12.5px;font-weight:800;color:#c8d4ea;margin-bottom:14px;line-height:1.6;min-height:20px"></div>
+    <div class="ov-btns">
+      <button class="ov-btn cancel" id="bdCancel">取消</button>
+      <button class="ov-btn danger" id="bdConfirm">确认分解</button>
     </div>
   </div>
 </div>
@@ -2773,6 +2815,14 @@ function closeConfirm(){
 $('#cfCancel').addEventListener('click', closeConfirm);
 $('#cfConfirm').addEventListener('click', () => { if(confirmCb) confirmCb(); closeConfirm(); });
 $('#confirmOverlay').addEventListener('click', e => { if(e.target.id === 'confirmOverlay') closeConfirm(); });
+
+$('#bdCancel').addEventListener('click', closeBatchDecompose);
+$('#bdConfirm').addEventListener('click', confirmBatchDecompose);
+$('#batchDecomposeOverlay').addEventListener('click', e => { if(e.target.id === 'batchDecomposeOverlay') closeBatchDecompose(); });
+$('#bdIncludeSpecial').addEventListener('change', () => {
+  renderBatchDecomposeBody(false);
+  updateBatchDecomposePreview();
+});
 
 function wipeSave(){
   openConfirm('🗑️', '清空存档', '将删除所有游戏进度（金币、钻石、宠物、技能树、成就、重生次数等），此操作不可撤销。确定要清空吗？', () => {
@@ -4717,6 +4767,7 @@ function renderPetBag(){
       (canDecompose ? '' : ' disabled') + '>分解</button>' +
     '<button class="bt-btn" data-pet-clear="1" style="background:rgba(255,255,255,.1);color:#c2cde4"' +
       (sel.length ? '' : ' disabled') + '>清空</button>' +
+    '<button class="bt-btn" data-pet-batch-decompose="1" style="background:linear-gradient(180deg,#a855f7,#5b1cb8);color:#fff">批量分解</button>' +
   '</div>';
 
   h += '<div class="set-info" style="margin-top:10px;font-size:11.5px">' +
@@ -7584,6 +7635,127 @@ function tryMergePets(){
 
 const DECOMPOSE_RATE = 10000;
 
+function openBatchDecompose(){
+  const overlay = document.getElementById('batchDecomposeOverlay');
+  if(!overlay) return;
+  document.getElementById('bdIncludeSpecial').checked = false;
+  renderBatchDecomposeBody(true);
+  overlay.classList.add('on');
+  updateBatchDecomposePreview();
+}
+function closeBatchDecompose(){
+  const overlay = document.getElementById('batchDecomposeOverlay');
+  if(overlay) overlay.classList.remove('on');
+}
+function renderBatchDecomposeBody(applyDefault){
+  const list = document.getElementById('bdQualityList');
+  if(!list) return;
+  const includeSpecial = document.getElementById('bdIncludeSpecial').checked;
+  const eligible = state.petInv.filter(p =>
+    !p.richPup &&
+    !state.petEquipped.includes(p.uid) &&
+    (includeSpecial || petTier(p) === 0)
+  );
+  const countByQuality = {};
+  for(const p of eligible) countByQuality[p.quality] = (countByQuality[p.quality] || 0) + 1;
+
+  const prevChecked = {};
+  if(!applyDefault){
+    list.querySelectorAll('input[data-bd-q]').forEach(cb => {
+      prevChecked[cb.dataset.bdQ] = cb.checked;
+    });
+  }
+
+  let html = '';
+  for(const q of PET_QUALITIES){
+    const cnt = countByQuality[q.id] || 0;
+    let checked;
+    if(applyDefault){
+      checked = (q.id === 'N' || q.id === 'R') && cnt > 0;
+    } else {
+      checked = !!prevChecked[q.id] && cnt > 0;
+    }
+    const disabled = cnt === 0;
+    html += '<label class="bd-row' + (disabled ? ' disabled' : '') + '" style="--qc:' + q.color + '">' +
+      '<input type="checkbox" data-bd-q="' + q.id + '"' +
+        (checked ? ' checked' : '') + (disabled ? ' disabled' : '') + '>' +
+      '<span class="bd-dot"></span>' +
+      '<span class="bd-name">' + q.name + '</span>' +
+      '<span class="bd-count' + (cnt > 0 ? ' on' : '') + '">×' + cnt + '</span>' +
+    '</label>';
+  }
+  list.innerHTML = html;
+  list.querySelectorAll('input[data-bd-q]').forEach(cb => {
+    cb.addEventListener('change', updateBatchDecomposePreview);
+  });
+}
+function collectBatchEligible(){
+  const list = document.getElementById('bdQualityList');
+  if(!list) return [];
+  const includeSpecial = document.getElementById('bdIncludeSpecial').checked;
+  const checkedQ = {};
+  list.querySelectorAll('input[data-bd-q]:checked').forEach(cb => { checkedQ[cb.dataset.bdQ] = true; });
+  return state.petInv.filter(p =>
+    !p.richPup &&
+    !state.petEquipped.includes(p.uid) &&
+    checkedQ[p.quality] &&
+    (includeSpecial || petTier(p) === 0)
+  );
+}
+function updateBatchDecomposePreview(){
+  const preview = document.getElementById('bdPreview');
+  const confirmBtn = document.getElementById('bdConfirm');
+  if(!preview || !confirmBtn) return;
+  const eligible = collectBatchEligible();
+  if(!eligible.length){
+    preview.innerHTML = '<span style="color:#7c89a5">未选择任何可分解的宠物</span>';
+    confirmBtn.disabled = true;
+    return;
+  }
+  let totalCoins = 0;
+  for(const p of eligible) totalCoins += Math.floor(petMult(p) * getCoinMult() * DECOMPOSE_RATE);
+  preview.innerHTML =
+    '将分解 <b style="color:#ff9f43">' + eligible.length + '</b> 只 → 获得 💰<b style="color:#ffd86b">' + fmt(totalCoins) + '</b>';
+  confirmBtn.disabled = false;
+}
+function confirmBatchDecompose(){
+  const eligible = collectBatchEligible();
+  if(!eligible.length){ toast('未选择任何可分解的宠物'); return; }
+  const includeSpecial = document.getElementById('bdIncludeSpecial').checked;
+  let totalCoins = 0;
+  for(const p of eligible) totalCoins += Math.floor(petMult(p) * getCoinMult() * DECOMPOSE_RATE);
+  const uids = eligible.map(p => p.uid);
+
+  const msg =
+    '将分解 ' + eligible.length + ' 只宠物，获得 💰' + fmt(totalCoins) + ' 金币。\n' +
+    '· 仅包含所选品质' + (includeSpecial ? '（含 ✨闪耀 / 🌈炫彩）' : '（不含 ✨闪耀 / 🌈炫彩）') + '\n' +
+    '· 已自动排除 装备中 / 富贵小狗\n\n' +
+    '此操作不可撤销，确定吗？';
+
+  closeBatchDecompose();
+  openConfirm('🗑️', '确认批量分解', msg, () => {
+    const uidSet = {};
+    for(const uid of uids) uidSet[uid] = true;
+    state.petInv = state.petInv.filter(p => !uidSet[p.uid]);
+    state.coins += totalCoins;
+    state.petSelection = state.petSelection.filter(uid => !uidSet[uid]);
+    if(uidSet[state.petLevelupTarget]) state.petLevelupTarget = null;
+    state.petLevelupMaterials = state.petLevelupMaterials.filter(uid => !uidSet[uid]);
+
+    beep(700, .1, 'sine', .05);
+    setTimeout(() => beep(1000, .15, 'sine', .045), 90);
+    burst('#ff9f43', 35);
+    burst('#ffc93c', 25);
+    shake(4);
+    toast('💰 批量分解完成！获得 ' + fmt(totalCoins) + ' 金币（' + eligible.length + ' 只）');
+
+    updateHUD();
+    renderPetPage();
+    updatePetFab();
+    checkAchievements();
+  });
+}
+
 function decomposePets(){
   const sel = state.petSelection.map(uid => state.petInv.find(p => p.uid === uid)).filter(Boolean);
   if(!sel.length){ toast('请先选择要分解的宠物'); return; }
@@ -8350,6 +8522,7 @@ document.addEventListener('click', e => {
     if(el.dataset.petDraw){ drawPets(parseInt(el.dataset.petDraw, 10)); return; }
     if(el.dataset.petMerge){ tryMergePets(); return; }
     if(el.dataset.petDecompose){ decomposePets(); return; }
+    if(el.dataset.petBatchDecompose){ openBatchDecompose(); return; }
     if(el.dataset.petClear){ state.petSelection = []; renderPetPage(); updatePetFab(); return; }
     if(el.dataset.petAutoMerge){
       const mc = countMergeable();
