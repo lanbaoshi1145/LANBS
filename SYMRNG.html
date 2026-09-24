@@ -986,15 +986,53 @@ body{
 .vip-priv .vp-vl{font-size:14px;font-weight:900;color:#ffd86b;margin-top:2px;font-variant-numeric:tabular-nums}
 .vip-tree-wrap{max-width:760px;margin:0 auto 16px}
 .vip-tree-title{font-size:12.5px;font-weight:900;color:#ffd86b;letter-spacing:.08em;text-align:center;margin-bottom:12px}
-.vip-tree-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px 14px;position:relative;padding:20px 8px}
-.vip-node{position:relative;padding:16px 8px 12px;border-radius:14px;background:linear-gradient(165deg,rgba(40,32,16,.85),rgba(20,14,6,.92));border:1.5px dashed rgba(255,200,60,.35);display:flex;flex-direction:column;gap:5px;align-items:center;text-align:center;min-height:100px;cursor:not-allowed;transition:.2s}
-.vip-node .vn-emoji{font-size:26px;line-height:1;opacity:.55;filter:grayscale(.4)}
-.vip-node .vn-name{font-size:12px;font-weight:900;color:#c8b88a;letter-spacing:.03em}
-.vip-node .vn-lock{font-size:10px;color:#7a6a4a;font-weight:800;letter-spacing:.05em;margin-top:2px}
-.vip-node .vn-placeholder{position:absolute;top:8px;right:8px;font-size:9px;font-weight:900;padding:2px 6px;border-radius:5px;background:rgba(255,200,60,.18);color:#ffd86b;letter-spacing:.05em}
-.vip-node.center{grid-column:2;grid-row:2;background:linear-gradient(165deg,rgba(80,60,20,.9),rgba(40,28,10,.95));border:1.5px solid rgba(255,200,60,.75);box-shadow:0 0 30px -8px rgba(255,200,60,.5);cursor:default}
-.vip-node.center .vn-emoji{opacity:1;filter:none}
-.vip-node.center .vn-name{color:#ffd86b}
+.vip-tree-row{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px;
+}
+.vip-tree-row.center-row{
+  grid-template-columns:1fr;
+  max-width:220px;margin-left:auto;margin-right:auto;
+}
+.vip-node{
+  position:relative;padding:16px 8px 12px;border-radius:14px;
+  background:linear-gradient(165deg,rgba(40,32,16,.85),rgba(20,14,6,.92));
+  border:1.5px dashed rgba(255,200,60,.35);
+  display:flex;flex-direction:column;gap:5px;align-items:center;
+  text-align:center;min-height:100px;cursor:pointer;transition:.2s;
+}
+.vip-node:hover{border-color:rgba(255,200,60,.7);transform:translateY(-2px);}
+.vip-node .vn-emoji{font-size:26px;line-height:1;filter:grayscale(.4);}
+.vip-node .vn-name{font-size:12px;font-weight:900;color:#c8b88a;letter-spacing:.03em;}
+.vip-node .vn-lock{font-size:10px;color:#7a6a4a;font-weight:800;letter-spacing:.05em;margin-top:2px;}
+.vip-node .vn-cost{
+  font-size:10px;color:#ffd86b;font-weight:900;letter-spacing:.03em;
+  margin-top:2px;padding:2px 6px;border-radius:5px;background:rgba(255,200,60,.12);
+}
+.vip-node .vn-placeholder{
+  position:absolute;top:8px;right:8px;font-size:9px;font-weight:900;
+  padding:2px 6px;border-radius:5px;background:rgba(255,200,60,.18);
+  color:#ffd86b;letter-spacing:.05em;
+}
+.vip-node.center{
+  background:linear-gradient(165deg,rgba(80,60,20,.9),rgba(40,28,10,.95));
+  border:1.5px solid rgba(255,200,60,.75);
+  box-shadow:0 0 30px -8px rgba(255,200,60,.5);
+  cursor:default;
+}
+.vip-node.center .vn-emoji{filter:none;}
+.vip-node.center .vn-name{color:#ffd86b;}
+.vip-node.gate{
+  border-style:solid;
+  border-color:rgba(120,170,255,.5);
+  background:linear-gradient(165deg,rgba(30,44,80,.85),rgba(15,22,42,.9));
+}
+.vip-node.gate .vn-name{color:#9fc4ff;}
+.vip-node.gate .vn-lock{color:#6f8bbf;}
+.vip-node.gate.unlocked{
+  border-color:rgba(90,230,160,.7);
+  background:linear-gradient(165deg,rgba(30,80,60,.6),rgba(14,40,30,.9));
+}
+.vip-node.gate.unlocked .vn-name{color:#9ff3ce;}
 .vip-note{max-width:760px;margin:0 auto;padding:12px 14px;border-radius:12px;background:rgba(0,0,0,.3);border:1px dashed rgba(255,255,255,.1);font-size:11.5px;color:#8b98ad;line-height:1.7;text-align:center}
 
 .svip-extras{
@@ -1177,9 +1215,10 @@ body{
  * v13.1.4 → v13.2.0：深渊探索加默认锁 + 后台解锁开关（abyssExploreUnlocked）
  * v13.2.0 → v13.3.0：图鉴「稀有度」tab 加 hover/点击 lore tip
  * v13.3.0 → v13.4.0：宠物背包加「批量分解」（按品质多选，可选含闪耀/炫彩）
+ * v13.4.0 → v13.5.0：VIP 升级树 UI 骨架重做（任务树/源质树 + 两入口，效果数值待填）
  */
 body::after{
-  content: "v13.4.0";
+  content: "v13.5.0";
   position: fixed;
   left: 8px;
   top: 8px;
@@ -2233,7 +2272,11 @@ const state = {
   /* 👑 VIP / SVIP */
   vip: 0,             // 0 无 / 1 VIP / 2 SVIP
   vipDailyClaim: 0,   // 上次领取时间戳
-  vipTree: {},         // VIP 升级树占位
+  vipTree: {
+    vt_luck:0, vt_coin:0, vt_dice:0,
+    vt_task_start:0, vt_root:1, vt_source_up:0,
+    vt_atk:0, vt_abyss:0, vt_ess:0
+  },
   svipExtrasQueue: [],
   /* 👹 世界 Boss */
   boss: {
@@ -6684,18 +6727,55 @@ function updateBossUI(){
 
 /* ═══════════ 👑 VIP 专属页面 ═══════════ */
 const VIP_TREE_NODES = [
-  { id:'vt_1', emoji:'⚔️', name:'VIP 攻击', pos:'tl' },
-  { id:'vt_2', emoji:'💰', name:'VIP 金币', pos:'tc' },
-  { id:'vt_3', emoji:'🎲', name:'VIP 骰子', pos:'tr' },
-  { id:'vt_root', emoji:'👑', name:'VIP 核心', pos:'center', center:true },
-  { id:'vt_4', emoji:'🍀', name:'VIP 幸运', pos:'bl' },
-  { id:'vt_5', emoji:'🕳️', name:'VIP 深渊', pos:'bc' },
-  { id:'vt_6', emoji:'💠', name:'VIP 源质', pos:'br' }
+  // ─── 任务树（经验升级）───
+  { id:'vt_luck', emoji:'🍀', name:'幸运', group:'task' },
+  { id:'vt_coin', emoji:'💰', name:'金币', group:'task' },
+  { id:'vt_dice', emoji:'🎲', name:'骰子', group:'task' },
+  // ─── 中枢入口 ───
+  { id:'vt_task_start', emoji:'📜', name:'任务开始', group:'gate_top', gate: true, cost: 1e14 },
+  { id:'vt_root',       emoji:'👑', name:'VIP 核心', group:'center',   center: true },
+  { id:'vt_source_up',  emoji:'💠', name:'源质升级', group:'gate_bot', gate: true, cost: 1e14 },
+  // ─── 源质树（源质升级）───
+  { id:'vt_atk',   emoji:'⚔️', name:'攻击', group:'source' },
+  { id:'vt_abyss', emoji:'🕳️', name:'深渊', group:'source' },
+  { id:'vt_ess',   emoji:'💠', name:'源质', group:'source' }
 ];
-const VIP_TREE_POS = {
-  tl:{c:1,r:1}, tc:{c:2,r:1}, tr:{c:3,r:1},
-  center:{c:2,r:2}, bl:{c:1,r:3}, bc:{c:2,r:3}, br:{c:3,r:3}
-};
+
+function renderVipNode(n, main){
+  const lv = (state.vipTree && state.vipTree[n.id]) || 0;
+  const isGate = !!n.gate;
+  const isCenter = !!n.center;
+  const maxLv = state.vip === 2 ? 5 : 3;
+  const isMaxed = isGate ? (lv >= 1) : (lv >= maxLv);
+
+  let lvText = '';
+  if(isGate){
+    lvText = lv >= 1 ? '✅ 已解锁' : '🔒 未解锁';
+  } else if(isCenter){
+    lvText = '✅ 已激活';
+  } else {
+    lvText = 'Lv.' + lv + ' / ' + maxLv;
+  }
+
+  const cls = 'vip-node' +
+    (isCenter ? ' center' : '') +
+    (isGate ? ' gate' + (lv >= 1 ? ' unlocked' : '') : '') +
+    (isMaxed ? ' maxed' : '');
+
+  let h = '<div class="' + cls + '" data-vip-node="' + n.id + '">' +
+    '<div class="vn-emoji">' + n.emoji + '</div>' +
+    '<div class="vn-name">' + esc(n.name) + '</div>' +
+    '<div class="vn-lock">' + lvText + '</div>';
+
+  if(isGate && lv < 1){
+    h += '<div class="vn-cost">💎 ' + fmt(n.cost) + '</div>';
+  } else if(!isGate && !isCenter){
+    h += '<div class="vn-placeholder">待配置</div>';
+  }
+
+  h += '</div>';
+  return h;
+}
 
 function renderVipPage(){
   const page = $('#pageVip');
@@ -6755,18 +6835,32 @@ function renderVipPage(){
   /* VIP 升级树 */
   h += '<div class="vip-tree-wrap">' +
     '<div class="vip-tree-title" style="color:' + main + '">👑 VIP 专属升级树</div>' +
-    '<div class="vip-tree-grid">';
-  for(const n of VIP_TREE_NODES){
-    const pos = VIP_TREE_POS[n.pos] || { c:1, r:1 };
-    h += '<div class="vip-node' + (n.center ? ' center' : '') + '"' +
-      (n.center ? '' : ' style="grid-column:' + pos.c + ';grid-row:' + pos.r + '"') + '>' +
-      '<div class="vn-emoji">' + n.emoji + '</div>' +
-      '<div class="vn-name">' + esc(n.name) + '</div>' +
-      '<div class="vn-lock">' + (n.center ? '✅ 已激活' : '🔒 未解锁') + '</div>' +
-      (n.center ? '' : '<div class="vn-placeholder">敬请期待</div>') +
-    '</div>';
-  }
-  h += '</div></div>';
+
+    // 上排：任务树 3 节点
+    '<div class="vip-tree-row">' +
+      VIP_TREE_NODES.filter(n => n.group === 'task').map(n => renderVipNode(n, main)).join('') +
+    '</div>' +
+
+    // 中枢：任务开始
+    '<div class="vip-tree-row center-row">' +
+      renderVipNode(VIP_TREE_NODES.find(n => n.id === 'vt_task_start'), main) +
+    '</div>' +
+
+    // 中枢：VIP 核心
+    '<div class="vip-tree-row center-row">' +
+      renderVipNode(VIP_TREE_NODES.find(n => n.id === 'vt_root'), main) +
+    '</div>' +
+
+    // 中枢：源质升级
+    '<div class="vip-tree-row center-row">' +
+      renderVipNode(VIP_TREE_NODES.find(n => n.id === 'vt_source_up'), main) +
+    '</div>' +
+
+    // 下排：源质树 3 节点
+    '<div class="vip-tree-row">' +
+      VIP_TREE_NODES.filter(n => n.group === 'source').map(n => renderVipNode(n, main)).join('') +
+    '</div>' +
+  '</div>';
 
   /* 说明卡 */
   h += '<div class="vip-note">👑 VIP 专属升级树正在开发中，敬请期待。<br>' +
@@ -8079,6 +8173,40 @@ $('#ovInput').addEventListener('keydown', e => { if(e.key === 'Enter') confirmOv
 $('#overlay').addEventListener('click', e => { if(e.target.id === 'overlay') closeOverlay(); });
 
 document.addEventListener('click', e => {
+  // ═══ VIP 升级树节点点击 ═══
+  const vipNode = e.target.closest('[data-vip-node]');
+  if(vipNode){
+    const nid = vipNode.dataset.vipNode;
+    const n = VIP_TREE_NODES.find(x => x.id === nid);
+    if(!n) return;
+
+    if(n.center) return;   // 核心不可点
+
+    if(n.gate){
+      const lv = (state.vipTree && state.vipTree[nid]) || 0;
+      if(lv >= 1){ toast('✅ 已解锁'); return; }
+      openConfirm(n.emoji, '解锁「' + n.name + '」',
+        '消耗 💎' + fmt(n.cost) + ' 钻石，解锁后可开始' +
+        (nid === 'vt_task_start' ? '做任务' : '升级源质树节点') + '。\n\n确定吗？',
+        () => {
+          if(state.gems < n.cost){ toast('❌ 钻石不足'); beep(220,.12,'square',.04); return; }
+          state.gems -= n.cost;
+          if(!state.vipTree) state.vipTree = {};
+          state.vipTree[nid] = 1;
+          updateHUD(); renderVipPage(); markDirty(); saveGame();
+          toast('🔓 ' + n.name + ' 已解锁');
+          beep(1100,.2,'sine',.06);
+          setTimeout(() => beep(1500,.3,'sine',.05), 120);
+          burst('#ffd86b', 50);
+        });
+      return;
+    }
+
+    // 树节点：功能未接
+    toast('⚙️ ' + n.name + ' 升级：待配置');
+    return;
+  }
+
   // ═══ 深渊探索 ═══
   const diveSlot = e.target.closest('[data-dive-slot]');
   if(diveSlot){
