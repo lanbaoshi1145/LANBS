@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>沙杨马点击者 · SYM CLICKER</title>
+<style>
+:root{
+  --gold:#ffc93c;--gem:#2ee6ff;--line:rgba(255,255,255,.08);
+  --panel:rgba(16,23,44,.86);--nav-h:62px;--sand:#ffd479;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%}
+body{
+  font-family:"PingFang SC","Microsoft YaHei",system-ui,-apple-system,sans-serif;
+  background:
+    radial-gradient(1400px 800px at 50% -20%, #1c2a55 0%, transparent 65%),
+    radial-gradient(1000px 700px at 90% 110%, #3a1450 0%, transparent 65%),
+    #070b14;
+  color:#e8eefc;overflow-x:hidden;user-select:none;
+}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:50;overflow:hidden}
+#golden-layer{position:fixed;inset:0;pointer-events:none;z-index:60}
+.app{max-width:1320px;margin:0 auto;padding:14px 24px calc(var(--nav-h) + 34px);position:relative;z-index:2;min-height:100vh}
+@media(max-width:820px){.app{padding:12px 12px calc(var(--nav-h) + 26px)}}
+
+/* ═══ HUD ═══ */
+.hud{
+  display:flex;flex-wrap:wrap;gap:7px;justify-content:center;
+  padding:9px;border-radius:16px;background:var(--panel);border:1px solid var(--line);
+  backdrop-filter:blur(10px);margin-bottom:10px;
+  position:sticky;top:6px;z-index:30;box-shadow:0 10px 30px -18px #000;
+}
+.chip{
+  display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:10px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);
+  font-size:12.5px;font-weight:800;white-space:nowrap;
+}
+.chip .v{font-variant-numeric:tabular-nums;color:#fff}
+.chip.gold .v{color:var(--gold);text-shadow:0 0 12px rgba(255,201,60,.5)}
+.chip.gem .v{color:var(--gem);text-shadow:0 0 12px rgba(46,230,255,.5)}
+.chip.sand .v{color:var(--sand);text-shadow:0 0 12px rgba(255,212,121,.5)}
+.chip.star .v{color:#ff9bd8;text-shadow:0 0 12px rgba(255,155,216,.5)}
+.chip.main{font-size:14px;padding:7px 16px}
+
+/* ═══ BUFF ═══ */
+.buffs{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:10px;min-height:0}
+.buff{
+  display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:9px;
+  font-size:11px;font-weight:800;background:rgba(255,255,255,.06);
+  border:1px solid var(--bc,rgba(255,255,255,.15));color:#dde6f7;
+}
+.buff .bt{color:#9aa8c4;font-variant-numeric:tabular-nums}
+
+/* ═══ PAGE ═══ */
+.page{display:none;animation:fade .25s ease}
+.page.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.page-title{text-align:center;margin:4px 0 18px}
+.page-title h2{
+  font-size:clamp(19px,2.4vw,24px);font-weight:900;letter-spacing:.08em;
+  background:linear-gradient(100deg,#8fd4ff,#a88bff 50%,#ff9bd8);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.page-title p{font-size:11.5px;color:#6d7a94;letter-spacing:.14em;margin-top:5px}
+
+.card{border-radius:20px;background:var(--panel);border:1px solid var(--line);overflow:hidden;backdrop-filter:blur(10px);margin-bottom:12px}
+.card-head{padding:11px 14px;font-size:12.5px;font-weight:900;letter-spacing:.06em;color:#cfd9ec;background:rgba(0,0,0,.25);border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:7px}
+.card-body{padding:12px}
+
+/* ═══ 主点击区 ═══ */
+.click-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+@media(max-width:900px){.click-grid{grid-template-columns:1fr}}
+
+.big-wrap{display:flex;flex-direction:column;align-items:center;gap:14px;padding:18px 10px}
+.big-cookie{
+  --c:#ffd479;
+  width:min(62vw,290px);aspect-ratio:1/1;border-radius:50%;
+  background:
+    radial-gradient(circle at 38% 32%,rgba(255,255,255,.30),transparent 46%),
+    radial-gradient(circle at 50% 50%,rgba(255,212,121,.22),transparent 62%),
+    linear-gradient(160deg,#3c2a12,#140c05);
+  border:3px solid var(--c);
+  box-shadow:0 0 0 1px rgba(255,255,255,.05),0 30px 70px -26px var(--c),inset 0 0 90px -30px var(--c);
+  display:grid;place-items:center;cursor:pointer;position:relative;
+  transition:transform .08s,box-shadow .3s,border-color .3s;
+  animation:bob 4.4s ease-in-out infinite;
+}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-1.2deg)}50%{transform:translateY(-9px) rotate(1.2deg)}}
+.big-cookie:active{transform:scale(.94);animation:none}
+.big-cookie.hit{animation:hitPop .16s ease-out}
+@keyframes hitPop{0%{transform:scale(.94)}60%{transform:scale(1.05)}100%{transform:scale(1)}}
+.big-cookie .horse{font-size:clamp(72px,17vw,132px);line-height:1;filter:drop-shadow(0 0 22px rgba(255,212,121,.55));pointer-events:none;animation:spinSlow 26s linear infinite}
+@keyframes spinSlow{to{transform:rotate(360deg)}}
+.big-cookie .ring{
+  position:absolute;inset:-14px;border-radius:50%;border:1.5px dashed rgba(255,212,121,.28);
+  animation:spinSlow 18s linear infinite reverse;pointer-events:none;
+}
+.big-cookie .ring2{inset:-30px;border-style:dotted;border-color:rgba(46,230,255,.18);animation-duration:34s}
+.click-hint{font-size:11.5px;color:#7c89a5;letter-spacing:.12em;font-weight:800;text-align:center;line-height:1.7}
+.click-hint b{color:var(--sand);font-size:13px}
+
+/* 飘字 */
+.pop-num{
+  position:fixed;z-index:55;font-size:15px;font-weight:900;letter-spacing:.02em;
+  color:var(--sand);text-shadow:0 0 14px rgba(255,212,121,.85),0 2px 6px #000;
+  pointer-events:none;font-variant-numeric:tabular-nums;animation:popUp 1s ease-out forwards;
+}
+.pop-num.crit{color:#fff;font-size:21px;text-shadow:0 0 20px #ff5f5f,0 0 34px #ffc93c}
+.pop-num.mad{color:#c85aff;font-size:13px;text-shadow:0 0 14px rgba(200,90,255,.9)}
+@keyframes popUp{
+  0%{opacity:0;transform:translate(-50%,0) scale(.7)}
+  18%{opacity:1;transform:translate(-50%,-14px) scale(1.1)}
+  100%{opacity:0;transform:translate(-50%,-88px) scale(1)}
+}
+
+/* ═══ 统计格 ═══ */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stat{
+  padding:9px 11px;border-radius:12px;background:rgba(255,255,255,.045);
+  border:1px solid rgba(255,255,255,.08);
+}
+.stat .k{font-size:10.5px;color:#7c89a5;font-weight:800;letter-spacing:.08em}
+.stat .v{font-size:15px;font-weight:900;font-variant-numeric:tabular-nums;margin-top:2px}
+.stat.full{grid-column:1/-1}
+
+/* ═══ 建筑 ═══ */
+.buy-mode-bar{
+  display:flex;align-items:center;gap:10px;justify-content:center;flex-wrap:wrap;
+  padding:9px 12px;margin-bottom:12px;border-radius:14px;
+  background:var(--panel);border:1px solid var(--line);backdrop-filter:blur(10px);
+}
+.bm-label{font-size:12px;font-weight:900;color:#cfd9ec;letter-spacing:.06em;white-space:nowrap}
+.bm-seg{display:inline-flex;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:3px;gap:3px}
+.bm-opt{
+  font-family:inherit;font-weight:900;font-size:13px;padding:7px 18px;border:none;border-radius:9px;
+  cursor:pointer;color:#aebdde;background:transparent;transition:.16s;white-space:nowrap;letter-spacing:0;
+}
+.bm-opt:hover{color:#fff;background:rgba(255,255,255,.08)}
+.bm-opt.on{color:#080b14;background:linear-gradient(180deg,#5aa0ff,#2e6fd6);box-shadow:0 5px 16px -6px #3f7bff,inset 0 1px 0 rgba(255,255,255,.35)}
+.bm-hint{font-size:11px;color:#7c89a5;font-weight:700;min-width:120px}
+@media(max-width:640px){.bm-hint{display:none}.bm-opt{padding:7px 13px}}
+
+.build-list{display:flex;flex-direction:column;gap:9px}
+.bcard{
+  display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:16px;
+  background:linear-gradient(160deg,rgba(38,54,92,.6),rgba(14,22,44,.75));
+  border:1.5px solid rgba(120,150,210,.22);cursor:pointer;transition:.16s;position:relative;overflow:hidden;
+}
+.bcard:hover{border-color:rgba(150,190,255,.6);transform:translateY(-2px);box-shadow:0 10px 24px -10px rgba(80,140,255,.6)}
+.bcard.can{background:linear-gradient(160deg,rgba(50,90,180,.5),rgba(20,40,90,.8));border-color:rgba(90,170,255,.7)}
+.bcard.locked{opacity:.42;filter:grayscale(.85);cursor:not-allowed}
+.bcard.locked:hover{transform:none;border-color:rgba(120,150,210,.22);box-shadow:none}
+.bcard .be{font-size:30px;line-height:1;flex:none;filter:drop-shadow(0 0 10px rgba(255,212,121,.3))}
+.bcard .bm{flex:1;min-width:0}
+.bcard .bn{font-size:14.5px;font-weight:900;color:#e2e9f8;letter-spacing:.02em;display:flex;align-items:center;gap:6px}
+.bcard .bn .lv{font-size:10.5px;font-weight:900;color:#8ff0c4;background:rgba(0,0,0,.3);padding:2px 7px;border-radius:6px;font-variant-numeric:tabular-nums}
+.bcard .bd{font-size:10.5px;color:#7c89a5;font-weight:700;margin-top:3px;line-height:1.5}
+.bcard .br{text-align:right;flex:none}
+.bcard .bc{font-size:14px;font-weight:900;color:var(--gold);font-variant-numeric:tabular-nums;text-shadow:0 0 10px rgba(255,201,60,.4)}
+.bcard.can .bc{color:#ffd86b}
+.bcard .bp{font-size:10.5px;color:#8ff0c4;font-weight:800;font-variant-numeric:tabular-nums;margin-top:2px}
+.bcard .bq{position:absolute;right:11px;bottom:6px;font-size:10px;color:#7fb4ff;font-weight:900;letter-spacing:.04em}
+
+/* ═══ 升级 ═══ */
+.up-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:9px}
+.ucard{
+  aspect-ratio:1/1;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  background:rgba(255,255,255,.045);border:1.5px solid rgba(255,255,255,.1);
+  cursor:pointer;transition:.16s;padding:6px 4px;text-align:center;position:relative;
+}
+.ucard .ue{font-size:25px;line-height:1}
+.ucard .un{font-size:9.5px;font-weight:900;color:#c3cfE6;letter-spacing:.02em;line-height:1.25}
+.ucard .uc{font-size:10px;font-weight:900;color:var(--gold);font-variant-numeric:tabular-nums}
+.ucard:hover{transform:translateY(-3px);border-color:rgba(150,190,255,.6)}
+.ucard.can{border-color:rgba(90,170,255,.85);background:linear-gradient(160deg,rgba(50,90,180,.45),rgba(20,40,90,.85));box-shadow:0 8px 20px -8px #3f7bff}
+.ucard.owned{border-color:rgba(90,230,160,.7);background:linear-gradient(160deg,rgba(30,110,80,.45),rgba(14,40,30,.85));box-shadow:0 6px 18px -6px rgba(90,230,160,.5)}
+.ucard.owned .uc{color:#8ff0c4}
+.ucard.owned::after{content:'✔';position:absolute;top:3px;right:5px;font-size:10px;color:#8ff0c4}
+.ucard.poor{opacity:.55}
+.up-tabs{display:flex;gap:7px;justify-content:center;margin-bottom:12px;flex-wrap:wrap}
+
+/* ═══ 成就 ═══ */
+.ach-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:9px}
+.acard{
+  border-radius:14px;padding:11px 6px;text-align:center;
+  background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.09);transition:.16s;
+}
+.acard .ae{font-size:27px;line-height:1;filter:grayscale(1) opacity(.45)}
+.acard .an{font-size:9.5px;font-weight:900;color:#7c89a5;margin-top:5px;line-height:1.3}
+.acard.got{background:linear-gradient(160deg,rgba(150,110,25,.45),rgba(50,35,10,.8));border-color:rgba(255,210,80,.8);box-shadow:0 6px 20px -8px rgba(255,200,60,.7)}
+.acard.got .ae{filter:none}
+.acard.got .an{color:#ffd86b}
+
+/* ═══ 金光沙杨马 ═══ */
+.golden{
+  position:absolute;width:66px;height:66px;border-radius:50%;pointer-events:auto;cursor:pointer;
+  background:radial-gradient(circle at 40% 35%,#fffbe6,#ffc93c 55%,#d98b00);
+  display:grid;place-items:center;font-size:31px;
+  box-shadow:0 0 34px 8px rgba(255,201,60,.75),0 0 90px 22px rgba(255,201,60,.28);
+  animation:goldenFloat 2.6s ease-in-out infinite, goldenFade .5s ease-out;
+}
+@keyframes goldenFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-13px) scale(1.07)}}
+@keyframes goldenFade{from{opacity:0;transform:scale(.2)}to{opacity:1;transform:scale(1)}}
+.golden.dying{animation:goldenDie .35s ease-in forwards}
+@keyframes goldenDie{to{opacity:0;transform:scale(.3)}}
+
+/* ═══ 按钮 ═══ */
+.btn{border:none;border-radius:16px;cursor:pointer;font-weight:900;letter-spacing:.08em;font-family:inherit;transition:transform .1s,filter .2s,box-shadow .2s;width:100%}
+.btn:active{transform:scale(.97)}
+.btn:disabled{filter:grayscale(.6) brightness(.7);cursor:not-allowed}
+.ascend-btn{padding:15px;font-size:15px;background:linear-gradient(180deg,#ffd86b,#b8860b);color:#2a1f00;border:1px solid rgba(255,220,120,.6);box-shadow:0 12px 30px -12px #ffc93c}
+.danger-btn{padding:11px;font-size:12px;background:linear-gradient(180deg,#ff5f5f,#a81a1a);color:#fff;border:1px solid rgba(255,140,140,.45);box-shadow:0 10px 24px -12px #ff5f5f;margin-top:8px}
+.mini-btn{padding:8px 14px;font-size:11.5px;border-radius:11px;background:rgba(255,255,255,.08);color:#cfd9ec;border:1px solid rgba(255,255,255,.14);width:auto}
+.set-toggle{display:flex;align-items:center;justify-content:space-between;padding:11px 13px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);margin-bottom:8px;cursor:pointer;transition:.15s}
+.set-toggle:hover{background:rgba(255,255,255,.07)}
+.set-toggle .st-lb{font-size:13px;font-weight:900;color:#e2e9f8}
+.st-cb{appearance:none;-webkit-appearance:none;width:48px;height:26px;border-radius:99px;background:rgba(255,255,255,.1);position:relative;cursor:pointer;transition:.22s;outline:none;border:none;flex:none;margin:0}
+.st-cb::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.22s;box-shadow:0 2px 6px -1px rgba(0,0,0,.5)}
+.st-cb:checked{background:linear-gradient(90deg,#22c98a,#0d8557)}
+.st-cb:checked::after{transform:translateX(22px)}
+
+/* ═══ 侧栏 ═══ */
+.side-nav{position:fixed;right:10px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:8px;z-index:90}
+.side-btn{width:54px;height:54px;border-radius:15px;background:rgba(16,23,44,.94);border:1px solid rgba(255,255,255,.1);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;transition:.2s;backdrop-filter:blur(10px);box-shadow:0 8px 24px -10px #000}
+.side-btn span{font-size:18px;line-height:1;filter:grayscale(.5) opacity(.75)}
+.side-btn small{font-size:9px;font-weight:900;color:#7c89a5;line-height:1}
+.side-btn.on{background:linear-gradient(165deg,rgba(255,201,60,.3),rgba(255,201,60,.08));border-color:rgba(255,220,120,.6);box-shadow:0 0 22px -6px rgba(255,201,60,.6)}
+.side-btn.on span{filter:none;transform:scale(1.12)}
+.side-btn.on small{color:#ffd86b}
+.side-btn:active{transform:scale(.92)}
+@media(max-width:820px){
+  .side-nav{top:auto;right:auto;left:50%;bottom:calc(var(--nav-h) + 10px);transform:translateX(-50%);flex-direction:row;gap:4px;padding:6px;border-radius:16px;background:rgba(10,15,30,.94);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.1)}
+  .side-btn{width:46px;height:46px;border-radius:12px;background:transparent;border:none;box-shadow:none}
+  .side-btn small{display:none}
+  .side-btn span{font-size:20px}
+  .side-btn.on{background:linear-gradient(165deg,rgba(255,201,60,.35),rgba(255,201,60,.12));box-shadow:0 0 14px -4px rgba(255,201,60,.6)}
+}
+
+/* ═══ 底部导航 ═══ */
+.bottom-nav{position:fixed;left:0;right:0;bottom:0;height:var(--nav-h);z-index:100;display:flex;background:rgba(10,15,30,.94);backdrop-filter:blur(16px);border-top:1px solid rgba(255,255,255,.08);box-shadow:0 -10px 30px -16px #000;padding:0 6px;overflow-x:auto;justify-content:center}
+.bottom-nav::-webkit-scrollbar{display:none}
+.nav-btn{flex:0 1 140px;min-width:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:#66748f;font-size:10.5px;font-weight:900;letter-spacing:.04em;transition:.18s;position:relative;padding:0 4px}
+.nav-btn .nb-emoji{font-size:19px;line-height:1;transition:.18s;filter:grayscale(.5) opacity(.7)}
+.nav-btn.on{color:#fff}
+.nav-btn.on .nb-emoji{filter:none;transform:scale(1.12)}
+.nav-btn.on::after{content:'';position:absolute;top:5px;width:24px;height:3px;border-radius:99px;background:linear-gradient(90deg,#4b8bff,#a45cff);box-shadow:0 0 10px #4b8bff}
+.nav-btn:active{transform:scale(.94)}
+@media(min-width:900px){
+  .bottom-nav{left:50%;right:auto;transform:translateX(-50%);width:min(680px,92vw);border-radius:22px 22px 0 0;border:1px solid rgba(255,255,255,.08);border-bottom:none;padding:0 24px}
+}
+
+/* ═══ TOAST ═══ */
+#toast{position:fixed;left:50%;bottom:calc(var(--nav-h) + 20px);transform:translateX(-50%) translateY(20px);background:rgba(20,28,52,.96);border:1px solid rgba(120,160,255,.35);color:#fff;font-size:13px;font-weight:800;padding:11px 20px;border-radius:13px;opacity:0;pointer-events:none;transition:.28s;z-index:150;box-shadow:0 14px 40px -14px #000;max-width:86vw;text-align:center}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.ach{background:linear-gradient(165deg,rgba(60,45,10,.98),rgba(30,20,5,.98));border-color:rgba(255,200,60,.6);color:#ffd86b;box-shadow:0 14px 40px -14px #000,0 0 30px -10px rgba(255,200,60,.5)}
+#toast.gold{background:linear-gradient(165deg,rgba(60,48,8,.98),rgba(30,22,3,.98));border-color:rgba(255,220,90,.7);color:#ffe9a8}
+#toast.bad{background:linear-gradient(165deg,rgba(60,10,10,.98),rgba(30,5,5,.98));border-color:rgba(255,120,120,.6);color:#ffb3b3}
+
+/* ═══ 弹窗 ═══ */
+.overlay{position:fixed;inset:0;z-index:200;background:rgba(4,7,16,.82);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:.24s;padding:20px}
+.overlay.on{opacity:1;pointer-events:auto}
+.overlay-box{width:min(94vw,340px);background:linear-gradient(165deg,#141d38,#0a1024);border:1px solid rgba(120,160,255,.32);border-radius:22px;padding:22px 18px 18px;box-shadow:0 26px 70px -22px #000;text-align:center;transform:scale(.92);transition:.24s}
+.overlay.on .overlay-box{transform:scale(1)}
+.ov-emoji{font-size:34px;line-height:1;margin-bottom:8px}
+.ov-title{font-size:16px;font-weight:900;letter-spacing:.05em;margin-bottom:6px}
+.ov-desc{font-size:11.5px;color:#8b98ad;margin-bottom:14px;line-height:1.5;min-height:17px;white-space:pre-line}
+
+/* ═══ 画面震动 ═══ */
+.app.shaking{animation:shk .45s cubic-bezier(.36,.07,.19,.97)}
+@keyframes shk{
+  0%{transform:translate(0,0)}
+  15%{transform:translate(calc(var(--amp) * -1),calc(var(--amp) * .6))}
+  30%{transform:translate(var(--amp),calc(var(--amp) * -.5))}
+  45%{transform:translate(calc(var(--amp) * -.7),calc(var(--amp) * -.4))}
+  60%{transform:translate(calc(var(--amp) * .6),var(--amp))}
+  80%{transform:translate(calc(var(--amp) * -.3),0)}
+  100%{transform:translate(0,0)}
+}
+/* ═══ 点击粒子 ═══ */
+.clk-p{
+  position:fixed;z-index:54;pointer-events:none;
+  width:6px;height:6px;border-radius:50%;background:var(--pc,#ffd479);
+  box-shadow:0 0 8px var(--pc,#ffd479);
+  animation:clkFly .55s ease-out forwards;
+}
+@keyframes clkFly{
+  0%{opacity:1;transform:translate(-50%,-50%) scale(.6)}
+  100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1.2)}
+}
+
+.mad-line{
+  text-align:center;font-size:11px;color:#c85aff;letter-spacing:.1em;font-weight:800;
+  margin:2px 0 10px;min-height:15px;opacity:.85;
+}
+</style>
+</head>
+<body>
+<div id="fx"></div>
+<div id="golden-layer"></div>
+
+<div class="app">
+  <div class="hud" id="hud"></div>
+  <div class="buffs" id="buffs"></div>
+  <div class="mad-line" id="madLine"></div>
+
+  <!-- 点击页 -->
+  <div class="page on" id="page-click">
+    <div class="click-grid">
+      <div class="card">
+        <div class="card-body">
+          <div class="big-wrap">
+            <div class="big-cookie" id="bigCookie">
+              <div class="ring"></div>
+              <div class="ring ring2"></div>
+              <div class="horse">🐴</div>
+            </div>
+            <div class="click-hint" id="clickHint"></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="card-head">📊 沙场实况</div>
+          <div class="card-body"><div class="stat-grid" id="statGrid"></div></div>
+        </div>
+        <div class="card">
+          <div class="card-head">✨ 金光沙杨马</div>
+          <div class="card-body" id="goldenInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <div class="card-head">🏗️ 沙场建筑</div>
+      <div class="card-body" style="padding:12px">
+        <div class="buy-mode-bar" style="margin-bottom:10px">
+          <span class="bm-label">购买档位</span>
+          <div class="bm-seg" id="buySeg"></div>
+          <span class="bm-hint" id="buyHint"></span>
+        </div>
+        <div class="build-list" id="buildList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 升级页 -->
+  <div class="page" id="page-up">
+    <div class="page-title"><h2>⬆️ 强化升级</h2><p>点击力 · 建筑倍率 · 全局祝福</p></div>
+    <div class="up-tabs" id="upTabs"></div>
+    <div class="card"><div class="card-body"><div class="up-grid" id="upGrid"></div></div></div>
+  </div>
+
+  <!-- 成就页 -->
+  <div class="page" id="page-ach">
+    <div class="page-title"><h2>🏆 成就殿堂</h2><p id="achCount"></p></div>
+    <div class="card"><div class="card-body"><div class="ach-grid" id="achGrid"></div></div></div>
+  </div>
+
+  <!-- 轮回页 -->
+  <div class="page" id="page-stat">
+    <div class="page-title"><h2>🌌 星尘轮回</h2><p>把沙子还给宇宙，换一点星尘</p></div>
+    <div class="card">
+      <div class="card-head">📜 生涯记录</div>
+      <div class="card-body"><div class="stat-grid life-grid"></div></div>
+    </div>
+    <div class="card">
+      <div class="card-head">🔁 星尘轮回</div>
+      <div class="card-body" id="ascendBox"></div>
+    </div>
+  </div>
+
+  <!-- 设置页 -->
+  <div class="page" id="page-set">
+    <div class="page-title"><h2>⚙️ 设置</h2><p>存档 · 偏好 · 生涯</p></div>
+
+    <div class="card">
+      <div class="card-head">🐴 玩家昵称</div>
+      <div class="card-body">
+        <div class="click-hint" style="text-align:left;margin-bottom:8px">给自己起个名字，会显示在顶部 HUD。本地存档，不上传。</div>
+        <div style="display:flex;gap:8px">
+          <input id="playerNameInput" class="set-input" type="text" placeholder="输入昵称（1~12 字符）" maxlength="12" value="" style="flex:1;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:#fff;font-size:14px;font-family:inherit;letter-spacing:.1em;outline:none;text-align:center;text-transform:none">
+          <button class="btn mini-btn" id="playerNameSave" style="flex:none;min-width:88px;padding:12px 18px">保存</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">⚙️ 偏好设置</div>
+      <div class="card-body" style="padding:12px">
+        <label class="set-toggle" for="tSound">
+          <div class="st-lb">🔊 音效</div>
+          <input type="checkbox" class="st-cb" id="tSound" data-key="sound" checked>
+        </label>
+        <label class="set-toggle" for="tScreenShake">
+          <div class="st-lb">📳 画面震动</div>
+          <input type="checkbox" class="st-cb" id="tScreenShake" data-key="screenShake" checked>
+        </label>
+        <label class="set-toggle" for="tDeviceVibrate">
+          <div class="st-lb">📱 设备震动</div>
+          <input type="checkbox" class="st-cb" id="tDeviceVibrate" data-key="deviceVibrate" checked>
+        </label>
+        <label class="set-toggle" for="tParticles">
+          <div class="st-lb">✨ 粒子特效</div>
+          <input type="checkbox" class="st-cb" id="tParticles" data-key="particles" checked>
+        </label>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">🎁 礼包码</div>
+      <div class="card-body">
+        <div class="click-hint" style="text-align:left;margin-bottom:8px">输入礼包码兑换奖励。</div>
+        <div style="display:flex;gap:8px">
+          <input id="giftCodeInput" type="text" placeholder="请输入礼包码" maxlength="32" autocomplete="off" spellcheck="false" style="flex:1;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:#fff;font-size:14px;font-family:inherit;letter-spacing:.1em;outline:none;text-align:center;text-transform:uppercase">
+          <button class="btn mini-btn" id="giftCodeBtn" style="flex:none;min-width:88px;padding:12px 18px">兑换</button>
+        </div>
+        <div id="giftCodeMsg" style="font-size:11.5px;color:#7c89a5;min-height:16px;text-align:center;font-weight:800;letter-spacing:.03em;margin-top:8px"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">📜 生涯记录</div>
+      <div class="card-body"><div class="stat-grid life-grid"></div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">💾 存档管理</div>
+      <div class="card-body">
+        <div class="click-hint" style="text-align:left;margin-bottom:10px">游戏进度自动保存到本地浏览器。导出存档可备份或跨设备转移；导入会覆盖当前进度。</div>
+        <div style="display:flex;gap:8px;margin-bottom:8px">
+          <button class="btn mini-btn" id="btnExport" style="flex:1">📤 导出文件</button>
+          <button class="btn mini-btn" id="btnImport" style="flex:1">📥 导入文件</button>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn mini-btn" id="btnCopy" style="flex:1">📋 复制到剪贴板</button>
+          <button class="btn mini-btn" id="btnPaste" style="flex:1">📄 从剪贴板导入</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head" style="color:#ff8a8a">⚠️ 危险操作</div>
+      <div class="card-body">
+        <div class="click-hint" style="text-align:left;margin-bottom:10px">清空存档会删除所有进度，不可撤销。</div>
+        <button class="btn danger-btn" id="btnWipe">🗑️ 清空存档并重置游戏</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="side-nav" id="sideNav"></div>
+<div class="bottom-nav" id="nav"></div>
+<div id="toast"></div>
+
+<div class="overlay" id="overlay">
+  <div class="overlay-box">
+    <div class="ov-emoji" id="ovEmoji">⚠️</div>
+    <div class="ov-title" id="ovTitle"></div>
+    <div class="ov-desc" id="ovDesc"></div>
+    <div style="display:flex;gap:9px">
+      <button class="btn mini-btn" id="ovNo" style="flex:1">取消</button>
+      <button class="btn mini-btn" id="ovYes" style="flex:1;background:linear-gradient(180deg,#5aa0ff,#2e6fd6);color:#fff;border-color:rgba(150,190,255,.5)">确定</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   沙杨马点击者 · SYM CLICKER
+   ═══════════════════════════════════════════════════ */
+const SAVE_KEY = 'sym_clicker_save_v1';
+const SUF = ['','K','M','B','T','Qa','Qi','Sx','Sp','Oc','No','Dc','Ud','Dd','Td','Qad','Qid','Sxd','Spd','Ocd','Nod','Vg'];
+function fmt(n){
+  if(!isFinite(n)) return '∞';
+  if(n < 0) return '-' + fmt(-n);
+  if(n === 0) return '0';
+  if(n < 1) return n.toFixed(2);
+  if(n < 1000) return Math.floor(n).toLocaleString('en-US');
+  let t = 0;
+  while(n >= 1000 && t < SUF.length - 1){ n /= 1000; t++; }
+  return n.toFixed(2) + SUF[t];
+}
+function fmtTime(s){
+  s = Math.max(0, Math.floor(s));
+  const d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60), sec = s % 60;
+  if(d > 0) return d + '天' + h + '小时';
+  if(h > 0) return h + '小时' + m + '分';
+  if(m > 0) return m + '分' + sec + '秒';
+  return sec + '秒';
+}
+const $ = s => document.querySelector(s);
+const rnd = (a, b) => a + Math.random() * (b - a);
+
+/* ═══ 建筑 ═══ */
+const BUILDS = [
+  {id:'cur',   name:'手指沙',     emoji:'🖱️', cost:15,      cps:0.1,   desc:'用指尖在沙地上画马'},
+  {id:'pit',   name:'沙坑',       emoji:'🕳️', cost:110,     cps:1,     desc:'挖个坑，沙子自己会掉进去'},
+  {id:'shovel',name:'沙铲',       emoji:'⛏️', cost:1200,    cps:8,     desc:'一铲一铲，沙杨马的浪漫'},
+  {id:'dune',  name:'沙丘矿场',   emoji:'🏜️', cost:13000,   cps:47,    desc:'整座沙丘打包带走'},
+  {id:'truck', name:'运沙车',     emoji:'🚜', cost:140000,  cps:260,   desc:'轰隆隆，沙子的物流'},
+  {id:'fac',   name:'制沙工厂',   emoji:'🏭', cost:2e6,     cps:1400,  desc:'流水线量产，含沙量 100%'},
+  {id:'storm', name:'沙暴漩涡',   emoji:'🌀', cost:3.3e7,   cps:7800,  desc:'让风替你干活'},
+  {id:'orbit', name:'轨道采沙站', emoji:'🛰️', cost:5.1e8,  cps:44000, desc:'从近地轨道往下倒沙子'},
+  {id:'dim',   name:'维度沙漏',   emoji:'🌌', cost:7.5e9,   cps:260000,desc:'从别的维度漏过来的沙'},
+  {id:'sym',   name:'沙杨马本体', emoji:'🐴', cost:1e11,    cps:1.6e6, desc:'马本人亲自产沙'},
+  {id:'void',  name:'虚空沙核',   emoji:'♾️', cost:1.4e12,  cps:1e7,   desc:'沙子自己从虚无里长出来'},
+];
+const BID = {}; BUILDS.forEach(b => BID[b.id] = b);
+
+/* ═══ 升级 ═══ */
+const UPS = [];
+function addUp(o){ o.owned = false; UPS.push(o); return o; }
+// ── 点击系列（每层 ×2）
+const CLICK_UPS = [
+  {id:'ck1', name:'强化腕力',   emoji:'💪', cost:100,     req:s => s.clicks >= 10,        desc:'点击力 ×2'},
+  {id:'ck2', name:'钢铁指尖',   emoji:'🔩', cost:2500,    req:s => s.clicks >= 100,       desc:'点击力 ×2'},
+  {id:'ck3', name:'沙之共鸣',   emoji:'🎵', cost:6e4,     req:s => s.clicks >= 500,       desc:'点击力 ×2'},
+  {id:'ck4', name:'马踏飞燕',   emoji:'🐎', cost:1.5e6,   req:s => s.clicks >= 2000,      desc:'点击力 ×2'},
+  {id:'ck5', name:'万指归一',   emoji:'🖐️', cost:4e7,     req:s => s.clicks >= 8000,      desc:'点击力 ×2'},
+  {id:'ck6', name:'沙暴拳',     emoji:'👊', cost:9e8,     req:s => s.clicks >= 20000,     desc:'点击力 ×2'},
+  {id:'ck7', name:'量子手速',   emoji:'⚛️', cost:2.2e10,  req:s => s.clicks >= 50000,     desc:'点击力 ×3'},
+];
+CLICK_UPS.forEach(u => addUp({...u, type:'click', mult:u.id === 'ck7' ? 3 : 2}));
+// ── 点击吃产能系列
+addUp({id:'cp1', name:'沙流牵引', emoji:'🧲', cost:5e5,  type:'cpshare', mult:0.01, req:s => s.total >= 1e5,  desc:'点击力 +每秒产能的 1%'});
+addUp({id:'cp2', name:'沙潮涌动', emoji:'🌊', cost:5e7,  type:'cpshare', mult:0.05, req:s => s.total >= 1e7,  desc:'点击力 +每秒产能的 5%'});
+addUp({id:'cp3', name:'沙海共振', emoji:'🌋', cost:6e9,  type:'cpshare', mult:0.25, req:s => s.total >= 1e9,  desc:'点击力 +每秒产能的 25%'});
+// ── 全局祝福
+addUp({id:'gb1', name:'沙之祝福', emoji:'🙏', cost:1e8,  type:'global', mult:1.5, req:s => s.total >= 1e8,  desc:'全部产能 ×1.5'});
+addUp({id:'gb2', name:'金色黄昏', emoji:'🌇', cost:1e10, type:'global', mult:2,   req:s => s.total >= 1e10, desc:'全部产能 ×2'});
+addUp({id:'gb3', name:'马神庇佑', emoji:'👑', cost:1e12, type:'global', mult:2,   req:s => s.total >= 1e12, desc:'全部产能 ×2'});
+// ── 建筑倍率（每个建筑 15 / 50 / 100 座解锁 ×2）
+const TIERS = [
+  {n:15,  cf:110,   tag:'①'},
+  {n:50,  cf:1200,  tag:'②'},
+  {n:100, cf:14000, tag:'③'},
+];
+BUILDS.forEach(b => {
+  TIERS.forEach((t, i) => {
+    addUp({
+      id: b.id + '_' + i, name: t.tag + ' 强化' + b.name, emoji: b.emoji,
+      cost: b.cost * t.cf, type:'bmult', bid:b.id, mult:2,
+      req: s => (s.builds[b.id] || 0) >= t.n,
+      desc: b.name + ' 产能 ×2（需 ' + t.n + ' 座）'
+    });
+  });
+});
+const UID = {}; UPS.forEach(u => UID[u.id] = u);
+
+/* ═══ 成就 ═══ */
+const ACHS = [];
+function addAch(id, name, emoji, desc, check){ ACHS.push({id, name, emoji, desc, check}); }
+// 沙值
+[[1e3,'千沙起步'],[1e5,'十万沙户'],[1e7,'千万沙丘'],[1e9,'沙之亿万'],[1e12,'兆沙之主'],[1e15,'沙河改道'],[1e18,'沙界重塑']]
+  .forEach(([n, nm]) => addAch('sand_' + n, nm, '🏖️', '累计产出 ' + fmt(n) + ' 沙', s => s.total >= n));
+// 点击
+[[10,'第一次下手'],[100,'手指发热'],[1e3,'老茧初成'],[1e4,'人手一台沙马'],[5e4,'腱鞘警告']]
+  .forEach(([n, nm]) => addAch('click_' + n, nm, '🖱️', '累计点击 ' + fmt(n) + ' 次', s => s.clicks >= n));
+// 建筑
+BUILDS.forEach((b, i) => {
+  addAch('b_' + b.id, b.name + ' ×100', b.emoji, '拥有 100 座' + b.name, s => (s.builds[b.id] || 0) >= 100);
+});
+addAch('b_all', '满汉全沙', '🏛️', '每种建筑至少 1 座', s => BUILDS.every(b => (s.builds[b.id] || 0) >= 1));
+addAch('b_1000', '千机之城', '🏙️', '任意建筑达到 500 座', s => BUILDS.some(b => (s.builds[b.id] || 0) >= 500));
+// 金光
+[[1,'初见金光'],[10,'追光者'],[77,'金光收集癖'],[777,'光之马夫']]
+  .forEach(([n, nm]) => addAch('gold_' + n, nm, '🌟', '收集 ' + n + ' 次金光沙杨马', s => s.golden >= n));
+// 轮回
+addAch('asc1', '第一次轮回', '🔁', '完成 1 次星尘轮回', s => s.ascends >= 1);
+addAch('asc7', '七次转生',   '🌀', '完成 7 次星尘轮回', s => s.ascends >= 7);
+// 彩蛋
+addAch('egg_mad', '发疯文学', '🤪', '点击时听到了沙杨马的心声', s => s.madSeen >= 1);
+addAch('egg_afk', '挂机大师', '😴', '累计挂机产出 1 亿沙', s => s.afkTotal >= 1e8);
+
+/* ═══ 状态 ═══ */
+const state = {
+  sand: 0, total: 0, handmade: 0, afkTotal: 0, clicks: 0,
+  builds: {}, ups: {}, achs: {},
+  golden: 0, madSeen: 0,
+  stardust: 0, ascends: 0,
+  buffs: [],
+  start: Date.now(), last: Date.now(), playtime: 0,
+  buyMode: 1, upTab: 'all',
+  goldenNext: rnd(45, 90), goldenEl: null, goldenTimer: 0,
+  playerName: '沙杨马',
+  sound: true, screenShake: true, deviceVibrate: true, particles: true,
+  specialCodes: {},
+};
+
+/* ═══ 存档 ═══ */
+function save(){
+  try{
+    localStorage.setItem(SAVE_KEY, JSON.stringify({
+      sand:state.sand, total:state.total, handmade:state.handmade, afkTotal:state.afkTotal,
+      clicks:state.clicks, builds:state.builds, ups:state.ups, achs:state.achs,
+      golden:state.golden, madSeen:state.madSeen, stardust:state.stardust, ascends:state.ascends,
+      start:state.start, playtime:state.playtime, last:Date.now(),
+      playerName:state.playerName,
+      sound:state.sound, screenShake:state.screenShake,
+      deviceVibrate:state.deviceVibrate, particles:state.particles,
+      specialCodes:state.specialCodes
+    }));
+  }catch(e){}
+}
+function load(){
+  try{
+    const raw = localStorage.getItem(SAVE_KEY);
+    if(!raw) return null;
+    const d = JSON.parse(raw);
+    Object.assign(state, {
+      sand:d.sand || 0, total:d.total || 0, handmade:d.handmade || 0, afkTotal:d.afkTotal || 0,
+      clicks:d.clicks || 0, builds:d.builds || {}, ups:d.ups || {}, achs:d.achs || {},
+      golden:d.golden || 0, madSeen:d.madSeen || 0, stardust:d.stardust || 0, ascends:d.ascends || 0,
+      start:d.start || Date.now(), playtime:d.playtime || 0,
+      playerName: typeof d.playerName === 'string' ? (d.playerName.slice(0,12) || '沙杨马') : state.playerName,
+      sound: typeof d.sound === 'boolean' ? d.sound : state.sound,
+      screenShake: typeof d.screenShake === 'boolean' ? d.screenShake : state.screenShake,
+      deviceVibrate: typeof d.deviceVibrate === 'boolean' ? d.deviceVibrate : state.deviceVibrate,
+      particles: typeof d.particles === 'boolean' ? d.particles : state.particles,
+      specialCodes: (d.specialCodes && typeof d.specialCodes === 'object') ? d.specialCodes : {}
+    });
+    // 兼容：累计值至少要 >= 当前值
+    if(state.total < state.sand) state.total = state.sand;
+    const away = (Date.now() - (d.last || Date.now())) / 1000;
+    return away > 5 ? away : 0;
+  }catch(e){ return null; }
+}
+
+/* ═══ 计算 ═══ */
+function bMult(bid){
+  let m = 1;
+  for(let i = 0; i < 3; i++) if(state.ups[bid + '_' + i]) m *= 2;
+  return m;
+}
+function globalMult(){
+  let m = 1 + state.stardust * 0.02;
+  ['gb1','gb2','gb3'].forEach(id => { if(state.ups[id]) m *= UID[id].mult; });
+  return m;
+}
+function buffMult(type){
+  let m = 1;
+  const now = Date.now();
+  state.buffs.forEach(b => { if(b.type === type && b.end > now) m *= b.mult; });
+  return m;
+}
+function rawCps(){
+  let s = 0;
+  BUILDS.forEach(b => { s += (state.builds[b.id] || 0) * b.cps * bMult(b.id); });
+  return s;
+}
+function cps(){ return rawCps() * globalMult() * buffMult('cps'); }
+function clickMult(){
+  let m = 1;
+  CLICK_UPS.forEach(u => { if(state.ups[u.id]) m *= UID[u.id].mult; });
+  return m;
+}
+function cpsShare(){
+  let s = 0;
+  ['cp1','cp2','cp3'].forEach(id => { if(state.ups[id]) s += UID[id].mult; });
+  return s;
+}
+function clickPower(){
+  const base = 1 + (state.builds.cur || 0) * bMult('cur');
+  const fromCps = rawCps() * globalMult() * cpsShare();
+  return (base * clickMult() + fromCps) * globalMult() * buffMult('click');
+}
+function bCost(b, count){
+  // 从当前拥有数量起买 count 座的总价
+  const have = state.builds[b.id] || 0;
+  const r = 1.15;
+  return b.cost * (Math.pow(r, have) * (Math.pow(r, count) - 1) / (r - 1));
+}
+function maxAfford(b){
+  const have = state.builds[b.id] || 0;
+  const r = 1.15;
+  // cost = b.cost * r^have * (r^n - 1)/(r-1) <= sand
+  const target = state.sand * (r - 1) / (b.cost * Math.pow(r, have)) + 1;
+  let n = Math.floor(Math.log(target) / Math.log(r));
+  if(!isFinite(n) || n < 0) n = 0;
+  while(bCost(b, n) > state.sand && n > 0) n--;
+  while(bCost(b, n + 1) <= state.sand && n < 10000) n++;
+  return n;
+}
+
+/* ═══ 音频 ═══ */
+let audioCtx = null;
+function beep(freq, dur, type, vol){
+  if(state.sound === false) return;
+  try{
+    if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if(audioCtx.state === 'suspended') audioCtx.resume();
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = type || 'sine';
+    o.frequency.value = freq;
+    const t = audioCtx.currentTime;
+    g.gain.setValueAtTime(vol || .05, t);
+    g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start(t); o.stop(t + dur);
+  }catch(e){}
+}
+document.addEventListener('touchstart', function once(){
+  if(!audioCtx){
+    try{ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){}
+  }
+  document.removeEventListener('touchstart', once);
+}, { passive:true });
+
+/* ═══ 设备震动 ═══ */
+function doVibrate(pattern){
+  if(state.deviceVibrate === false) return;
+  try{ if(navigator.vibrate) navigator.vibrate(pattern || 30); }catch(e){}
+}
+
+/* ═══ 画面震动 ═══ */
+function shake(level){
+  if(state.screenShake === false) return;
+  const amp = 4 + level * 2.2;
+  const app = document.querySelector('.app');
+  if(!app) return;
+  app.style.setProperty('--amp', amp + 'px');
+  app.classList.remove('shaking');
+  void app.offsetWidth;
+  app.classList.add('shaking');
+  setTimeout(() => app.classList.remove('shaking'), 460);
+}
+
+/* ═══ 粒子爆发 ═══ */
+function clickBurst(x, y, color, count){
+  if(state.particles === false) return;
+  count = count || 6;
+  const fx = document.getElementById('fx');
+  if(!fx) return;
+  for(let i = 0; i < count; i++){
+    const a = Math.random() * Math.PI * 2;
+    const dist = 20 + Math.random() * 40;
+    const p = document.createElement('div');
+    p.className = 'clk-p';
+    p.style.left = x + 'px';
+    p.style.top = y + 'px';
+    p.style.setProperty('--dx', Math.cos(a) * dist + 'px');
+    p.style.setProperty('--dy', Math.sin(a) * dist + 'px');
+    p.style.setProperty('--pc', color || '#ffd479');
+    fx.appendChild(p);
+    setTimeout(() => p.remove(), 600);
+  }
+}
+
+/* ═══ 提示 ═══ */
+let toastTimer = null;
+function toast(msg, cls){
+  const t = $('#toast');
+  t.textContent = msg;
+  t.className = cls ? cls : '';
+  t.classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('on'), 2600);
+}
+
+/* ═══ 飘字 ═══ */
+const MAD_LINES = ['沙杨马：你手速好快但我累了','沙子：求你别点了','🐴：我产沙我自豪','这一铲下去，宇宙会记住我','沙子不灭，点手不休','马说：再来一次就给你金光','手指已经开始自己点了','我不是在点击，我是在修行'];
+function popNum(x, y, text, cls){
+  const fx = $('#fx');
+  if(fx.children.length > 26) fx.removeChild(fx.firstChild);
+  const el = document.createElement('div');
+  el.className = 'pop-num' + (cls ? ' ' + cls : '');
+  el.textContent = text;
+  el.style.left = x + 'px';
+  el.style.top = y + 'px';
+  fx.appendChild(el);
+  setTimeout(() => el.remove(), 1000);
+}
+
+/* ═══ 点击 ═══ */
+function doClick(ev){
+  const gain = clickPower();
+  state.sand += gain;
+  state.total += gain;
+  state.handmade += gain;
+  state.clicks++;
+  const cookie = $('#bigCookie');
+  cookie.classList.remove('hit');
+  void cookie.offsetWidth;
+  cookie.classList.add('hit');
+  let x, y;
+  if(ev && ev.clientX !== undefined && ev.clientX !== 0){ x = ev.clientX; y = ev.clientY; }
+  else { const r = cookie.getBoundingClientRect(); x = r.left + r.width / 2 + rnd(-40, 40); y = r.top + r.height / 2 + rnd(-30, 30); }
+  popNum(x + rnd(-14, 14), y, '+' + fmt(gain));
+  if(Math.random() < 0.012){
+    state.madSeen++;
+    popNum(x + rnd(-40, 40), y - 26, MAD_LINES[Math.floor(Math.random() * MAD_LINES.length)], 'mad');
+  }
+  renderHud();
+  beep(600 + Math.random() * 200, .035, 'sine', .025);
+  clickBurst(x, y, '#ffd479', 5);
+}
+
+/* ═══ 金光沙杨马 ═══ */
+const GOLDEN_FX = [
+  {id:'frenzy', name:'沙暴狂潮', emoji:'🌀', w:34,
+   run(){ addBuff('frenzy','沙暴狂潮','🌀','cps',7,77); toast('🌀 沙暴狂潮！产能 ×7，持续 77 秒','gold'); }},
+  {id:'clickf', name:'点击狂潮', emoji:'👆', w:26,
+   run(){ addBuff('clickf','点击狂潮','👆','click',777,13); toast('👆 点击狂潮！点击力 ×777，持续 13 秒','gold'); }},
+  {id:'lucky',  name:'沙中淘金', emoji:'💰', w:22,
+   run(){
+     const g = Math.max(cps() * 900, state.sand * 0.15, 13);
+     state.sand += g; state.total += g;
+     toast('💰 沙中淘金！+' + fmt(g) + ' 沙','gold');
+     popNum(window.innerWidth / 2, window.innerHeight * 0.42, '+' + fmt(g), 'crit');
+   }},
+  {id:'clot',   name:'沙之凝结', emoji:'⏳', w:12,
+   run(){ addBuff('clot','沙之凝结','⏳','cps',3,120); toast('⏳ 沙之凝结！产能 ×3，持续 120 秒','gold'); }},
+  {id:'chain',  name:'连锁金沙', emoji:'⚡', w:6,
+   run(){ for(let i = 0; i < 7; i++) setTimeout(() => {
+        const g = Math.max(cps() * 60, 7); state.sand += g; state.total += g; renderHud();
+      }, i * 320); toast('⚡ 连锁金沙！七连爆','gold'); }},
+];
+function addBuff(id, name, emoji, type, mult, dur){
+  const now = Date.now();
+  const ex = state.buffs.find(b => b.id === id);
+  if(ex){ ex.end = now + dur * 1000; ex.mult = mult; return; }
+  state.buffs.push({id, name, emoji, type, mult, end: now + dur * 1000});
+}
+function spawnGolden(){
+  if(state.goldenEl) return;
+  const layer = $('#golden-layer');
+  const el = document.createElement('div');
+  el.className = 'golden';
+  el.textContent = '🌟';
+  const size = 66;
+  el.style.left = rnd(8, Math.max(10, window.innerWidth - size - 8)) + 'px';
+  el.style.top = rnd(90, Math.max(100, window.innerHeight - size - 130)) + 'px';
+  el.addEventListener('pointerdown', e => {
+    e.stopPropagation();
+    state.golden++;
+    const total = GOLDEN_FX.reduce((s, g) => s + g.w, 0);
+    let x = Math.random() * total;
+    let pick = GOLDEN_FX[GOLDEN_FX.length - 1];
+    for(const g of GOLDEN_FX){ x -= g.w; if(x <= 0){ pick = g; break; } }
+    pick.run();
+    beep(900, .18, 'sine', .07);
+    setTimeout(() => beep(1300, .25, 'sine', .06), 100);
+    setTimeout(() => beep(1700, .35, 'sine', .055), 220);
+    doVibrate([20, 40, 20, 40, 30]);
+    shake(7);
+    clickBurst(parseFloat(el.style.left) + 33, parseFloat(el.style.top) + 33, '#ffc93c', 24);
+    killGolden();
+    renderAll();
+  });
+  layer.appendChild(el);
+  state.goldenEl = el;
+  state.goldenTimer = 13;
+}
+function killGolden(){
+  if(!state.goldenEl) return;
+  const el = state.goldenEl;
+  state.goldenEl = null;
+  el.classList.add('dying');
+  setTimeout(() => el.remove(), 360);
+}
+
+/* ═══ 渲染 ═══ */
+const PAGES = [
+  {id:'click', name:'点击', emoji:'🐴'},
+  {id:'up',    name:'升级', emoji:'⬆️'},
+  {id:'set',   name:'设置', emoji:'⚙️'},
+];
+const SIDE_PAGES = [
+  {id:'ach',   name:'成就', emoji:'🏆'},
+  {id:'stat',  name:'轮回', emoji:'🌌'},
+];
+let curPage = 'click';
+function renderNav(){
+  $('#nav').innerHTML = PAGES.map(p =>
+    '<div class="nav-btn' + (p.id === curPage ? ' on' : '') + '" data-page="' + p.id + '">' +
+    '<span class="nb-emoji">' + p.emoji + '</span><span>' + p.name + '</span></div>'
+  ).join('');
+  $('#sideNav').innerHTML = SIDE_PAGES.map(p =>
+    '<div class="side-btn' + (p.id === curPage ? ' on' : '') + '" data-page="' + p.id + '">' +
+    '<span>' + p.emoji + '</span><small>' + p.name + '</small></div>'
+  ).join('');
+}
+function goPage(id){
+  curPage = id;
+  ['click','up','set','ach','stat'].forEach(pid => {
+    const el = document.getElementById('page-' + pid);
+    if(el) el.classList.toggle('on', pid === id);
+  });
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('on', b.dataset.page === id));
+  document.querySelectorAll('.side-btn').forEach(b => b.classList.toggle('on', b.dataset.page === id));
+  window.scrollTo({top:0, behavior:'smooth'});
+  renderAll();
+}
+
+function renderHud(){
+  const achGot = ACHS.filter(a => state.achs[a.id]).length;
+  $('#hud').innerHTML =
+    '<div class="chip main sand" style="border-color:rgba(255,220,120,.4)">🐴 <span class="v" id="hvName">' + (state.playerName || '沙杨马') + '</span></div>' +
+    '<div class="chip main sand">🐫 沙值 <span class="v" id="hvSand">' + fmt(state.sand) + '</span></div>' +
+    '<div class="chip gem">⚡ 每秒 <span class="v" id="hvCps">' + fmt(cps()) + '</span></div>' +
+    '<div class="chip gold">👆 点击力 <span class="v" id="hvClick">' + fmt(clickPower()) + '</span></div>' +
+    '<div class="chip">🖱️ 点击 <span class="v" id="hvClicks">' + fmt(state.clicks) + '</span></div>' +
+    '<div class="chip star">🌟 星尘 <span class="v" id="hvStardust">' + fmt(state.stardust) + '</span></div>' +
+    '<div class="chip">🏆 成就 <span class="v" id="hvAch">' + achGot + '/' + ACHS.length + '</span></div>';
+}
+
+function renderBuffs(){
+  const now = Date.now();
+  state.buffs = state.buffs.filter(b => b.end > now);
+  if(!state.buffs.length){ $('#buffs').innerHTML = ''; return; }
+  $('#buffs').innerHTML = state.buffs.map(b =>
+    '<div class="buff" style="--bc:rgba(255,201,60,.5)">' + b.emoji + ' ' + b.name +
+    ' ×' + b.mult + ' <span class="bt">' + Math.ceil((b.end - now) / 1000) + 's</span></div>'
+  ).join('');
+}
+
+function renderClick(){
+  $('#clickHint').innerHTML = '点一下得 <b>' + fmt(clickPower()) + '</b> 沙　·　每秒自动 <b>' + fmt(cps()) + '</b> 沙<br>每 100 次点击有概率触发金光沙杨马 🌟';
+  const bc = BUILDS.reduce((s, b) => s + (state.builds[b.id] || 0), 0);
+  $('#statGrid').innerHTML =
+    stat('累计产出', fmt(state.total) + ' 沙') +
+    stat('手工点击所得', fmt(state.handmade) + ' 沙') +
+    stat('建筑总数', fmt(bc) + ' 座') +
+    stat('点击次数', fmt(state.clicks) + ' 次') +
+    stat('金光收集', fmt(state.golden) + ' 次') +
+    stat('游戏时长', fmtTime(state.playtime / 1000), 'full');
+  const wait = Math.max(0, state.goldenNext);
+  $('#goldenInfo').innerHTML =
+    '<div class="stat-grid">' +
+    stat('下次金光', fmtTime(wait)) +
+    stat('已收集', fmt(state.golden) + ' 次') +
+    '</div>' +
+    (state.goldenEl ? '<div class="click-hint" style="margin-top:10px;color:#ffd86b">🌟 金光沙杨马出现了！快点点它！</div>'
+                    : '<div class="click-hint" style="margin-top:10px">金光沙杨马会随机出现在屏幕上，点它获得随机强力效果</div>');
+}
+function stat(k, v, cls){
+  return '<div class="stat' + (cls ? ' ' + cls : '') + '"><div class="k">' + k + '</div><div class="v">' + v + '</div></div>';
+}
+
+const BUY_MODES = [{n:1, t:'×1'}, {n:10, t:'×10'}, {n:100, t:'×100'}, {n:0, t:'最大'}];
+function renderBuySeg(){
+  $('#buySeg').innerHTML = BUY_MODES.map(m =>
+    '<button class="bm-opt' + (state.buyMode === m.n ? ' on' : '') + '" data-n="' + m.n + '">' + m.t + '</button>'
+  ).join('');
+  const m = BUY_MODES.find(x => x.n === state.buyMode);
+  $('#buyHint').textContent = m.n === 0 ? '按当前沙值买最多' : '一次买 ' + m.n + ' 座';
+}
+function buyCount(b){
+  return state.buyMode === 0 ? maxAfford(b) : state.buyMode;
+}
+function renderBuilds(){
+  $('#buildList').innerHTML = BUILDS.map((b, i) => {
+    const have = state.builds[b.id] || 0;
+    const n = Math.max(1, buyCount(b));
+    const cost = bCost(b, n);
+    const can = state.sand >= cost;
+    const prevLocked = i > 0 && (state.builds[BUILDS[i - 1].id] || 0) === 0 && state.total < b.cost * 0.5;
+    const cls = 'bcard' + (can ? ' can' : '') + (prevLocked ? ' locked' : '');
+    const each = b.cps * bMult(b.id) * globalMult();
+    return '<div class="' + cls + '" data-bid="' + b.id + '">' +
+      '<div class="be">' + b.emoji + '</div>' +
+      '<div class="bm"><div class="bn">' + b.name + (have ? '<span class="lv">' + have + '</span>' : '') + '</div>' +
+      '<div class="bd">' + b.desc + '</div></div>' +
+      '<div class="br"><div class="bc">' + fmt(cost) + '</div>' +
+      '<div class="bp">+' + fmt(each * n) + '/s</div></div>' +
+      (n > 1 ? '<div class="bq">买 ' + n + ' 座</div>' : '') +
+      '</div>';
+  }).join('');
+}
+
+const UP_TABS = [{id:'all', name:'全部', emoji:'✨'}, {id:'click', name:'点击', emoji:'👆'}, {id:'build', name:'建筑', emoji:'🏗️'}, {id:'global', name:'全局', emoji:'🌐'}];
+function renderUpTabs(){
+  $('#upTabs').innerHTML = UP_TABS.map(t =>
+    '<button class="bm-opt' + (state.upTab === t.id ? ' on' : '') + '" data-tab="' + t.id + '">' + t.emoji + ' ' + t.name + '</button>'
+  ).join('');
+}
+function visibleUps(){
+  return UPS.filter(u => {
+    if(state.ups[u.id]) return false;                     // 已买的挪进"已拥有"（不显示）
+    if(!u.req || u.req(state)) return true;               // 条件达成
+    return false;
+  }).filter(u => {
+    if(state.upTab === 'all') return true;
+    if(state.upTab === 'click') return u.type === 'click' || u.type === 'cpshare';
+    if(state.upTab === 'build') return u.type === 'bmult';
+    if(state.upTab === 'global') return u.type === 'global';
+    return true;
+  });
+}
+function renderUps(){
+  const list = visibleUps();
+  const owned = UPS.filter(u => state.ups[u.id]);
+  let html = list.map(u => {
+    const can = state.sand >= u.cost;
+    return '<div class="ucard' + (can ? ' can' : ' poor') + '" data-uid="' + u.id + '" title="' + u.desc + '">' +
+      '<div class="ue">' + u.emoji + '</div><div class="un">' + u.name + '</div>' +
+      '<div class="uc">' + fmt(u.cost) + '</div></div>';
+  }).join('');
+  html += owned.map(u =>
+    '<div class="ucard owned" title="' + u.desc + '"><div class="ue">' + u.emoji + '</div>' +
+    '<div class="un">' + u.name + '</div><div class="uc">已拥有</div></div>'
+  ).join('');
+  $('#upGrid').innerHTML = html || '<div class="click-hint">暂无可用升级，多攒点沙再来看看</div>';
+}
+
+function renderAch(){
+  const got = ACHS.filter(a => state.achs[a.id]).length;
+  $('#achCount').textContent = '已解锁 ' + got + ' / ' + ACHS.length + ' · 解锁有惊喜（其实没有）';
+  $('#achGrid').innerHTML = ACHS.map(a =>
+    '<div class="acard' + (state.achs[a.id] ? ' got' : '') + '" title="' + a.desc + '">' +
+    '<div class="ae">' + a.emoji + '</div><div class="an">' + a.name + '</div></div>'
+  ).join('');
+}
+
+function renderLifeStats(){
+  const html =
+    stat('累计产出', fmt(state.total) + ' 沙') +
+    stat('手工产出', fmt(state.handmade) + ' 沙') +
+    stat('挂机产出', fmt(state.afkTotal) + ' 沙') +
+    stat('点击次数', fmt(state.clicks) + ' 次') +
+    stat('金光收集', fmt(state.golden) + ' 次') +
+    stat('轮回次数', fmt(state.ascends) + ' 次') +
+    stat('持有星尘', fmt(state.stardust) + ' 枚') +
+    stat('星尘加成', '+' + (state.stardust * 2) + '% 产能') +
+    stat('游戏总时长', fmtTime(state.playtime / 1000), 'full');
+  document.querySelectorAll('.life-grid').forEach(el => { el.innerHTML = html; });
+}
+
+function renderStat(){
+  renderLifeStats();
+  const gain = ascGain();
+  const box = $('#ascendBox');
+  box.innerHTML =
+    '<div class="stat-grid">' +
+    stat('本次可获星尘', fmt(gain) + ' 枚') +
+    stat('轮回后加成', '+' + ((state.stardust + gain) * 2) + '%') +
+    '</div>' +
+    '<div class="click-hint" style="margin:10px 0">轮回会清空沙值 / 建筑 / 升级，保留星尘、成就、点击数与金光数</div>' +
+    '<button class="btn ascend-btn" id="btnAscend"' + (gain < 1 ? ' disabled' : '') + '>🔁 轮回（+' + fmt(gain) + ' 星尘）</button>';
+  const btn = $('#btnAscend');
+  if(btn) btn.addEventListener('click', askAscend);
+}
+function ascGain(){
+  if(state.total < 1e6) return 0;
+  return Math.floor(Math.sqrt(state.total / 1e6));
+}
+
+function tickValues(){
+  const s = document.getElementById('hvSand');
+  if(s) s.textContent = fmt(state.sand);
+  const c = document.getElementById('hvCps');
+  if(c) c.textContent = fmt(cps());
+  const ck = document.getElementById('hvClick');
+  if(ck) ck.textContent = fmt(clickPower());
+  const cl = document.getElementById('hvClicks');
+  if(cl) cl.textContent = fmt(state.clicks);
+  const st = document.getElementById('hvStardust');
+  if(st) st.textContent = fmt(state.stardust);
+  const ac = document.getElementById('hvAch');
+  if(ac) ac.textContent = ACHS.filter(a => state.achs[a.id]).length + '/' + ACHS.length;
+
+  if(curPage === 'click'){ tickClick(); tickBuild(); }
+  else if(curPage === 'up') tickUp();
+  else if(curPage === 'stat') tickStat();
+  else if(curPage === 'set') tickSet();
+}
+
+function tickClick(){
+  const hint = document.getElementById('clickHint');
+  if(hint) hint.innerHTML = '点一下得 <b>' + fmt(clickPower()) + '</b> 沙　·　每秒自动 <b>' + fmt(cps()) + '</b> 沙<br>每 100 次点击有概率触发金光沙杨马 🌟';
+
+  const grid = document.querySelectorAll('#statGrid .stat .v');
+  if(grid.length === 6){
+    grid[0].textContent = fmt(state.total) + ' 沙';
+    grid[1].textContent = fmt(state.handmade) + ' 沙';
+    grid[2].textContent = fmt(BUILDS.reduce((a, b) => a + (state.builds[b.id] || 0), 0)) + ' 座';
+    grid[3].textContent = fmt(state.clicks) + ' 次';
+    grid[4].textContent = fmt(state.golden) + ' 次';
+    grid[5].textContent = fmtTime(state.playtime / 1000);
+  }
+
+  const gv = document.querySelectorAll('#goldenInfo .stat .v');
+  if(gv.length >= 2){
+    gv[0].textContent = fmtTime(Math.max(0, state.goldenNext));
+    gv[1].textContent = fmt(state.golden) + ' 次';
+  }
+}
+
+function tickBuild(){
+  document.querySelectorAll('#buildList .bcard').forEach(card => {
+    const b = BID[card.dataset.bid];
+    if(!b) return;
+    const n = Math.max(1, buyCount(b));
+    const cost = bCost(b, n);
+    const can = state.sand >= cost && !card.classList.contains('locked');
+    card.classList.toggle('can', can);
+    const bc = card.querySelector('.bc');
+    if(bc) bc.textContent = fmt(cost);
+  });
+}
+
+function tickUp(){
+  document.querySelectorAll('#upGrid .ucard[data-uid]').forEach(card => {
+    const u = UID[card.dataset.uid];
+    if(!u) return;
+    const can = state.sand >= u.cost;
+    card.classList.toggle('can', can);
+    card.classList.toggle('poor', !can);
+  });
+}
+
+function tickSet(){
+  const grid = document.querySelectorAll('#page-set .life-grid .stat .v');
+  if(grid.length === 9){
+    grid[0].textContent = fmt(state.total) + ' 沙';
+    grid[1].textContent = fmt(state.handmade) + ' 沙';
+    grid[2].textContent = fmt(state.afkTotal) + ' 沙';
+    grid[3].textContent = fmt(state.clicks) + ' 次';
+    grid[4].textContent = fmt(state.golden) + ' 次';
+    grid[5].textContent = fmt(state.ascends) + ' 次';
+    grid[6].textContent = fmt(state.stardust) + ' 枚';
+    grid[7].textContent = '+' + (state.stardust * 2) + '% 产能';
+    grid[8].textContent = fmtTime(state.playtime / 1000);
+  }
+}
+
+function tickStat(){
+  const grid = document.querySelectorAll('#page-stat .life-grid .stat .v');
+  if(grid.length === 9){
+    grid[0].textContent = fmt(state.total) + ' 沙';
+    grid[1].textContent = fmt(state.handmade) + ' 沙';
+    grid[2].textContent = fmt(state.afkTotal) + ' 沙';
+    grid[3].textContent = fmt(state.clicks) + ' 次';
+    grid[4].textContent = fmt(state.golden) + ' 次';
+    grid[5].textContent = fmt(state.ascends) + ' 次';
+    grid[6].textContent = fmt(state.stardust) + ' 枚';
+    grid[7].textContent = '+' + (state.stardust * 2) + '% 产能';
+    grid[8].textContent = fmtTime(state.playtime / 1000);
+  }
+  const btn = document.getElementById('btnAscend');
+  if(btn){
+    const g = ascGain();
+    btn.disabled = g < 1;
+    btn.textContent = '🔁 轮回（+' + fmt(g) + ' 星尘）';
+  }
+}
+
+/* ═══ 偏好开关 ═══ */
+function setToggleUI(){
+  document.querySelectorAll('.st-cb').forEach(cb => {
+    const key = cb.dataset.key;
+    if(key && typeof state[key] === 'boolean') cb.checked = state[key];
+  });
+}
+function bindPrefToggles(){
+  document.querySelectorAll('.st-cb').forEach(cb => {
+    if(cb._bound) return;
+    cb._bound = true;
+    cb.addEventListener('change', () => {
+      const key = cb.dataset.key;
+      if(key) state[key] = cb.checked;
+      save();
+    });
+  });
+}
+
+/* ═══ 礼包码 ═══
+ * GIFT_CODES 表留空占位，后续往里加：
+ *   格式 { CODE: { run(){ ... }, once: true } }
+ * 用户自己往里填。当前只做了输入框和兑换框架。
+ */
+const GIFT_CODES = {
+  // 示例码（用户可在派活单 3 后自行覆盖/清空）
+  'SYMCLICK': { once: true, run(){ state.sand += 10000; state.total += 10000; return '沙值 +1万'; } },
+};
+function redeemGiftCode(){
+  const inp = document.getElementById('giftCodeInput');
+  const msg = document.getElementById('giftCodeMsg');
+  if(!inp || !msg) return;
+  const code = inp.value.trim().toUpperCase();
+  if(!code){
+    msg.textContent = '请输入礼包码';
+    msg.style.color = '#ff8a8a';
+    return;
+  }
+  const entry = GIFT_CODES[code];
+  if(!entry){
+    msg.textContent = '❌ 礼包码无效';
+    msg.style.color = '#ff8a8a';
+    inp.value = '';
+    return;
+  }
+  if(entry.once && state.specialCodes && state.specialCodes[code]){
+    msg.textContent = '该礼包码已兑换过';
+    msg.style.color = '#8b98ad';
+    return;
+  }
+  const txt = entry.run();
+  if(entry.once){
+    if(!state.specialCodes) state.specialCodes = {};
+    state.specialCodes[code] = true;
+  }
+  msg.textContent = '✅ 兑换成功！' + (txt || '');
+  msg.style.color = '#8ff0c4';
+  inp.value = '';
+  toast('🎁 礼包码兑换成功：' + (txt || ''), 'ach');
+  renderHud(); renderAll(); save();
+}
+
+/* ═══ 昵称 ═══ */
+function savePlayerName(){
+  const inp = document.getElementById('playerNameInput');
+  if(!inp) return;
+  let v = (inp.value || '').trim();
+  if(!v){ toast('昵称不能为空', 'bad'); return; }
+  v = v.slice(0, 12);
+  state.playerName = v;
+  inp.value = v;
+  const nameEl = document.getElementById('hvName');
+  if(nameEl) nameEl.textContent = v;
+  toast('✅ 昵称已改为「' + v + '」', 'ach');
+  save();
+}
+
+/* ═══ 存档导入导出 ═══ */
+function exportSave(){
+  try{
+    const json = JSON.stringify(load_raw(), null, 2);
+    const blob = new Blob([json], { type:'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const d = new Date();
+    const dt = d.getFullYear() + String(d.getMonth()+1).padStart(2,'0') + String(d.getDate()).padStart(2,'0');
+    a.download = '沙杨马点击者存档_' + dt + '.json';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+    toast('📤 存档已导出', 'gold');
+  }catch(e){ toast('导出失败', 'bad'); }
+}
+function load_raw(){
+  return {
+    sand:state.sand, total:state.total, handmade:state.handmade, afkTotal:state.afkTotal,
+    clicks:state.clicks, builds:state.builds, ups:state.ups, achs:state.achs,
+    golden:state.golden, madSeen:state.madSeen, stardust:state.stardust, ascends:state.ascends,
+    start:state.start, playtime:state.playtime, last:Date.now(),
+    playerName:state.playerName,
+    sound:state.sound, screenShake:state.screenShake,
+    deviceVibrate:state.deviceVibrate, particles:state.particles,
+    specialCodes:state.specialCodes
+  };
+}
+function applyImported(d){
+  if(!d || typeof d !== 'object') return false;
+  Object.assign(state, {
+    sand: d.sand || 0, total: d.total || 0, handmade: d.handmade || 0, afkTotal: d.afkTotal || 0,
+    clicks: d.clicks || 0, builds: d.builds || {}, ups: d.ups || {}, achs: d.achs || {},
+    golden: d.golden || 0, madSeen: d.madSeen || 0, stardust: d.stardust || 0, ascends: d.ascends || 0,
+    start: d.start || Date.now(), playtime: d.playtime || 0,
+    playerName: typeof d.playerName === 'string' ? (d.playerName.slice(0,12) || '沙杨马') : '沙杨马',
+    sound: typeof d.sound === 'boolean' ? d.sound : true,
+    screenShake: typeof d.screenShake === 'boolean' ? d.screenShake : true,
+    deviceVibrate: typeof d.deviceVibrate === 'boolean' ? d.deviceVibrate : true,
+    particles: typeof d.particles === 'boolean' ? d.particles : true,
+    specialCodes: (d.specialCodes && typeof d.specialCodes === 'object') ? d.specialCodes : {}
+  });
+  return true;
+}
+function importSaveFromFile(){
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = '.json,application/json';
+  input.onchange = e => {
+    const file = e.target.files && e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try{
+        if(applyImported(JSON.parse(ev.target.result))){
+          save(); renderNav(); renderAll(); setToggleUI();
+          const pni = document.getElementById('playerNameInput');
+          if(pni) pni.value = state.playerName || '沙杨马';
+          toast('📥 存档导入成功', 'ach');
+        } else toast('存档格式错误', 'bad');
+      }catch(err){ toast('存档解析失败', 'bad'); }
+    };
+    reader.onerror = () => toast('文件读取失败', 'bad');
+    reader.readAsText(file);
+  };
+  input.click();
+}
+function copySaveToClipboard(){
+  let json;
+  try{ json = JSON.stringify(load_raw()); }catch(e){ toast('序列化失败', 'bad'); return; }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(json).then(() => {
+      toast('📋 已复制到剪贴板', 'gold');
+    }).catch(() => legacyCopy(json));
+  } else legacyCopy(json);
+}
+function legacyCopy(text){
+  try{
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.left = '-9999px';
+    document.body.appendChild(ta); ta.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    toast(ok ? '📋 已复制到剪贴板' : '复制失败，请手动导出', ok ? 'gold' : 'bad');
+  }catch(e){ toast('复制失败', 'bad'); }
+}
+function pasteSaveFromClipboard(){
+  if(!navigator.clipboard || !navigator.clipboard.readText){
+    toast('浏览器不支持剪贴板读取', 'bad'); return;
+  }
+  navigator.clipboard.readText().then(text => {
+    try{
+      if(applyImported(JSON.parse(text))){
+        save(); renderNav(); renderAll(); setToggleUI();
+        const pni = document.getElementById('playerNameInput');
+        if(pni) pni.value = state.playerName || '沙杨马';
+        toast('📄 已从剪贴板导入存档', 'ach');
+      } else toast('剪贴板内容不是有效存档', 'bad');
+    }catch(e){ toast('剪贴板内容不是有效 JSON', 'bad'); }
+  }).catch(() => toast('无法读取剪贴板（请允许权限）', 'bad'));
+}
+
+/* ═══ 设置页渲染后补挂 ═══ */
+function renderSet(){
+  // 昵称输入框初值
+  const pni = document.getElementById('playerNameInput');
+  if(pni) pni.value = state.playerName || '沙杨马';
+  setToggleUI();
+  bindPrefToggles();
+}
+
+function renderAll(){
+  renderHud(); renderBuffs();
+  if(curPage === 'click'){ renderClick(); renderBuySeg(); renderBuilds(); }
+  if(curPage === 'up'){ renderUpTabs(); renderUps(); }
+  if(curPage === 'ach') renderAch();
+  if(curPage === 'stat') renderStat();
+  if(curPage === 'set'){ renderLifeStats(); renderSet(); }
+}
+
+/* ═══ 成就检查 ═══ */
+function checkAch(){
+  let got = false;
+  ACHS.forEach(a => {
+    if(state.achs[a.id]) return;
+    let ok = false;
+    try{ ok = a.check(state); }catch(e){ ok = false; }
+    if(ok){
+      state.achs[a.id] = true; got = true; toast('🏆 成就解锁：' + a.name, 'ach');
+      beep(1200, .15, 'sine', .06);
+      setTimeout(() => beep(1600, .25, 'sine', .05), 120);
+      doVibrate([15, 30, 15]);
+    }
+  });
+  if(got) renderAll();
+}
+
+/* ═══ 主循环 ═══ */
+let lastFrame = performance.now();
+let achTick = 0, uiTick = 0, saveTick = 0, madTick = 0;
+function loop(now){
+  const dt = Math.min(0.25, (now - lastFrame) / 1000);
+  lastFrame = now;
+  state.playtime += dt * 1000;
+
+  // 自动产能
+  const gain = cps() * dt;
+  if(gain > 0){ state.sand += gain; state.total += gain; state.afkTotal += gain; }
+
+  // 金光
+  if(state.goldenEl){
+    state.goldenTimer -= dt;
+    if(state.goldenTimer <= 0) killGolden();
+  } else {
+    state.goldenNext -= dt;
+    if(state.goldenNext <= 0){
+      // 点击越多，越容易提前刷出
+      if(Math.random() < Math.min(0.9, 0.35 + state.clicks * 0.0004)) spawnGolden();
+      state.goldenNext = rnd(60, 180);
+    }
+  }
+
+  achTick += dt; uiTick += dt; saveTick += dt; madTick += dt;
+  if(achTick > 1){ achTick = 0; checkAch(); }
+  if(uiTick > 0.2){ uiTick = 0; tickValues(); }
+  if(saveTick > 8){ saveTick = 0; save(); }
+  if(madTick > 12){
+    madTick = 0;
+    $('#madLine').textContent = state.total > 1e6 ? MAD_LINES[Math.floor(Math.random() * MAD_LINES.length)] : '';
+  }
+  requestAnimationFrame(loop);
+}
+
+/* ═══ 交互 ═══ */
+function buyBuild(id){
+  const b = BID[id];
+  if(!b) return;
+  const n = Math.max(1, buyCount(b));
+  const cost = bCost(b, n);
+  if(state.sand < cost){ toast('沙子不够，还差 ' + fmt(cost - state.sand), 'bad'); return; }
+  state.sand -= cost;
+  state.builds[id] = (state.builds[id] || 0) + n;
+  toast('🏗️ ' + b.name + ' ×' + n + '（共 ' + state.builds[id] + ' 座）');
+  beep(760, .08, 'square', .045);
+  doVibrate(15);
+  renderAll(); save();
+}
+function buyUp(id){
+  const u = UID[id];
+  if(!u || state.ups[id]) return;
+  if(state.sand < u.cost){ toast('沙子不够，还差 ' + fmt(u.cost - state.sand), 'bad'); return; }
+  state.sand -= u.cost;
+  state.ups[id] = true;
+  toast('⬆️ ' + u.name + '：' + u.desc);
+  beep(880, .1, 'sine', .05);
+  setTimeout(() => beep(1320, .18, 'sine', .045), 90);
+  doVibrate(20);
+  renderAll(); save();
+}
+
+/* 弹窗 */
+let ovResolve = null;
+function confirmBox(emoji, title, desc){
+  return new Promise(res => {
+    $('#ovEmoji').textContent = emoji;
+    $('#ovTitle').textContent = title;
+    $('#ovDesc').textContent = desc;
+    $('#overlay').classList.add('on');
+    ovResolve = res;
+  });
+}
+$('#ovYes').addEventListener('click', () => { $('#overlay').classList.remove('on'); if(ovResolve) ovResolve(true); ovResolve = null; });
+$('#ovNo').addEventListener('click', () => { $('#overlay').classList.remove('on'); if(ovResolve) ovResolve(false); ovResolve = null; });
+
+async function askAscend(){
+  const g = ascGain();
+  if(g < 1){ toast('累计产出至少 1.00M 沙才能轮回', 'bad'); return; }
+  const ok = await confirmBox('🔁', '确认轮回？', '将失去全部沙值、建筑与升级\n获得 ' + fmt(g) + ' 枚星尘（永久 +' + (g * 2) + '% 产能）');
+  if(!ok) return;
+  state.stardust += g;
+  state.ascends++;
+  state.sand = 0; state.total = 0; state.handmade = 0; state.afkTotal = 0;
+  state.builds = {}; state.ups = {}; state.buffs = [];
+  state.start = Date.now();
+  toast('🔁 轮回完成！星尘 ' + fmt(state.stardust) + ' 枚，产能 +' + (state.stardust * 2) + '%', 'ach');
+  [300, 500, 800, 1200, 1800].forEach((f, i) =>
+    setTimeout(() => beep(f, .3, 'sine', .06), i * 120));
+  doVibrate([30, 60, 30, 60, 60]);
+  shake(9);
+  const cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+  clickBurst(cx, cy, '#ffd86b', 30);
+  setTimeout(() => clickBurst(cx, cy, '#a45cff', 20), 160);
+  save(); renderAll();
+}
+
+$('#bigCookie').addEventListener('pointerdown', e => { e.preventDefault(); doClick(e); });
+document.addEventListener('keydown', e => {
+  if(e.code === 'Space' || e.code === 'Enter'){ e.preventDefault(); doClick(null); }
+});
+$('#nav').addEventListener('click', e => {
+  const b = e.target.closest('.nav-btn');
+  if(b) goPage(b.dataset.page);
+});
+$('#sideNav').addEventListener('click', e => {
+  const b = e.target.closest('.side-btn');
+  if(b) goPage(b.dataset.page);
+});
+$('#buySeg').addEventListener('click', e => {
+  const b = e.target.closest('.bm-opt');
+  if(!b) return;
+  state.buyMode = +b.dataset.n;
+  renderBuySeg(); renderBuilds();
+});
+$('#upTabs').addEventListener('click', e => {
+  const b = e.target.closest('.bm-opt');
+  if(!b) return;
+  state.upTab = b.dataset.tab;
+  renderUpTabs(); renderUps();
+});
+$('#buildList').addEventListener('click', e => {
+  const c = e.target.closest('.bcard');
+  if(c) buyBuild(c.dataset.bid);
+});
+$('#upGrid').addEventListener('click', e => {
+  const c = e.target.closest('.ucard');
+  if(c && c.dataset.uid) buyUp(c.dataset.uid);
+});
+// 存档管理 / 危险操作（设置页元素，加空值守卫）
+if($('#btnExport')) $('#btnExport').addEventListener('click', exportSave);
+if($('#btnImport')) $('#btnImport').addEventListener('click', importSaveFromFile);
+if($('#btnCopy'))   $('#btnCopy').addEventListener('click', copySaveToClipboard);
+if($('#btnPaste'))  $('#btnPaste').addEventListener('click', pasteSaveFromClipboard);
+if($('#btnWipe'))   $('#btnWipe').addEventListener('click', async () => {
+  const ok = await confirmBox('🧹', '清空存档？', '所有进度将永久消失，真的要吗？');
+  if(!ok) return;
+  localStorage.removeItem(SAVE_KEY);
+  location.reload();
+});
+
+// 昵称 / 礼包码（静态元素，直接绑，_bound 防重复）
+const nameBtn = document.getElementById('playerNameSave');
+if(nameBtn && !nameBtn._bound){
+  nameBtn._bound = true;
+  nameBtn.addEventListener('click', savePlayerName);
+}
+const nameInp = document.getElementById('playerNameInput');
+if(nameInp && !nameInp._bound){
+  nameInp._bound = true;
+  nameInp.addEventListener('keydown', e => { if(e.key === 'Enter') savePlayerName(); });
+}
+const giftBtn = document.getElementById('giftCodeBtn');
+if(giftBtn && !giftBtn._bound){
+  giftBtn._bound = true;
+  giftBtn.addEventListener('click', redeemGiftCode);
+}
+const giftInp = document.getElementById('giftCodeInput');
+if(giftInp && !giftInp._bound){
+  giftInp._bound = true;
+  giftInp.addEventListener('keydown', e => { if(e.key === 'Enter') redeemGiftCode(); });
+}
+window.addEventListener('beforeunload', save);
+document.addEventListener('visibilitychange', () => { if(document.hidden) save(); });
+
+/* ═══ 启动 ═══ */
+(function init(){
+  const away = load();
+  renderNav();
+  renderAll();
+  if(away && away > 5){
+    const sec = Math.min(away, 12 * 3600);
+    const g = cps() * sec;
+    if(g > 0){
+      state.sand += g; state.total += g; state.afkTotal += g;
+      toast('😴 离线 ' + fmtTime(away) + '，沙杨马替你刨了 ' + fmt(g) + ' 沙', 'gold');
+    }
+  }
+  requestAnimationFrame(loop);
+  setInterval(renderBuffs, 1000);
+})();
+</script>
+</body>
+</html>
