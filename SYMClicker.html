@@ -877,12 +877,14 @@ function renderNav(){
     '<div class="nav-btn' + (p.id === curPage ? ' on' : '') + '" data-page="' + p.id + '">' +
     '<span class="nb-emoji">' + p.emoji + '</span><span>' + p.name + '</span></div>'
   ).join('');
-  $('#sideNav').innerHTML = SIDE_PAGES.map(p =>
+  const sideList = [{id:'home', name:'首页', emoji:'🏠'}].concat(SIDE_PAGES);
+  $('#sideNav').innerHTML = sideList.map(p =>
     '<div class="side-btn' + (p.id === curPage ? ' on' : '') + '" data-page="' + p.id + '">' +
     '<span>' + p.emoji + '</span><small>' + p.name + '</small></div>'
   ).join('');
 }
 function goPage(id){
+  if(id === 'home'){ location.href = './SYMindex.html'; return; }
   curPage = id;
   ['click','up','set','ach','stat'].forEach(pid => {
     const el = document.getElementById('page-' + pid);

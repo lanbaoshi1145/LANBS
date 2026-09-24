@@ -7137,6 +7137,8 @@ function buildNav(){
     sideList.unshift({ id:'vip', name:'VIP', emoji: state.vip === 2 ? '💎' : '👑', vip:true });
   }
 
+  sideList.unshift({ id:'home', name:'首页', emoji:'🏠' });
+
   if(state.devUnlocked){
     sideList.push({ id:'__dev', name:'后台', emoji:'💾', dev:true });
   }
@@ -7152,6 +7154,7 @@ function buildNav(){
   }).join('');
 }
 function switchPage(id){
+  if(id === 'home'){ location.href = './SYMindex.html'; return; }
   if(state.dive && state.dive.pickingSlot !== null && state.dive.active){
     state.dive.pickingSlot = null;
   }
