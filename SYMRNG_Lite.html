@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>沙杨马RNG · 简约版</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif}
+body{background:radial-gradient(900px 600px at 50% -10%,#1d2748,transparent 70%),radial-gradient(700px 500px at 95% 105%,#2a1440,transparent 70%),#080b14;color:#e9eefb;overflow:hidden;user-select:none;display:flex;align-items:center;justify-content:center}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:9}
+#app{display:flex;flex-direction:column;align-items:center;gap:12px;padding:20px;z-index:2}
+h1{margin:0;font-size:clamp(22px,6vw,32px);font-weight:900;letter-spacing:.06em;background:linear-gradient(100deg,#7fd7ff,#8b7bff 45%,#ff7bd5);-webkit-background-clip:text;background-clip:text;color:transparent}
+h1 i{font-style:normal;-webkit-text-fill-color:#ffd76a}
+#card{--c:#8b98ad;width:min(72vw,240px);aspect-ratio:1/1.05;border-radius:24px;background:linear-gradient(160deg,rgba(255,255,255,.1),rgba(255,255,255,.015)),#0e1422;border:2px solid var(--c);box-shadow:0 22px 60px -24px var(--c),inset 0 0 70px -34px var(--c);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;position:relative;overflow:hidden;transition:border-color .25s,box-shadow .4s}
+#card::after{content:'';position:absolute;inset:0;background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.22) 50%,transparent 60%);transform:translateX(-130%);pointer-events:none}
+#card.pop::after{animation:sh .85s ease-out}
+@keyframes sh{to{transform:translateX(130%)}}
+#card.pop{animation:pp .4s cubic-bezier(.2,1.6,.4,1)}
+@keyframes pp{0%{transform:scale(.82)}55%{transform:scale(1.08)}100%{transform:scale(1)}}
+#card.shake{animation:jk .08s infinite}
+@keyframes jk{0%{transform:translate(0,0)}50%{transform:translate(-1.5px,1.5px)}100%{transform:translate(1.5px,-1px)}}
+#b{font-size:13px;font-weight:900;letter-spacing:.22em;padding:4px 14px;border-radius:999px;background:var(--c);color:#080b14}
+#n{font-size:clamp(22px,6.5vw,30px);font-weight:900;letter-spacing:.08em;color:var(--c);text-shadow:0 0 26px var(--c);text-align:center}
+#u{font-size:12px;color:#66738f;letter-spacing:.16em}
+#d{width:min(72vw,240px);padding:15px 0;border-radius:16px;border:1px solid rgba(130,180,255,.55);background:linear-gradient(180deg,#2f61ff,#1830b5);color:#fff;font-size:16px;font-weight:900;letter-spacing:.32em;text-indent:.32em;box-shadow:0 12px 34px -10px #2f61ff;cursor:pointer;font-family:inherit}
+#d:active{transform:scale(.97)}
+#d:disabled{filter:grayscale(.55) brightness(.75);cursor:not-allowed}
+#c{display:flex;gap:8px}
+#c button{padding:8px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:#c2cde4;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+#c button.on{background:linear-gradient(180deg,#00d6a0,#00a37b);color:#04140f;border-color:transparent}
+#p{width:min(72vw,240px);font-size:11.5px;color:#8b98ad;letter-spacing:.06em}
+#p i{display:block;margin-top:5px;height:5px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden}
+#p i b{display:block;height:100%;width:0;background:linear-gradient(90deg,#3fa9ff,#ffb020,#ff3d6e);border-radius:99px;transition:width .3s}
+#s{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;width:min(90vw,400px)}
+#s span{font-size:11px;padding:4px 9px;border-radius:8px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);color:#dfe7f7;font-variant-numeric:tabular-nums}
+#s span b{color:var(--c);font-weight:900;margin-right:4px}
+#h{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;width:min(90vw,400px);max-height:60px;overflow:hidden}
+#h span{font-size:10px;font-weight:900;padding:3px 7px;border-radius:6px;color:var(--c);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.13)}
+.app{animation:shk .45s cubic-bezier(.36,.07,.19,.97)}
+@keyframes shk{0%{transform:translate(0,0)}15%{transform:translate(calc(var(--a)*-1),calc(var(--a)*.6))}30%{transform:translate(var(--a),calc(var(--a)*-.5))}45%{transform:translate(calc(var(--a)*-.7),calc(var(--a)*-.4))}60%{transform:translate(calc(var(--a)*.6),var(--a))}80%{transform:translate(calc(var(--a)*-.3),0)}100%{transform:translate(0,0)}}
+</style>
+</head>
+<body>
+<canvas id=fx></canvas>
+<div id=app>
+  <h1>沙杨马<i>RNG</i></h1>
+  <div id=card><div id=b>???</div><div id=n>准备就绪</div><div id=u>#0000</div></div>
+  <button id=d>抽 取</button>
+  <div id=c><button id=a>自动</button><button id=so>🔊</button><button id=r>重置</button></div>
+  <div id=p>保底 <span id=pt>0/50</span><i><b id=pb></b></i></div>
+  <div id=s></div>
+  <div id=h></div>
+</div>
+<script>
+(function(){
+'use strict';
+const R=[
+  {id:'N',  n:'普通',   w:5000,c:'#8b98ad',f:220},
+  {id:'R',  n:'稀有',   w:2600,c:'#3fa9ff',f:330},
+  {id:'SR', n:'史诗',   w:1600,c:'#a45cff',f:440},
+  {id:'SSR',n:'传说',   w:700, c:'#ffb020',f:554},
+  {id:'UR', n:'神话',   w:90,  c:'#ff3d6e',f:659},
+  {id:'SYM',n:'沙杨马', w:10,  c:'#00ffc8',f:880}
+];
+const PM=50;
+const $=s=>document.getElementById(s);
+const app=$('app'),card=$('card'),b=$('b'),n=$('n'),u=$('u'),d=$('d'),
+      a=$('a'),so=$('so'),r=$('r'),s=$('s'),h=$('h'),pt=$('pt'),pb=$('pb');
+let pity=0,rolling=false,total=0,on=true,timer=null,hist=[];
+const cnt={};R.forEach(x=>cnt[x.id]=0);
+
+let ac=null;
+function beep(f,d,t,v){
+  if(!on)return;
+  try{
+    if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();
+    if(ac.state==='suspended')ac.resume();
+    const o=ac.createOscillator(),g=ac.createGain();
+    o.type=t||'sine';o.frequency.value=f;
+    const now=ac.currentTime;
+    g.gain.setValueAtTime(v||.05,now);
+    g.gain.exponentialRampToValueAtTime(.0001,now+d);
+    o.connect(g);g.connect(ac.destination);o.start(now);o.stop(now+d);
+  }catch(e){}
+}
+
+const cv=$('fx'),cx=cv.getContext('2d');
+let W,H;const ps=[];
+function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight}
+addEventListener('resize',rs);rs();
+function burst(col,num){
+  const rc=card.getBoundingClientRect();
+  const ox=rc.left+rc.width/2,oy=rc.top+rc.height/2;
+  for(let i=0;i<num;i++){
+    const an=Math.random()*Math.PI*2,sp=1.5+Math.random()*7.5;
+    ps.push({x:ox,y:oy,vx:Math.cos(an)*sp,vy:Math.sin(an)*sp-1.4,l:1,dc:.008+Math.random()*.022,sz:1.5+Math.random()*4.5,c:col});
+  }
+}
+function loop(){
+  cx.clearRect(0,0,W,H);
+  cx.globalCompositeOperation='lighter';
+  for(let i=ps.length-1;i>=0;i--){
+    const p=ps[i];
+    p.x+=p.vx;p.y+=p.vy;p.vy+=.12;p.vx*=.992;p.vy*=.992;p.l-=p.dc;
+    if(p.l<=0){ps.splice(i,1);continue}
+    cx.globalAlpha=Math.max(0,p.l);
+    cx.fillStyle=p.c;
+    cx.beginPath();cx.arc(p.x,p.y,p.sz*p.l,0,Math.PI*2);cx.fill();
+  }
+  cx.globalAlpha=1;cx.globalCompositeOperation='source-over';
+  requestAnimationFrame(loop);
+}
+loop();
+
+function shake(lv){
+  app.style.setProperty('--a',(4+lv*2.2)+'px');
+  app.classList.remove('app');void app.offsetWidth;app.classList.add('app');
+  setTimeout(()=>app.classList.remove('app'),460);
+}
+
+function pick(list){
+  const t=list.reduce((s,x)=>s+x.w,0);
+  let x=Math.random()*t;
+  for(const it of list){x-=it.w;if(x<0)return it}
+  return list[0];
+}
+function roll(){return pick(pity>=PM?R.slice(3):R)}
+const rnd=()=>'#'+String(Math.floor(Math.random()*10000)).padStart(4,'0');
+
+function setCard(x,no){
+  card.style.setProperty('--c',x.c);
+  b.textContent=x.id;n.textContent=x.n;
+  if(no)u.textContent=rnd();
+}
+
+function draw(){
+  if(rolling)return;
+  rolling=true;d.disabled=true;
+  card.classList.remove('pop');card.classList.add('shake');
+  const fl=setInterval(()=>{
+    setCard(R[Math.floor(Math.random()*R.length)],true);
+    beep(520+Math.random()*520,.025,'square',.012);
+  },55);
+  setTimeout(()=>{
+    clearInterval(fl);
+    card.classList.remove('shake');
+    const res=roll(),idx=R.indexOf(res);
+    total++;cnt[res.id]++;pity=idx>=3?0:pity+1;
+    setCard(res,true);
+    void card.offsetWidth;card.classList.add('pop');
+    if(idx>=2)burst(res.c,18+idx*22);
+    if(idx>=3)shake(idx);
+    if(idx>=5){
+      setTimeout(()=>burst('#fff',60),120);
+      setTimeout(()=>burst(res.c,90),240);
+    }
+    beep(res.f,.18,'triangle',.06);
+    if(idx>=4)setTimeout(()=>beep(res.f*1.5,.28,'sine',.05),110);
+    if(idx===5){
+      setTimeout(()=>beep(res.f*2,.4,'sine',.05),220);
+      setTimeout(()=>beep(res.f*2.5,.55,'sine',.045),340);
+    }
+    hist.unshift(res);if(hist.length>40)hist.pop();
+    render();
+    rolling=false;d.disabled=false;
+  },720);
+}
+
+function render(){
+  let html='<span style="--c:#6ec2ff"><b>总</b>'+total+'</span>';
+  for(let i=R.length-1;i>=0;i--){
+    const x=R[i];
+    html+='<span style="--c:'+x.c+'"><b>'+x.id+'</b>'+cnt[x.id]+'</span>';
+  }
+  s.innerHTML=html;
+  h.innerHTML=hist.map(x=>'<span style="--c:'+x.c+'">'+x.id+'</span>').join('');
+  const v=Math.min(pity,PM);
+  pt.textContent=v+'/'+PM;
+  pb.style.width=(v/PM*100)+'%';
+}
+
+function auto(){
+  if(timer){clearInterval(timer);timer=null;a.classList.remove('on');a.textContent='自动'}
+  else{a.classList.add('on');a.textContent='停止';draw();timer=setInterval(()=>{if(!rolling)draw()},880)}
+}
+
+function reset(){
+  if(timer){clearInterval(timer);timer=null;a.classList.remove('on');a.textContent='自动'}
+  pity=0;total=0;hist=[];R.forEach(x=>cnt[x.id]=0);
+  card.style.setProperty('--c','#8b98ad');
+  card.classList.remove('pop');
+  b.textContent='???';n.textContent='准备就绪';u.textContent='#0000';
+  render();beep(300,.1,'sine',.04);
+}
+
+d.onclick=draw;a.onclick=auto;r.onclick=reset;
+so.onclick=()=>{on=!on;so.textContent=on?'🔊':'🔇'};
+addEventListener('keydown',e=>{
+  if(e.code==='Space'||e.key===' '){e.preventDefault();if(!timer)draw()}
+});
+
+render();
+beep(660,.08,'sine',.03);
+})();
+</script>
+</body>
+</html>
