@@ -623,6 +623,146 @@ body{
   box-shadow:0 0 22px -6px rgba(255,200,60,.6);
 }
 
+
+/* ═══ ♨️ 源质温泉 ═══ */
+.onsen-wrap{max-width:560px;margin:0 auto}
+.onsen-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding:11px 14px;border-radius:14px;background:var(--panel);border:1px solid var(--line)}
+.onsen-head .oh-emoji{font-size:24px;line-height:1}
+.onsen-head .oh-name{font-size:15px;font-weight:900;letter-spacing:.08em;color:#e2e9f8}
+.onsen-head .oh-timer{margin-left:auto;font-size:18px;font-weight:900;color:#ffd86b;font-variant-numeric:tabular-nums}
+.onsen-diff{
+  display:flex;align-items:center;gap:6px;justify-content:center;
+  padding:8px 12px;margin-bottom:10px;border-radius:12px;
+  background:var(--panel);border:1px solid var(--line);
+}
+.onsen-diff .od-lb{
+  font-size:11px;font-weight:900;color:#8b98ad;letter-spacing:.08em;
+}
+.onsen-diff .od-opt{
+  padding:6px 14px;border-radius:9px;border:1px solid rgba(255,255,255,.1);
+  background:transparent;color:#aebdde;font-family:inherit;
+  font-size:11.5px;font-weight:900;cursor:pointer;transition:.15s;
+}
+.onsen-diff .od-opt:hover{color:#fff;background:rgba(255,255,255,.08)}
+.onsen-diff .od-opt.on{
+  background:linear-gradient(180deg,#5aa0ff,#2e6fd6);
+  color:#fff;border-color:transparent;
+}
+.onsen-scoreboard{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:5px;
+  margin-bottom:10px;
+}
+@media(max-width:520px){.onsen-scoreboard{gap:3px}}
+.onsen-sb-card{
+  padding:7px 4px;border-radius:10px;text-align:center;
+  background:linear-gradient(165deg,rgba(46,230,255,.06),rgba(255,255,255,.02));
+  border:1px solid rgba(46,230,255,.18);
+  transition:.2s;
+}
+.onsen-sb-card.me{
+  background:linear-gradient(165deg,rgba(255,200,60,.18),rgba(255,200,60,.04));
+  border-color:rgba(255,220,120,.5);
+}
+.onsen-sb-card .osc-top{display:flex;align-items:center;justify-content:center;gap:3px;flex-wrap:nowrap;overflow:hidden}
+.onsen-sb-card .osc-emoji{font-size:14px;line-height:1}
+.onsen-sb-card .osc-name{font-size:10px;font-weight:900;color:#c8d4ea;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:38px}
+.onsen-sb-card .osc-rank{font-size:9px;font-weight:900;color:#7c89a5;font-variant-numeric:tabular-nums}
+.onsen-sb-card .osc-score{font-size:15px;font-weight:900;color:#ffd86b;margin-top:2px;font-variant-numeric:tabular-nums;text-shadow:0 0 10px rgba(255,200,60,.4)}
+.onsen-sb-card .osc-val{font-size:9px;color:#8b98ad;font-weight:800;margin-top:1px;font-variant-numeric:tabular-nums}
+.onsen-cd-hint{
+  height:22px;line-height:22px;text-align:center;
+  font-size:11.5px;font-weight:900;letter-spacing:.04em;
+  color:#ff8a8a;opacity:0;transition:opacity .18s;
+  margin-bottom:4px;
+}
+.onsen-cd-hint.show{opacity:1}
+.onsen-grid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  grid-template-rows:repeat(5,1fr);
+  gap:6px;
+  aspect-ratio:1/1;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(46,230,255,.14), transparent 60%),
+    radial-gradient(ellipse at 50% 100%, rgba(125,255,224,.10), transparent 60%),
+    linear-gradient(170deg, #0a1d2e 0%, #0d2839 45%, #0a1a2a 100%);
+  border-radius:16px;
+  padding:10px;
+  border:1px solid rgba(46,230,255,.28);
+  box-shadow:inset 0 0 60px -20px rgba(46,230,255,.35), 0 0 40px -20px rgba(46,230,255,.4);
+  box-sizing:border-box;
+  position:relative;
+  overflow:hidden;
+}
+.onsen-grid::before{
+  content:'';
+  position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(circle at 15% 90%, rgba(125,255,224,.18) 0, transparent 8px),
+    radial-gradient(circle at 42% 78%, rgba(46,230,255,.16) 0, transparent 6px),
+    radial-gradient(circle at 68% 92%, rgba(125,255,224,.14) 0, transparent 7px),
+    radial-gradient(circle at 82% 82%, rgba(46,230,255,.15) 0, transparent 5px),
+    radial-gradient(circle at 28% 95%, rgba(125,255,224,.12) 0, transparent 6px);
+  animation:onsenBubble 5s ease-in-out infinite;
+}
+@keyframes onsenBubble{
+  0%,100%{transform:translateY(0);opacity:.9}
+  50%{transform:translateY(-10px);opacity:.55}
+}
+.onsen-node{
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:clamp(18px,5vw,26px);cursor:pointer;
+  border:1.5px solid rgba(46,230,255,.35);
+  background:linear-gradient(160deg,rgba(255,255,255,.08),rgba(255,255,255,.01));
+  position:relative;
+  transition:transform .15s,opacity .3s,box-shadow .25s;
+  box-shadow:0 0 12px -6px rgba(46,230,255,.5), inset 0 0 14px -8px rgba(46,230,255,.4);
+  animation:onsenFloat 3s ease-in-out infinite;
+}
+@keyframes onsenFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-2px)}
+}
+.onsen-node:hover{
+  transform:translateY(-3px);
+  box-shadow:0 0 20px -4px rgba(46,230,255,.7), inset 0 0 20px -6px rgba(46,230,255,.6);
+}
+.onsen-node.floating{
+  background:repeating-linear-gradient(45deg,rgba(255,255,255,.10) 0,rgba(255,255,255,.10) 4px,rgba(255,255,255,.02) 4px,rgba(255,255,255,.02) 8px);
+  border-color:rgba(255,255,255,.2);
+}
+.onsen-node.floating::after{
+  content:'?';font-size:18px;font-weight:900;color:rgba(255,255,255,.45);
+}
+.onsen-node.revealed{
+  background:linear-gradient(160deg,rgba(46,230,255,.16),rgba(255,255,255,.02));
+  animation:onsenReveal .4s cubic-bezier(.2,1.4,.4,1), onsenFloat 3s ease-in-out .4s infinite;
+}
+@keyframes onsenReveal{
+  0%{transform:scale(.85)}
+  60%{transform:scale(1.12)}
+  100%{transform:scale(1)}
+}
+.onsen-node.fading{opacity:.35}
+.onsen-node.picked{
+  animation:onsenPick .3s ease-out forwards;
+  pointer-events:none;
+}
+@keyframes onsenPick{
+  0%{transform:scale(1);opacity:1}
+  60%{transform:scale(1.15);opacity:1}
+  100%{transform:scale(.4);opacity:0}
+}
+.onsen-foot{text-align:center;font-size:12px;color:#8b98ad;font-weight:800;letter-spacing:.04em;margin-top:12px;min-height:18px}
+.onsen-btn{
+  display:inline-block;margin-top:10px;padding:12px 26px;border-radius:12px;
+  background:linear-gradient(180deg,#4a86ff,#1d3fd0);color:#fff;border:none;
+  font-family:inherit;font-size:13px;font-weight:900;cursor:pointer;letter-spacing:.1em;
+  box-shadow:0 10px 26px -12px #4a86ff;
+}
+.onsen-btn:active{transform:scale(.96)}
+
 .bottom-nav{position:fixed;left:0;right:0;bottom:0;height:var(--nav-h);z-index:100;display:flex;background:rgba(10,15,30,.94);backdrop-filter:blur(16px);border-top:1px solid rgba(255,255,255,.08);box-shadow:0 -10px 30px -16px #000;padding:0 6px;overflow-x:auto;justify-content:center;}
 .bottom-nav::-webkit-scrollbar{display:none}
 .nav-btn{flex:0 1 140px;min-width:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:#66748f;font-size:10.5px;font-weight:900;letter-spacing:.04em;transition:.18s;position:relative;padding:0 4px;}
@@ -736,6 +876,97 @@ body{
   .side-btn.on{
     background:linear-gradient(165deg,rgba(75,139,255,.35),rgba(75,139,255,.12));
     box-shadow:0 0 14px -4px rgba(75,139,255,.6);
+  }
+}
+/* ═══ 📱 手机端侧栏折叠 ═══ */
+.side-toggle{display:none}
+.side-hint{display:none}
+
+@media(max-width:820px){
+  .side-toggle{
+    display:flex;align-items:center;justify-content:center;
+    position:fixed;top:10px;left:10px;z-index:120;
+    width:42px;height:42px;border-radius:12px;
+    background:rgba(16,23,44,.94);
+    border:1px solid rgba(255,255,255,.15);
+    color:#e8eefc;font-size:20px;font-weight:900;
+    cursor:pointer;backdrop-filter:blur(10px);
+    box-shadow:0 8px 24px -10px #000;
+    font-family:inherit;
+    transition:background .18s,border-color .18s;
+  }
+  .side-toggle:active{transform:scale(.92);transition:transform .06s}
+  body.side-open .side-toggle{
+    background:linear-gradient(165deg,rgba(255,200,60,.3),rgba(255,200,60,.08));
+    border-color:rgba(255,220,120,.6);
+  }
+
+  .side-nav{
+    display:flex;
+    position:fixed;
+    top:60px;left:10px;
+    right:auto;bottom:auto;
+    flex-direction:column;
+    gap:6px;
+    padding:8px;
+    border-radius:16px;
+    background:rgba(10,15,30,.96);
+    backdrop-filter:blur(14px);
+    border:1px solid rgba(255,255,255,.12);
+    box-shadow:0 14px 40px -14px #000;
+    z-index:115;
+    max-height:calc(100vh - 140px);
+    overflow-y:auto;
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transform:translateX(-14px);
+    transition:opacity .15s ease-out,transform .15s ease-out,visibility .15s;
+  }
+  body.side-open .side-nav{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+    transform:translateX(0);
+  }
+
+  .side-btn{
+    width:auto;height:auto;
+    min-width:132px;
+    flex-direction:row;
+    justify-content:flex-start;
+    gap:10px;
+    padding:11px 14px;
+    border-radius:11px;
+    background:transparent;
+    border:1px solid transparent;
+    box-shadow:none;
+  }
+  .side-btn span{font-size:18px}
+  .side-btn small{display:block;font-size:11px;font-weight:900;color:#c8d4ea}
+  .side-btn.on{
+    background:linear-gradient(165deg,rgba(255,200,60,.28),rgba(255,200,60,.08));
+    border-color:rgba(255,220,120,.5);
+    box-shadow:none;
+  }
+  .side-btn.on small{color:#ffd86b}
+
+  .side-hint{
+    display:none;
+    position:fixed;top:14px;left:60px;z-index:119;
+    padding:7px 12px;border-radius:10px;
+    background:rgba(20,28,52,.96);
+    border:1px solid rgba(120,160,255,.4);
+    color:#c8d4ea;font-size:11.5px;font-weight:900;
+    letter-spacing:.04em;white-space:nowrap;
+    box-shadow:0 8px 22px -10px #000;
+    pointer-events:none;
+  }
+  .side-hint.show{display:block;animation:fade .3s ease}
+
+  body::after{
+    left:auto !important;
+    right:8px !important;
   }
 }
 .task-list{max-width:760px;margin:0 auto}
@@ -1227,7 +1458,20 @@ body{
  * v14.2.0 → v14.2.1：MAX 档位刷新后保留 + tooltip 预览支持 MAX
  * v14.2.1 → v14.2.2：删 13 个"首次抽到 XX 沙杨马"成就（图鉴已有，重复）
  * v14.2.2 → v14.2.3：图鉴"组合"tab 改为带词条沙杨马历史记录（上限 1000 条）
- * v14.2.3 → v14.3.0：阶段 5-1 生命机制改造（3 心 → 几百 HP，maxHp = 100 + 层×10）；印记奖励系数砍 1/10；献祭改百分比
+ * v14.2.3 → v15.0.0：阶段 5-1 生命机制改造（3 心 → 几百 HP，maxHp = 100 + 层×10）；印记奖励系数砍 1/10；献祭改百分比；存档 v 字段 14 → 15
+ * v15.0.0 → v15.1.1：源质温泉改挑战页第三个 tab 内嵌 + 源质 grid 占位
+ * v15.1.1 → v15.1.2：修温泉页点"挑战"按钮会切到 abyss；波次改间隔 2 秒 / 清空即刷 / 叠波概率
+ * v15.1.2 → v15.1.3：修温泉源质无上限填满屏幕的 bug（上限 10 个）
+ * v15.1.3 → v15.1.4：温泉波次改纯清空即刷（去叠波、去 2 秒定时）
+ * v15.1.4 → v15.2.0：手机端侧栏改左上竖向抽屉（☰ 折叠）+ 版本号挪右上 + 首次提示气泡
+ * v15.2.0 → v15.2.1：手机端侧栏改 opacity/visibility 双向过渡；探索中同时隐藏 ☰ 按钮和提示气泡
+ * v15.2.1 → v15.3.0：源质温泉核心机制（拾取 / 源质值上限 / 4 bot 抢池 / 计分板 / 30 秒结算发源质）
+ * v15.3.0 → v15.3.1：温泉波次改回定时刷（5 秒一波，波量 4/4/5/5/6/6）
+ * v15.3.1 → v15.3.2：温泉源质生命周期重做（锁定 2 秒 / 浮动 3 秒 / 揭示 3 秒）；波次 5 秒内随机逐个出；清空即刷 + 5 秒定时合并
+ * v15.3.2 → v15.3.3：温泉源质生命周期重做（锁定 2 秒 / 浮动 3 秒 / 揭示 3 秒）；波次 2 秒内随机逐个出；清空即刷 + 5 秒定时合并；bot 加反应延迟和犹豫概率；波量 5/5/6/6/7/7
+ * v15.3.3 → v15.3.4：温泉去锁定（出生即可捡）+ 波量 6/6/7/7/8/8 + UI 主题化（水质感 / 源质浮沉 / 揭示动效）
+ * v15.4.0 → v15.5.0：温泉配置栏扩展（难度 4 档 / 时长 3 档 / 随机强度开关 / 无虚空开关；困难+地狱 bot 避揭示后虚空；结算按时长比例）
+ * v15.3.4 → v15.4.0：温泉难度系统（练习/普通/困难）+ 音效 + 第一波虚空 +0 + 边框去色 + bot 稳定排序 + CD 提示
  */
 
 /* ═══ 🎲 赌徒房 display ═══ */
@@ -1304,7 +1548,7 @@ body{
 .cc-notice a:hover{color:#9fc4ff}
 
 body::after{
-  content: "v14.3.0";
+  content: "v15.5.0";
   position: fixed;
   left: 8px;
   top: 8px;
@@ -1381,6 +1625,7 @@ body::after{
   <div class="page" id="pageReb"></div>
   <div class="page" id="pageAbyss"></div>
   <div class="page" id="pageBoss"></div>
+  <div class="page" id="pageOnsen"></div>
   <div class="page" id="pageVip"></div>
   <div class="page" id="pageSet"></div>
 </div>
@@ -1390,6 +1635,8 @@ body::after{
   <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh-hans" target="_blank" rel="noopener">Creative Commons Attribution-NonCommercial 4.0 License</a>
 </div>
 
+<button class="side-toggle" id="sideToggle" aria-label="菜单">☰</button>
+<div class="side-hint" id="sideHint">点 ☰ 打开菜单</div>
 <div class="side-nav" id="sideNav"></div>
 <div class="pet-fab" id="petFab"></div>
 <nav class="bottom-nav" id="bottomNav"></nav>
@@ -2369,6 +2616,7 @@ const state = {
   abyssExploreUnlocked: false,
 
   diveItems: [],
+  onsen: null,   // 源质温泉局内状态（不入档）
 
   affixHistory: [],
 
@@ -2376,8 +2624,8 @@ const state = {
   dive: {
     active: false,
     phase: 'idle',
-    hp: 3,
-    maxHp: 3,
+    hp: 110,
+    maxHp: 110,
     layer: 1,
     essence: 0,
     tempAffixes: [],
@@ -2776,8 +3024,8 @@ function applySaveData(d){
     state.dive = {
       active: false,
       phase: 'idle',
-      hp: 3,
-      maxHp: 3,
+      hp: 110,
+      maxHp: 110,
       layer: 1,
       essence: 0,
       tempAffixes: [],
@@ -5557,12 +5805,13 @@ function startHellMode(){ toast('🔒 地狱模式暂未开放', '#ff6b6b'); }
 
 function renderChallengeTabs(current){
   const abyssUnlocked = state.trueRebirths >= 1 || state.voidMode;
-  return '<div class="subtabs" style="max-width:760px">' +
+  return '<div class="subtabs" style="max-width:900px">' +
     '<div class="subtab' + (current === 'abyss' ? ' on' : '') + (abyssUnlocked ? '' : ' locked') + '" ' +
       (abyssUnlocked ? 'data-challenge="abyss"' : 'data-challenge-locked="1"') + '>' +
       '🕳️ 源质深渊' + (abyssUnlocked ? '' : ' 🔒') +
     '</div>' +
     '<div class="subtab' + (current === 'boss' ? ' on' : '') + '" data-challenge="boss">👹 世界 Boss</div>' +
+    '<div class="subtab' + (current === 'onsen' ? ' on' : '') + '" data-challenge="onsen">♨️ 源质温泉</div>' +
   '</div>';
 }
 
@@ -5813,6 +6062,15 @@ const DIVE_ENEMIES = [
   { id:'archlich',  name:'深渊巫妖王', emoji:'☠️', hpBase:215500, hpMul:1.45 },
   { id:'eldritch',  name:'深渊旧日支配', emoji:'🐙', hpBase:286700, hpMul:1.46 },
   { id:'oblivion',  name:'深渊终焉之兽', emoji:'🌌', hpBase:381500, hpMul:1.47 }
+];
+
+const ONSEN_ESSENCES = [
+  { id:'shallow',     name:'浅层源质',      emoji:'💧', color:'#2ee6ff', size:1, score: 5, value: 1, cap: 0, w: 30 },
+  { id:'deep',        name:'深层源质',      emoji:'💠', color:'#3f7bff', size:1, score: 5, value: 1, cap: 1, w: 22 },
+  { id:'void',        name:'虚空源质',      emoji:'🕳️', color:'#8b3dff', size:1, score:-5, value:-1, cap: 0, w: 14 },
+  { id:'high_shallow',name:'高级浅层源质',  emoji:'💦', color:'#7dffe0', size:2, score:10, value: 2, cap: 0, w: 16 },
+  { id:'high_deep',   name:'高级深层源质',  emoji:'🔷', color:'#9fc4ff', size:2, score:10, value: 2, cap: 2, w: 12 },
+  { id:'deep_void',   name:'深层虚空源质',  emoji:'🌑', color:'#5a1bb8', size:2, score:-10,value:-2, cap: 0, w: 6 }
 ];
 
 const DIVE_HIDDEN_BOSS = {
@@ -6916,6 +7174,553 @@ function renderBossChoice(){
   h += '</div>';
   h += '</div>';
   return h;
+}
+
+/* ═══ ♨️ 源质温泉 ═══ */
+function renderOnsenPage(){
+  var o = state.onsen;
+  var h = '<div class="page-title"><h2>♨️ 源质温泉</h2><p>30 秒 · 拾取源质 · 提升排名</p></div>';
+  h += renderChallengeTabs('onsen');
+  h += '<div class="onsen-wrap">';
+
+  var elapsed = (o && o.startAt) ? Math.floor((Date.now() - o.startAt) / 1000) : 0;
+  var dur = (o && o.duration) ? o.duration : 30;
+  var left = o ? Math.max(0, dur - elapsed) : dur;
+
+  h += '<div class="onsen-head">' +
+    '<span class="oh-emoji">♨️</span>' +
+    '<span class="oh-name">' + (o && o.running ? '进行中' : (o && o.ended ? '已结束' : '未开始')) + '</span>' +
+    '<span class="oh-timer" id="onsenTimer">' + left + '</span>' +
+  '</div>';
+
+  h += '<div class="onsen-scoreboard" id="onsenScoreboard">' + renderOnsenScoreboardHTML() + '</div>';
+  h += '<div class="onsen-cd-hint" id="onsenCdHint"></div>';
+  if(!o || !o.running){
+    var curDiff = (o && o.difficulty) || 'normal';
+    var curDur = (o && o.duration) || 30;
+    var curRS = !!(o && o.randomStrength);
+    var curNV = !!(o && o.noVoid);
+    h += '<div class="onsen-diff">' +
+      '<span class="od-lb">难度</span>' +
+      '<button class="od-opt' + (curDiff === 'easy'   ? ' on' : '') + '" data-onsen-diff="easy">练习</button>' +
+      '<button class="od-opt' + (curDiff === 'normal' ? ' on' : '') + '" data-onsen-diff="normal">普通</button>' +
+      '<button class="od-opt' + (curDiff === 'hard'   ? ' on' : '') + '" data-onsen-diff="hard">困难</button>' +
+      '<button class="od-opt' + (curDiff === 'hell'   ? ' on' : '') + '" data-onsen-diff="hell">地狱</button>' +
+    '</div>';
+    h += '<div class="onsen-diff">' +
+      '<span class="od-lb">时长</span>' +
+      '<button class="od-opt' + (curDur === 30 ? ' on' : '') + '" data-onsen-dur="30">30秒</button>' +
+      '<button class="od-opt' + (curDur === 45 ? ' on' : '') + '" data-onsen-dur="45">45秒</button>' +
+      '<button class="od-opt' + (curDur === 60 ? ' on' : '') + '" data-onsen-dur="60">60秒</button>' +
+    '</div>';
+    h += '<div class="onsen-diff">' +
+      '<span class="od-lb">选项</span>' +
+      '<button class="od-opt' + (curRS ? ' on' : '') + '" data-onsen-rs="1">🎲 随机强度</button>' +
+      '<button class="od-opt' + (curNV ? ' on' : '') + '" data-onsen-nv="1">🚫 无虚空</button>' +
+    '</div>';
+  }
+  h += '<div class="onsen-grid" id="onsenGrid"></div>';
+
+  h += '<div class="onsen-foot" id="onsenFootText">';
+  if(!o || !o.running){
+    if(o && o.ended){
+      h += renderOnsenResultHTML();
+    } else {
+      h += '点击"开始"启动 30 秒温泉';
+    }
+  } else {
+    h += '点击源质拾取（浮状态也可检）· CD 2 秒';
+  }
+  h += '</div>';
+
+  if(!o || !o.running){
+    if(!(o && o.ended)){
+      h += '<div style="text-align:center"><button class="onsen-btn" data-onsen-start="1">开 始</button></div>';
+    } else {
+      h += '<div style="text-align:center"><button class="onsen-btn" data-onsen-start="1">再 玩 一 次</button></div>';
+    }
+  }
+
+  h += '</div>';
+  var pEl = document.getElementById('pageOnsen');
+  if(pEl) pEl.innerHTML = h;
+
+  if(o && o.nodes && o.nodes.length){
+    var grid = document.getElementById('onsenGrid');
+    if(grid){
+      for(var i = 0; i < o.nodes.length; i++){
+        renderOnsenNode(o.nodes[i]);
+      }
+    }
+  }
+}
+
+function renderOnsenScoreboardHTML(){
+  var o = state.onsen;
+  if(!o) return '';
+  var all = [{ p: o.player, isP: true }].concat(o.bots.map(function(b){ return { p: b, isP: false }; }));
+  all.sort(function(a, b){ return b.p.score - a.p.score; });
+  var h = '';
+  for(var i = 0; i < all.length; i++){
+    var item = all[i];
+    var p = item.p;
+    var rankCls = item.isP ? ' me' : '';
+    var rankStr = '#' + (i + 1);
+    h += '<div class="onsen-sb-card' + rankCls + '">' +
+      '<div class="osc-top">' +
+        '<span class="osc-emoji">' + p.emoji + '</span>' +
+        '<span class="osc-name">' + esc(p.name) + '</span>' +
+        '<span class="osc-rank">' + rankStr + '</span>' +
+      '</div>' +
+      '<div class="osc-score">' + p.score + '</div>' +
+      '<div class="osc-val">源质值 ' + p.value + ' / ' + p.cap + '</div>' +
+    '</div>';
+  }
+  return h;
+}
+
+function renderOnsenScoreboard(){
+  var el = document.getElementById('onsenScoreboard');
+  if(el) el.innerHTML = renderOnsenScoreboardHTML();
+}
+
+var _onsenLastSbTick = 0;
+function onsenTickScoreboard(now){
+  if(now - _onsenLastSbTick < 200) return;
+  _onsenLastSbTick = now;
+  renderOnsenScoreboard();
+}
+
+function renderOnsenResultHTML(){
+  var o = state.onsen;
+  if(!o) return '';
+  var all = [{ p: o.player, isP: true }].concat(o.bots.map(function(b){ return { p: b, isP: false }; }));
+  all.sort(function(a, b){ return b.p.score - a.p.score; });
+  var playerRank = -1;
+  for(var i = 0; i < all.length; i++){ if(all[i].isP){ playerRank = i; break; } }
+  var rewards = [10, 8, 6, 4, 2];
+  var durMul = { 30: 1.0, 45: 1.3, 60: 1.6 }[o.duration] || 1.0;
+  var gain = Math.round((rewards[playerRank] || 2) * durMul);
+  var h = '<div style="font-size:14px;font-weight:900;color:#ffd86b;margin-bottom:8px">🏆 第 ' + (playerRank + 1) + ' 名 · 源质 +' + gain + '</div>';
+  h += '<div style="font-size:11.5px;color:#8b98ad">已发放到源质账户</div>';
+  return h;
+}
+
+function startOnsen(){
+  var prevDiff = (state.onsen && state.onsen.difficulty) ? state.onsen.difficulty : 'normal';
+  var ov = state.onsen;
+  if(ov && ov.running) return;
+  state.onsen = {
+    running: true,
+    ended: false,
+    startAt: Date.now(),
+    grid: new Array(25).fill(null),
+    nodes: [],
+    nextUid: 1,
+    waveCount: 0,
+    currentWaveId: 0,
+    waveSpawnedCount: 0,
+    waveTotalCount: 0,
+    lastWaveAt: 0,
+    timers: [],
+    tickHandle: null,
+    difficulty: prevDiff,
+    duration: (state.onsen && state.onsen.duration) || 30,
+    randomStrength: !!(state.onsen && state.onsen.randomStrength),
+    noVoid: !!(state.onsen && state.onsen.noVoid),
+    player: { name: '你', emoji: '🧑', score: 0, value: 0, cap: 10, cdUntil: 0 },
+    bots: (function(){
+      var diff = prevDiff;
+      var presets = {
+        easy:   { reactMin: 300, reactMax: 800, patience: [0.30, 0.50, 0.60, 0.40], avoidVoid: false, randomPool: null },
+        normal: { reactMin: 150, reactMax: 400, patience: [0.15, 0.25, 0.30, 0.20], avoidVoid: false, randomPool: [0.85, 1.0, 1.15] },
+        hard:   { reactMin: 50,  reactMax: 200, patience: [0.05, 0.08, 0.12, 0.05], avoidVoid: true,  randomPool: [0.6, 0.8, 1.0, 1.2, 1.4] },
+        hell:   { reactMin: 0,   reactMax: 50,  patience: [0, 0, 0, 0],            avoidVoid: true,  randomPool: null }
+      };
+      var p = presets[diff] || presets.normal;
+      var strengthMul = 1.0;
+      if(state.onsen && state.onsen.randomStrength && p.randomPool){
+        strengthMul = p.randomPool[Math.floor(Math.random() * p.randomPool.length)];
+      }
+      var names = ['阿温', '小泉', '汤圆', '泡芙'];
+      var emojis = ['💧', '💦', '🌊', '🫧'];
+      var arr = [];
+      for(var i = 0; i < 4; i++){
+        arr.push({
+          name: names[i], emoji: emojis[i],
+          score: 0, value: 0, cap: 10,
+          cdUntil: 0, nextActionAt: 0,
+          patience: p.patience[i] / strengthMul,
+          reactMin: Math.round(p.reactMin / strengthMul),
+          reactMax: Math.round(p.reactMax / strengthMul),
+          avoidVoid: p.avoidVoid,
+          targetUid: null, reactUntil: 0
+        });
+      }
+      return arr;
+    })()
+  };
+
+  // 立刻渲染骨架
+  renderOnsenPage();
+
+  // 第一波立刻刷出
+  spawnNextWave();
+
+  // 波次调度（每 500ms 检查一次）
+  state.onsen.timers.push(setInterval(function(){
+    if(!state.onsen || !state.onsen.running) return;
+    onsenWaveCheck();
+  }, 500));
+
+  state.onsen.timers.push(setInterval(function(){
+    if(!state.onsen) return;
+    var el = document.getElementById('onsenTimer');
+    if(el){
+      var e2 = (Date.now() - state.onsen.startAt) / 1000;
+      el.textContent = Math.ceil(Math.max(0, state.onsen.duration - e2));
+    }
+  }, 200));
+
+  state.onsen.tickHandle = setInterval(onsenTick, 100);
+  state.onsen.timers.push(setTimeout(endOnsen, state.onsen.duration * 1000));
+
+  beep(660, .12, 'sine', .05);
+  setTimeout(function(){ beep(990, .18, 'sine', .05); }, 100);
+}
+
+function stopOnsen(){
+  if(!state.onsen) return;
+  state.onsen.running = false;
+  for(var i = 0; i < state.onsen.timers.length; i++) clearTimeout(state.onsen.timers[i]);
+  if(state.onsen.tickHandle) clearInterval(state.onsen.tickHandle);
+}
+
+function spawnNextWave(){
+  var o = state.onsen;
+  if(!o || !o.running) return;
+  o.waveCount++;
+  var n = o.waveCount;
+  o.currentWaveId = n;
+  o.waveSpawnedCount = 0;
+  o.waveTotalCount = n <= 2 ? 6 : (n <= 4 ? 7 : 8);
+
+  var total = o.waveTotalCount;
+  for(var i = 0; i < total; i++){
+    (function(){
+      var delay = Math.floor(Math.random() * 2000);
+      o.timers.push(setTimeout(function(){
+        if(!state.onsen || !state.onsen.running) return;
+        if(state.onsen.nodes.length >= 10) return;
+        spawnOnsenNode();
+        state.onsen.waveSpawnedCount++;
+      }, delay));
+    })();
+  }
+  o.lastWaveAt = Date.now();
+}
+
+/* 波次触发检查：距上波 ≥5 秒 或 本波全清 */
+function onsenWaveCheck(){
+  var o = state.onsen;
+  if(!o || !o.running) return;
+  if(o.waveCount === 0) return;
+  var now = Date.now();
+  var elapsed = now - o.lastWaveAt;
+  var waveNodes = o.nodes.filter(function(n){
+    return n.waveId === o.currentWaveId;
+  });
+  var cleared = (o.waveSpawnedCount >= o.waveTotalCount) && (waveNodes.length === 0);
+  if(elapsed >= 5000 || cleared){
+    spawnNextWave();
+  }
+}
+
+/* 拾取判定：返回 true = 成功，false = 拒绝 */
+function onsenTryPick(node, who){
+  if(!node || node.picked) return false;
+  var v = node.def.value;
+  if(who.value >= who.cap){
+    // 浮状态：值满一律拒绝（不知情不给赌）
+    if(node.phase === 'floating') return false;
+    // 揭示状态：正向拒绝，虚空允许（腾空间）
+    if(v > 0) return false;
+  }
+  node.picked = true;
+
+  var isFirstWaveVoid = (node.waveId === 1 && node.def.value < 0);
+  who.score += isFirstWaveVoid ? 0 : node.def.score;
+  who.value += isFirstWaveVoid ? 0 : v;
+  who.cap += node.def.cap;
+
+  var cells = state.onsen.grid;
+  for(var i = 0; i < node.cells.length; i++) cells[node.cells[i]] = null;
+
+  var idx = state.onsen.nodes.indexOf(node);
+  if(idx >= 0) state.onsen.nodes.splice(idx, 1);
+
+  var el = document.getElementById('onsenNode_' + node.uid);
+  if(el){
+    el.classList.add('picked');
+    el.textContent = (node.def.score >= 0 ? '+' : '') + node.def.score;
+    setTimeout(function(){ el.remove(); }, 300);
+  }
+  if(who === state.onsen.player){
+    if(isFirstWaveVoid || node.def.value < 0){
+      beep(220, .14, 'sawtooth', .05);
+    } else {
+      beep(1100, .09, 'sine', .045);
+    }
+  }
+  return true;
+}
+
+/* 玩家点击 */
+var _onsenCdTimer = null;
+function onsenShowCdHint(msg){
+  var el = document.getElementById('onsenCdHint');
+  if(!el) return;
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(_onsenCdTimer);
+  _onsenCdTimer = setTimeout(function(){ el.classList.remove('show'); }, 1200);
+}
+
+function onsenPlayerPick(uid){
+  var o = state.onsen;
+  if(!o || !o.running) return;
+  var now = Date.now();
+  if(now < o.player.cdUntil){
+    onsenShowCdHint('冷却中 · 还剩 ' + Math.ceil((o.player.cdUntil - now) / 1000) + ' 秒');
+    return;
+  }
+  var node = null;
+  for(var i = 0; i < o.nodes.length; i++){
+    if(o.nodes[i].uid === uid){ node = o.nodes[i]; break; }
+  }
+  if(!node) return;
+  if(!onsenTryPick(node, o.player)) return;
+  o.player.cdUntil = now + 2000;
+  renderOnsenScoreboard();
+}
+
+function spawnOnsenNode(){
+  if(!state.onsen) return false;
+  if(state.onsen.nodes.length >= 10) return false;
+
+  var voidIds = { void: 1, deep_void: 1 };
+  var total = 0;
+  var noVoid = state.onsen && state.onsen.noVoid;
+  for(var i = 0; i < ONSEN_ESSENCES.length; i++){
+    if(noVoid && voidIds[ONSEN_ESSENCES[i].id]) continue;
+    total += ONSEN_ESSENCES[i].w;
+  }
+  var r = Math.random() * total;
+  var pick = ONSEN_ESSENCES[0];
+  for(var j = 0; j < ONSEN_ESSENCES.length; j++){
+    if(noVoid && voidIds[ONSEN_ESSENCES[j].id]) continue;
+    r -= ONSEN_ESSENCES[j].w;
+    if(r <= 0){ pick = ONSEN_ESSENCES[j]; break; }
+  }
+
+  var cells = state.onsen.grid;
+  var empty = [];
+  for(var k = 0; k < 25; k++) if(cells[k] === null) empty.push(k);
+  if(empty.length < pick.size) return false;
+
+  var placed = null;
+  var attempts = 30;
+  while(attempts-- > 0){
+    var head = empty[Math.floor(Math.random() * empty.length)];
+    var hx = head % 5, hy = Math.floor(head / 5);
+    if(pick.size === 1){
+      placed = { head: head, cells: [head], vertical: false };
+      break;
+    }
+    var vertical = Math.random() < 0.5;
+    var nb = vertical ? (hy + 1) * 5 + hx : hy * 5 + (hx + 1);
+    var ok = vertical ? (hy < 4 && cells[nb] === null) : (hx < 4 && cells[nb] === null);
+    if(ok){
+      placed = { head: head, cells: [head, nb], vertical: vertical };
+      break;
+    }
+  }
+  if(!placed) return false;
+
+  for(var m = 0; m < placed.cells.length; m++) cells[placed.cells[m]] = -1;
+
+  var uid = state.onsen.nextUid++;
+  var node = {
+    uid: uid,
+    def: pick,
+    head: placed.head,
+    hx: placed.head % 5,
+    hy: Math.floor(placed.head / 5),
+    cells: placed.cells,
+    vertical: !!placed.vertical,
+    waveId: state.onsen.currentWaveId,
+    bornAt: Date.now(),
+    floatUntil: Date.now() + 1000,
+    dieAt: Date.now() + 4000,
+    phase: 'floating',
+    picked: false
+  };
+  state.onsen.nodes.push(node);
+  for(var n = 0; n < placed.cells.length; n++) cells[placed.cells[n]] = uid;
+
+  renderOnsenNode(node);
+  return true;
+}
+
+function renderOnsenNode(node){
+  var grid = document.getElementById('onsenGrid');
+  if(!grid) return;
+  var el = document.createElement('div');
+  var cls = 'onsen-node';
+  if(node.phase === 'floating')      cls += ' floating';
+  else if(node.phase === 'revealed') cls += ' revealed';
+  else if(node.phase === 'picked')   cls += ' picked';
+  el.className = cls;
+  el.id = 'onsenNode_' + node.uid;
+  el.dataset.onsenNode = node.uid;
+
+  // grid 定位：1-based
+  if(node.def.size === 1){
+    el.style.gridColumn = (node.hx + 1) + ' / span 1';
+    el.style.gridRow    = (node.hy + 1) + ' / span 1';
+  } else if(node.vertical){
+    el.style.gridColumn = (node.hx + 1) + ' / span 1';
+    el.style.gridRow    = (node.hy + 1) + ' / span 2';
+  } else {
+    el.style.gridColumn = (node.hx + 1) + ' / span 2';
+    el.style.gridRow    = (node.hy + 1) + ' / span 1';
+  }
+
+  if(node.phase === 'revealed') el.textContent = node.def.emoji;
+
+  grid.appendChild(el);
+}
+
+function onsenTick(){
+  if(!state.onsen || !state.onsen.running) return;
+  var now = Date.now();
+  var nodes = state.onsen.nodes;
+
+  for(var i = nodes.length - 1; i >= 0; i--){
+    var nd = nodes[i];
+    if(nd.picked) continue;
+    var el = document.getElementById('onsenNode_' + nd.uid);
+    if(!el) continue;
+    if(nd.phase === 'floating' && now >= nd.floatUntil){
+      nd.phase = 'revealed';
+      el.classList.remove('floating');
+      el.classList.add('revealed');
+      el.textContent = nd.def.emoji;
+      beep(1500, .06, 'sine', .025);
+    }
+    if(nd.phase === 'revealed' && now >= nd.dieAt - 1000){
+      el.classList.add('fading');
+    }
+    if(now >= nd.dieAt){
+      el.remove();
+      var cells = state.onsen.grid;
+      for(var k = 0; k < nd.cells.length; k++) cells[nd.cells[k]] = null;
+      nodes.splice(i, 1);
+    }
+  }
+
+  // bot AI
+  var o = state.onsen;
+  for(var b = 0; b < o.bots.length; b++){
+    var bot = o.bots[b];
+    if(now < bot.nextActionAt) continue;
+    if(now < bot.cdUntil) continue;
+    var target = onsenBotChooseTarget(bot);
+    if(!target){
+      bot.targetUid = null;
+      bot.nextActionAt = now + 300;
+      continue;
+    }
+
+    // 换目标 → 重置反应时间（300~800ms）
+    if(bot.targetUid !== target.uid){
+      bot.targetUid = target.uid;
+      var reactSpan = bot.reactMax - bot.reactMin;
+      bot.reactUntil = now + bot.reactMin + (reactSpan > 0 ? Math.floor(Math.random() * reactSpan) : 0);
+      continue;
+    }
+
+    // 反应延迟未到
+    if(now < bot.reactUntil) continue;
+
+    // 犹豫：浮状态时有 patience 概率再等
+    if(target.phase === 'floating' && Math.random() < bot.patience){
+      bot.reactUntil = now + 200;
+      continue;
+    }
+
+    if(onsenTryPick(target, bot)){
+      bot.cdUntil = now + 2000;
+      bot.nextActionAt = now + 2000 + Math.floor(Math.random() * 600);
+      bot.targetUid = null;
+    } else {
+      bot.nextActionAt = now + 400;
+    }
+  }
+
+  onsenTickScoreboard(now);
+}
+
+/* bot 选目标：优先 1×2，否则 1×1 */
+function onsenBotChooseTarget(bot){
+  var o = state.onsen;
+  var pool = o.nodes.filter(function(n){
+    return !n.picked;
+  });
+  if(!pool.length) return null;
+  pool.sort(function(a, b){
+    var sa = a.def.size, sb = b.def.size;
+    if(sa !== sb) return sb - sa;
+    return a.uid - b.uid;
+  });
+  for(var i = 0; i < pool.length; i++){
+    var n = pool[i];
+    if(bot.avoidVoid && n.phase === 'revealed' && n.def.value < 0) continue;
+    if(bot.value >= bot.cap){
+      if(n.phase === 'floating') continue;
+      if(n.def.value > 0) continue;
+    }
+    return n;
+  }
+  return null;
+}
+
+function endOnsen(){
+  if(!state.onsen) return;
+  stopOnsen();
+  state.onsen.ended = true;
+
+  var o = state.onsen;
+  var all = [{ p: o.player, isP: true }].concat(o.bots.map(function(b){ return { p: b, isP: false }; }));
+  all.sort(function(a, b){ return b.p.score - a.p.score; });
+  var playerRank = -1;
+  for(var i = 0; i < all.length; i++){ if(all[i].isP){ playerRank = i; break; } }
+  var rewards = [10, 8, 6, 4, 2];
+  var durMul = { 30: 1.0, 45: 1.3, 60: 1.6 }[o.duration] || 1.0;
+  var gain = Math.round((rewards[playerRank] || 2) * durMul);
+  state.essence += gain;
+
+  var grid = document.getElementById('onsenGrid');
+  if(grid) grid.innerHTML = '';
+  o.nodes = [];
+  o.grid = new Array(25).fill(null);
+
+  if(state.page === 'onsen') renderOnsenPage();
+  updateHUD();
+  beep(880, .18, 'sine', .05);
+  setTimeout(function(){ beep(660, .22, 'sine', .05); }, 140);
+  setTimeout(function(){ beep(440, .3, 'sine', .05); }, 300);
+  saveGame();
 }
 
 function renderDiveBlocked(){
@@ -8101,8 +8906,39 @@ function updateNavVisibility(){
   var hide = !!(state.dive && state.dive.active);
   var bn = document.getElementById('bottomNav');
   var sn = document.getElementById('sideNav');
+  var st = document.getElementById('sideToggle');
+  var sh = document.getElementById('sideHint');
   if(bn) bn.style.display = hide ? 'none' : '';
   if(sn) sn.style.display = hide ? 'none' : '';
+  if(st) st.style.display = hide ? 'none' : '';
+  if(sh) sh.style.display = hide ? 'none' : '';
+}
+/* ═══ 📱 手机端侧栏折叠 ═══ */
+function initSideToggle(){
+  var btn = document.getElementById('sideToggle');
+  if(!btn || btn._bound) return;
+  btn._bound = true;
+  btn.addEventListener('click', function(e){
+    e.stopPropagation();
+    document.body.classList.toggle('side-open');
+    var hint = document.getElementById('sideHint');
+    if(hint) hint.classList.remove('show');
+  });
+}
+
+function closeSideNav(){
+  document.body.classList.remove('side-open');
+}
+
+function showSideHintOnce(){
+  try{
+    if(localStorage.getItem('symrng_sideHintShown') === '1') return;
+    var hint = document.getElementById('sideHint');
+    if(!hint) return;
+    hint.classList.add('show');
+    localStorage.setItem('symrng_sideHintShown', '1');
+    setTimeout(function(){ hint.classList.remove('show'); }, 3500);
+  }catch(e){}
 }
 
 function switchPage(id){
@@ -8119,7 +8955,7 @@ function switchPage(id){
   }
   if(id === 'challenge'){
     // 已经在挑战页里，不重复切换
-    if(state.page === 'abyss' || state.page === 'boss') return;
+    if(state.page === 'abyss' || state.page === 'boss' || state.page === 'onsen') return;
     // 有真重生优先进深渊，否则进 Boss
     id = (state.trueRebirths >= 1 || state.voidMode) ? 'abyss' : 'boss';
   }
@@ -8156,13 +8992,14 @@ function switchPage(id){
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('on', b.dataset.page === id));
   document.querySelectorAll('.side-btn').forEach(b => {
     const pid = b.dataset.page;
-    if(pid === 'challenge' && (state.page === 'abyss' || state.page === 'boss')){
+    if(pid === 'challenge' && (state.page === 'abyss' || state.page === 'boss' || state.page === 'onsen')){
       b.classList.add('on');
     } else {
       b.classList.toggle('on', pid === state.page);
     }
   });
   hideNodeTip();
+  closeSideNav();
   renderPage();
   beep(620, .06, 'sine', .025);
   updateNavVisibility();
@@ -8179,6 +9016,7 @@ function renderPage(){
     case 'reb':  renderRebPage();  break;
     case 'abyss':renderAbyssPage();break;
     case 'boss': renderBossPage(); break;
+    case 'onsen': renderOnsenPage(); break;
     case 'vip':  renderVipPage();  break;
     case 'set':  renderSetPage();  break;
   }
@@ -9580,6 +10418,44 @@ document.addEventListener('click', e => {
     return;
   }
 
+  var onsenNodeEl = e.target.closest('[data-onsen-node]');
+  if(onsenNodeEl){
+    onsenPlayerPick(parseInt(onsenNodeEl.dataset.onsenNode, 10));
+    return;
+  }
+
+  if(e.target.closest('[data-onsen-diff]')){
+    var dd = e.target.closest('[data-onsen-diff]').dataset.onsenDiff;
+    if(!state.onsen) state.onsen = { difficulty: dd };
+    else state.onsen.difficulty = dd;
+    renderOnsenPage();
+    return;
+  }
+  if(e.target.closest('[data-onsen-dur]')){
+    var du = parseInt(e.target.closest('[data-onsen-dur]').dataset.onsenDur, 10);
+    if(!state.onsen) state.onsen = { duration: du };
+    else state.onsen.duration = du;
+    renderOnsenPage();
+    return;
+  }
+  if(e.target.closest('[data-onsen-rs]')){
+    if(!state.onsen) state.onsen = { randomStrength: true };
+    else state.onsen.randomStrength = !state.onsen.randomStrength;
+    renderOnsenPage();
+    return;
+  }
+  if(e.target.closest('[data-onsen-nv]')){
+    if(!state.onsen) state.onsen = { noVoid: true };
+    else state.onsen.noVoid = !state.onsen.noVoid;
+    renderOnsenPage();
+    return;
+  }
+
+  if(e.target.closest('[data-onsen-start]')){
+    startOnsen();
+    return;
+  }
+
   if(e.target.closest('[data-challenge-locked]')){
     toast('需要先完成真重生解锁深渊');
     beep(220, .12, 'square', .04);
@@ -9904,6 +10780,8 @@ if(!state.event || state.event === 'none'){
 }
 ensureBossInit();
 buildNav();
+initSideToggle();
+showSideHintOnce();
 refreshShop();
 updateHUD();
 renderPage();
