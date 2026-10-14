@@ -763,6 +763,130 @@ body{
 }
 .onsen-btn:active{transform:scale(.96)}
 
+/* ═══ 📖 战备 hub ═══ */
+.dive-prep-tabs{
+  display:flex;gap:6px;justify-content:center;flex-wrap:wrap;
+  margin-bottom:14px;max-width:620px;margin-left:auto;margin-right:auto;
+}
+.dive-prep-tabs .dpt{
+  padding:8px 14px;border-radius:10px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  color:#aebdde;font-family:inherit;font-size:12px;font-weight:900;
+  cursor:pointer;transition:.15s;letter-spacing:.02em;
+}
+.dive-prep-tabs .dpt:hover{color:#fff;background:rgba(255,255,255,.08)}
+.dive-prep-tabs .dpt.on{
+  background:linear-gradient(165deg,rgba(139,92,246,.35),rgba(139,92,246,.1));
+  border-color:rgba(180,140,255,.6);color:#fff;
+}
+.dive-prep-ph{
+  max-width:520px;margin:20px auto;padding:30px 20px;text-align:center;
+  border-radius:16px;background:rgba(255,255,255,.02);
+  border:1px dashed rgba(255,255,255,.1);
+}
+.dive-codex, .dive-record{max-width:620px;margin:0 auto}
+.codex-sec{margin-bottom:16px;border-radius:14px;background:var(--panel);border:1px solid var(--line);overflow:hidden}
+.codex-sec .cs-head{padding:11px 14px;font-size:13px;font-weight:900;color:#cfd9ec;background:rgba(0,0,0,.25);letter-spacing:.04em}
+.codex-sec .cs-body{padding:12px 14px;font-size:12px;color:#c8d4ea;line-height:1.9}
+.codex-sec .cs-body b{color:#ffd86b}
+.codex-sec .cs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;padding:10px}
+.codex-card{
+  padding:10px 8px;border-radius:11px;text-align:center;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.07);
+  --cc:#8b98ad;
+}
+.codex-card .cc-emoji{font-size:24px;line-height:1}
+.codex-card .cc-name{font-size:12px;font-weight:900;color:#dde6f7;margin-top:4px;letter-spacing:.03em}
+.codex-card .cc-tag{font-size:9.5px;color:#8b98ad;font-weight:800;margin-top:2px}
+.codex-card .cc-desc{font-size:10.5px;color:#a8b4cc;line-height:1.5;margin-top:5px;min-height:30px}
+.codex-card.enemy.locked{opacity:.4;filter:grayscale(.7)}
+.codex-card.enemy.seen{border-color:rgba(120,170,255,.35)}
+.codex-card.enemy.killed{border-color:rgba(255,200,60,.5);background:linear-gradient(165deg,rgba(255,200,60,.06),rgba(255,255,255,.02))}
+.rec-row{
+  display:flex;align-items:center;gap:8px;padding:8px 12px;
+  border-bottom:1px solid rgba(255,255,255,.05);
+  font-size:12px;
+}
+.rec-row:last-child{border-bottom:none}
+.rec-row .rr-icon{font-size:16px;line-height:1}
+.rec-row .rr-main{flex:1;min-width:0;color:#c8d4ea}
+.rec-row .rr-main b{color:#ffd86b;font-variant-numeric:tabular-nums}
+.rec-row .rr-tag{font-size:11px;font-weight:900;color:#8b98ad;flex:none}
+.rec-row .rr-time{font-size:10px;color:#5a6580;flex:none}
+
+/* ═══ 🂴 战斗稀有度 display ═══ */
+.dive-roll-display{
+  display:flex;justify-content:center;margin-bottom:10px;
+}
+.dive-roll-display .drd-card{
+  padding:8px 18px;border-radius:12px;
+  border:1.5px solid var(--rc,#8b98ad);
+  background:linear-gradient(165deg,rgba(255,255,255,.05),rgba(255,255,255,.01));
+  box-shadow:0 0 18px -8px var(--rc);
+  display:flex;align-items:center;gap:8px;
+  min-width:180px;justify-content:center;
+}
+.dive-roll-display .drd-card.empty{
+  border-style:dashed;border-color:rgba(255,255,255,.1);
+  color:#5a6580;font-size:11px;font-weight:700;
+  box-shadow:none;
+}
+.dive-roll-display .drd-id{
+  font-size:16px;font-weight:900;color:var(--rc);letter-spacing:.06em;
+  text-shadow:0 0 12px var(--rc);
+}
+.dive-roll-display .drd-name{
+  font-size:12.5px;font-weight:900;color:#dde6f7;letter-spacing:.02em;
+}
+
+/* ═══ 🎯 战斗技能槽 ═══ */
+.dive-skills{
+  max-width:420px;margin:0 auto 10px;
+}
+.dive-skills .ds-row{
+  display:grid;gap:6px;margin-bottom:6px;
+}
+.dive-skills .ds-active{grid-template-columns:repeat(4,1fr)}
+.dive-skills .ds-passive{grid-template-columns:repeat(3,1fr);max-width:300px;margin-left:auto;margin-right:auto}
+.ds-slot{
+  padding:8px 4px;border-radius:10px;text-align:center;
+  background:rgba(255,255,255,.04);
+  border:1.5px solid rgba(255,255,255,.08);
+  min-height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  transition:.15s;
+}
+.ds-slot.filled{
+  cursor:pointer;
+  border-color:var(--sc,#8b98ad);
+  background:linear-gradient(160deg,color-mix(in srgb,var(--sc) 18%,transparent),rgba(255,255,255,.02));
+  box-shadow:0 0 14px -6px var(--sc);
+}
+@supports not (background: color-mix(in srgb, red 10%, transparent)){
+  .ds-slot.filled{background:linear-gradient(160deg,rgba(255,255,255,.06),rgba(255,255,255,.02))}
+}
+.ds-slot.filled:hover{
+  transform:translateY(-2px);
+  box-shadow:0 0 22px -4px var(--sc);
+}
+.ds-slot.empty{
+  border-style:dashed;color:#5a6580;font-size:10px;font-weight:700;
+}
+.ds-slot.small{min-height:46px;padding:5px 2px}
+.ds-slot .ds-emoji{font-size:20px;line-height:1}
+.ds-slot.small .ds-emoji{font-size:16px}
+.ds-slot .ds-name{font-size:10px;font-weight:900;color:#dde6f7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.ds-slot.small .ds-name{font-size:9px}
+.ds-slot.used{
+  opacity:.35;filter:grayscale(.85);cursor:not-allowed;
+}
+.ds-slot.used:hover{transform:none}
+.ds-slot.no-roll{
+  opacity:.45;filter:grayscale(.7);cursor:not-allowed;
+  border-style:dashed;
+}
+.ds-slot.no-roll:hover{transform:none}
+
 .bottom-nav{position:fixed;left:0;right:0;bottom:0;height:var(--nav-h);z-index:100;display:flex;background:rgba(10,15,30,.94);backdrop-filter:blur(16px);border-top:1px solid rgba(255,255,255,.08);box-shadow:0 -10px 30px -16px #000;padding:0 6px;overflow-x:auto;justify-content:center;}
 .bottom-nav::-webkit-scrollbar{display:none}
 .nav-btn{flex:0 1 140px;min-width:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:#66748f;font-size:10.5px;font-weight:900;letter-spacing:.04em;transition:.18s;position:relative;padding:0 4px;}
@@ -1470,8 +1594,23 @@ body{
  * v15.3.1 → v15.3.2：温泉源质生命周期重做（锁定 2 秒 / 浮动 3 秒 / 揭示 3 秒）；波次 5 秒内随机逐个出；清空即刷 + 5 秒定时合并
  * v15.3.2 → v15.3.3：温泉源质生命周期重做（锁定 2 秒 / 浮动 3 秒 / 揭示 3 秒）；波次 2 秒内随机逐个出；清空即刷 + 5 秒定时合并；bot 加反应延迟和犹豫概率；波量 5/5/6/6/7/7
  * v15.3.3 → v15.3.4：温泉去锁定（出生即可捡）+ 波量 6/6/7/7/8/8 + UI 主题化（水质感 / 源质浮沉 / 揭示动效）
- * v15.4.0 → v15.5.0：温泉配置栏扩展（难度 4 档 / 时长 3 档 / 随机强度开关 / 无虚空开关；困难+地狱 bot 避揭示后虚空；结算按时长比例）
  * v15.3.4 → v15.4.0：温泉难度系统（练习/普通/困难）+ 音效 + 第一波虚空 +0 + 边框去色 + bot 稳定排序 + CD 提示
+ * v15.4.0 → v15.5.0：温泉配置栏扩展（难度 4 档 / 时长 3 档 / 随机强度开关 / 无虚空开关；困难+地狱 bot 避揭示后虚空；结算按时长比例）
+ * v15.5.0 → v15.5.1：删商城神宠礼包和尊享大礼包。
+ * v15.5.1 → v15.6.0：阶段 5-2 回合制框架（删每 5 抽反击；敌人 AI 三行为：攻击/蓄力/治疗；精英+boss 每 2 回合触发；蓄力翻倍；UI 加回合数）
+ * v15.6.0 → v15.6.1：修隐藏 boss 被当小怪处理（回合触发 + 攻击伤害）+ 大门换敌重置 round
+ * v15.6.1 → v15.7.0：阶段 5-3A 技能数据结构（SKILLS 17 项 + SKILL_CONFLICTS）+ 战备通用槽 + 局内技能槽 UI 骨架
+ * v15.8.0 → v15.9.0：阶段 5-3B-1 探索战斗稀有度池独立（不吃幸运 / 只到 SYM）+ 伤害系数 ×27 + 战斗稀有度 display + 10 个主动技能效果（含闪避 / 减伤 / 敌人 debuff）
+ * v15.9.0 → v15.9.1：主动技能加 CD（必须先抽一次卡才能释放；释放后 lastRoll 清零；无 lastRoll 时技能槽禁用）；混沌池暂时收窄到 burn/poison/bleed
+ * v15.9.1 → v15.9.2：修 enterDiveRoom 的 _entering 卡死（locked 分支提前 return 跳过复位）；祭坛房文案改“技能”
+ * v15.9.2 → v15.9.3：文案清扫 v2（献祭 1 点→20%；三选一面板 buff/词条→技能；精英房 desc 改必掉装备；战斗 HUD 词条→技能）
+ * v15.9.3 → v16.0.0：宠物系统彻底重塑（星级不再提供收益，只标记品质上限；闪耀 ×2 / 炫彩 ×3 / 炫彩特质 ×2；物种加 maxStar；按星抽品质；老宠物强制压品质）
+ * v16.0.0 → v16.0.1：宠物系统收尾（genPet 加 quality clamp；getPetTraits 删星级增益；Boss 击杀阉割宠物掉落；存档 v 字段补升 16）
+ * v16.0.1 → v16.0.2：清 starMul 残留（getShopCoinMult + getLuckMult 里宠物 trait 计算删星级增益）
+ * v16.0.2 → v16.1.0：重生系统重塑（三棵升级树价格 ×10；普通重生 ×5 / 进阶 ×3 / 超级 ×2；超级重生需 5 次进阶；进阶+超级重生清空钻石）
+ * v16.1.0 → v16.1.1：钻石获取彻底重做（SYM 及以上 21 档 gems 从天文数字重排为等差 10~210；N/R/SR/SSR/UR 五档不动）
+ * v16.1.1 → v16.2.0：阶段 5-3B-2A 被动效果（黄金 25% off；锐 ×1.15；贪 +40%；狂 每回合+4%上限+40%；vampire 5% 吸血；预 下场首抽≥SR）
+ * v15.7.0 → v15.8.0：支线 0 —— 删「临时词条」槽（战斗移除 affixMult 层）；战备页改 hub（6 tab：战备/图鉴/战绩/商店/背包/任务）；图鉴（玩法/技能/怪物）；战绩历史（最近 20 局）；商店/背包/任务占位
  */
 
 /* ═══ 🎲 赌徒房 display ═══ */
@@ -1548,7 +1687,7 @@ body{
 .cc-notice a:hover{color:#9fc4ff}
 
 body::after{
-  content: "v15.5.0";
+  content: "v16.2.0";
   position: fixed;
   left: 8px;
   top: 8px;
@@ -1696,27 +1835,27 @@ const RARITIES = [
   { id:'SR',   name:'史诗',   w:1400,    color:'#a45cff', coins:40,        gems:0 },
   { id:'SSR',  name:'传说',   w:700,     color:'#ffb020', coins:300,       gems:1 },
   { id:'UR',   name:'神话',   w:400,     color:'#ff3d6e', coins:2500,      gems:4 },
-  { id:'SYM',  name:'本源',   w:250,     color:'#00ffc8', coins:25000,     gems:15 },
-  { id:'ASYM', name:'远古',   w:80,      color:'#ff8a00', coins:220000,    gems:60 },
-  { id:'DSYM', name:'暗影',   w:30,      color:'#8b3dff', coins:2500000,   gems:250 },
-  { id:'HSYM', name:'天启',   w:10,      color:'#ffe600', coins:35000000,  gems:1200 },
-  { id:'CSYM', name:'湮灭',   w:3,       color:'#ff2d2d', coins:600000000, gems:6000 },
-  { id:'LKYM', name:'裂空',   w:2,       color:'#ff7a4d', coins:2e10,      gems:22000 },
-  { id:'VSYM', name:'星海',   w:1,       color:'#00c2ff', coins:1.5e10,    gems:35000 },
-  { id:'JXYM', name:'机械',   w:0.5,     color:'#7fd8ff', coins:8e10,      gems:180000 },
-  { id:'QSYM', name:'律动',   w:0.3,     color:'#b6ff00', coins:6e11,      gems:200000 },
-  { id:'GSYM', name:'起源',   w:0.1,     color:'#ffffff', coins:4e13,      gems:1500000 },
-  { id:'LGYM', name:'另类',   w:0.05,    color:'#ffd2a0', coins:8e14,      gems:9000000 },
-  { id:'ISYM', name:'永恒',   w:0.03,    color:'#ff00e6', coins:3e15,      gems:12000000 },
-  { id:'ESYM', name:'终焉',   w:0.01,    color:'#00ff88', coins:5e17,      gems:2e8 },
-  { id:'GNYM', name:'归一',   w:0.005,   color:'#5cffb0', coins:2e18,      gems:1e9 },
-  { id:'TSYM', name:'超脱',   w:0.003,   color:'#00d4ff', coins:1e20,      gems:1e10 },
-  { id:'ZSYM', name:'至臻',   w:0.001,   color:'#ff00ff', coins:1e23,      gems:1e13 },
-  { id:'LJYM', name:'凌驾',   w:0.0005,  color:'#ff77cc', coins:5e24,      gems:5e14 },
-  { id:'XSYM', name:'无尽',   w:0.0003,  color:'#ffaa00', coins:1e26,      gems:1e16 },
-  { id:'OMSYM',name:'全能',   w:0.0001,  color:'#ff3300', coins:1e30,      gems:1e20 },
-  { id:'ABSYM',name:'绝对',   w:0.00003, color:'#ffffff', coins:1e34,      gems:1e25 },
-  { id:'8FQ',  name:'杨八分钱', w:0.00001, color:'#c9c9d4', coins:1e37,      gems:1e29 }
+  { id:'SYM',  name:'本源',   w:250,     color:'#00ffc8', coins:25000,     gems:10 },
+  { id:'ASYM', name:'远古',   w:80,      color:'#ff8a00', coins:220000,    gems:20 },
+  { id:'DSYM', name:'暗影',   w:30,      color:'#8b3dff', coins:2500000,   gems:30 },
+  { id:'HSYM', name:'天启',   w:10,      color:'#ffe600', coins:35000000,  gems:40 },
+  { id:'CSYM', name:'湮灭',   w:3,       color:'#ff2d2d', coins:600000000, gems:50 },
+  { id:'LKYM', name:'裂空',   w:2,       color:'#ff7a4d', coins:2e10,      gems:60 },
+  { id:'VSYM', name:'星海',   w:1,       color:'#00c2ff', coins:1.5e10,    gems:70 },
+  { id:'JXYM', name:'机械',   w:0.5,     color:'#7fd8ff', coins:8e10,      gems:80 },
+  { id:'QSYM', name:'律动',   w:0.3,     color:'#b6ff00', coins:6e11,      gems:90 },
+  { id:'GSYM', name:'起源',   w:0.1,     color:'#ffffff', coins:4e13,      gems:100 },
+  { id:'LGYM', name:'另类',   w:0.05,    color:'#ffd2a0', coins:8e14,      gems:110 },
+  { id:'ISYM', name:'永恒',   w:0.03,    color:'#ff00e6', coins:3e15,      gems:120 },
+  { id:'ESYM', name:'终焉',   w:0.01,    color:'#00ff88', coins:5e17,      gems:130 },
+  { id:'GNYM', name:'归一',   w:0.005,   color:'#5cffb0', coins:2e18,      gems:140 },
+  { id:'TSYM', name:'超脱',   w:0.003,   color:'#00d4ff', coins:1e20,      gems:150 },
+  { id:'ZSYM', name:'至臻',   w:0.001,   color:'#ff00ff', coins:1e23,      gems:160 },
+  { id:'LJYM', name:'凌驾',   w:0.0005,  color:'#ff77cc', coins:5e24,      gems:170 },
+  { id:'XSYM', name:'无尽',   w:0.0003,  color:'#ffaa00', coins:1e26,      gems:180 },
+  { id:'OMSYM',name:'全能',   w:0.0001,  color:'#ff3300', coins:1e30,      gems:190 },
+  { id:'ABSYM',name:'绝对',   w:0.00003, color:'#ffffff', coins:1e34,      gems:200 },
+  { id:'8FQ',  name:'杨八分钱', w:0.00001, color:'#c9c9d4', coins:1e37,      gems:210 }
 ];
 const AFFIXES = [
   { id:'shiny',    name:'闪耀', emoji:'✨', mult:2,     w:5000,   color:'#fff9a8' },
@@ -1780,41 +1919,42 @@ const PET_STARS = [
   { star:6, mult:1000, label:'★★★★★★'  }
 ];
 const MAX_STAR = 6;
+const STAR_QUALITY_CAP = { 1:'R', 2:'SR', 3:'SSR', 4:'UR', 5:'GOD', 6:'GOD' };
 const PET_QUALITY_WEIGHTS = { N:5500, R:2500, SR:1200, SSR:600, UR:180, GOD:20 };
 
 /* 🌈 炫彩宠物参数 */
-const PET_SHINY_MULT   = 3;
+const PET_SHINY_MULT   = 2;
 const PET_SHINY_TRAIT  = 2;
-const PET_RAINBOW_MULT = 20;
-const PET_RAINBOW_TRAIT= 5;
+const PET_RAINBOW_MULT = 3;
+const PET_RAINBOW_TRAIT= 2;
 
 const PET_TRAIT_NAMES = { coin:'金币', gem:'钻石', luck:'幸运', affix:'词条率', speed:'抽速' };
 const PET_SPECIES = [
-  { id:'dog',     name:'小狗',       emoji:'🐶', minStar:1, w:2500,
+  { id:'dog',     name:'小狗',       emoji:'🐶', minStar:1, maxStar:2, w:2500,
     traits:[{t:'coin', v:0.05}] },
-  { id:'cat',     name:'猫咪',       emoji:'🐱', minStar:1, w:2000,
+  { id:'cat',     name:'猫咪',       emoji:'🐱', minStar:1, maxStar:2, w:2000,
     traits:[{t:'coin', v:0.10}] },
-  { id:'rabbit',  name:'兔子',       emoji:'🐰', minStar:1, w:1500,
+  { id:'rabbit',  name:'兔子',       emoji:'🐰', minStar:1, maxStar:2, w:1500,
     traits:[{t:'gem', v:0.05}] },
-  { id:'fox',     name:'狐狸',       emoji:'🦊', minStar:2, w:1200,
+  { id:'fox',     name:'狐狸',       emoji:'🦊', minStar:2, maxStar:3, w:1200,
     traits:[{t:'luck', v:0.5}, {t:'coin', v:0.15}] },
-  { id:'dragon',  name:'幼龙',       emoji:'🐲', minStar:2, w:800,
+  { id:'dragon',  name:'幼龙',       emoji:'🐲', minStar:2, maxStar:3, w:800,
     traits:[{t:'coin', v:0.25}, {t:'gem', v:0.10}] },
-  { id:'phoenix', name:'凤凰',       emoji:'🔥', minStar:3, w:400,
+  { id:'phoenix', name:'凤凰',       emoji:'🔥', minStar:3, maxStar:4, w:400,
     traits:[{t:'luck', v:1.5}, {t:'affix', v:0.02}] },
-  { id:'qilin',   name:'麒麟',       emoji:'🦄', minStar:3, w:200,
+  { id:'qilin',   name:'麒麟',       emoji:'🦄', minStar:3, maxStar:4, w:200,
     traits:[{t:'coin', v:0.50}, {t:'gem', v:0.30}] },
-  { id:'shayang', name:'沙杨马兽',   emoji:'🐴', minStar:4, w:80,
+  { id:'shayang', name:'沙杨马兽',   emoji:'🐴', minStar:4, maxStar:4, w:80,
     traits:[{t:'coin', v:0.80}, {t:'luck', v:2}] },
-  { id:'void',    name:'虚空吞噬者', emoji:'👾', minStar:4, w:30,
+  { id:'void',    name:'虚空吞噬者', emoji:'👾', minStar:4, maxStar:4, w:30,
     traits:[{t:'gem', v:1.0}, {t:'affix', v:0.05}] },
-  { id:'creator', name:'创世之神',   emoji:'🌌', minStar:5, w:10,
+  { id:'creator', name:'创世之神',   emoji:'🌌', minStar:5, maxStar:5, w:10,
     traits:[{t:'coin', v:1.5}, {t:'gem', v:1.0}, {t:'luck', v:5}] },
-  { id:'infinite',name:'无限之眼',   emoji:'👁️', minStar:5, w:3,
+  { id:'infinite',name:'无限之眼',   emoji:'👁️', minStar:5, maxStar:5, w:3,
     traits:[{t:'coin', v:2.0}, {t:'gem', v:2.0}, {t:'affix', v:0.10}, {t:'speed', v:0.10}] },
-  { id:'eternal', name:'万古之主',   emoji:'♾️', minStar:6, w:1,
+  { id:'eternal', name:'万古之主',   emoji:'♾️', minStar:6, maxStar:6, w:1,
     traits:[{t:'coin', v:5}, {t:'gem', v:5}, {t:'luck', v:15}, {t:'affix', v:0.25}, {t:'speed', v:0.25}] },
-  { id:'worm',    name:'蚕大蛇',     emoji:'🐛', minStar:1, w:1, hidden:true,
+  { id:'worm',    name:'蚕大蛇',     emoji:'🐛', minStar:1, maxStar:2, w:1, hidden:true,
     traits:[
       {t:'luck',  v:-15},
       {t:'affix', v:-0.6},
@@ -1869,12 +2009,20 @@ function petTierMul(p){
 function petMult(pet){
   if(!pet) return 1;
   const q = getQuality(pet.quality);
-  const st = getStarInfo(pet.star);
-  let m = q.mult * st.mult;
+  let m = q.mult;
   const t = petTier(pet);
   if(t === 2)      m *= PET_RAINBOW_MULT;
   else if(t === 1) m *= PET_SHINY_MULT;
   return m;
+}
+
+/* ═══ 阶段 5-3B-2A · 被动查询 ═══ */
+function hasPassive(id){
+  if(!state.dive || !state.dive.skills || !state.dive.skills.passive) return false;
+  for(let i = 0; i < state.dive.skills.passive.length; i++){
+    if(state.dive.skills.passive[i].id === id) return true;
+  }
+  return false;
 }
 
 function getPetTraits(){
@@ -1883,10 +2031,9 @@ function getPetTraits(){
     const p = state.petInv.find(x => x.uid === uid);
     if(!p) continue;
     const sp = getSpecies(p.species);
-    const starMul = 1 + (p.star - 1) * 0.5;
     const formMul = petTierMul(p);
     for(const tr of sp.traits){
-      total[tr.t] = (total[tr.t] || 0) + tr.v * starMul * formMul;
+      total[tr.t] = (total[tr.t] || 0) + tr.v * formMul;
     }
     if(p.richPup) total.coin += 0.001;
   }
@@ -1907,13 +2054,19 @@ function rollDevoured() {
   return state.voidMode && Math.random() < 0.25;
 }
 
-function genPet(qualityId, speciesId){
+function genPet(qualityId, speciesId, starArg){
   const sp = getSpecies(speciesId);
+  let star = starArg;
+  if(star === undefined || star === null){
+    const range = (sp.maxStar || sp.minStar) - sp.minStar + 1;
+    star = sp.minStar + Math.floor(Math.random() * range);
+  }
+  star = Math.max(sp.minStar, Math.min(sp.maxStar || MAX_STAR, star));
   return {
     uid: 'pet_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
     species: sp.id,
-    quality: qualityId,
-    star: sp.minStar,
+    quality: capQualityByStar(qualityId, star),
+    star: star,
     exp: 0,
     shiny: false,
     rainbow: false,
@@ -1990,8 +2143,11 @@ function absorbPets(){
     if(target.exp < need) break;
     const idx = PET_QUALITIES.findIndex(q => q.id === target.quality);
     if(idx < 0 || idx >= PET_QUALITIES.length - 1) break;
+    const nextQId = PET_QUALITIES[idx + 1].id;
+    const cappedQ = capQualityByStar(nextQId, target.star);
+    if(cappedQ === target.quality) break;   // 已到星级上限
     target.exp -= need;
-    target.quality = PET_QUALITIES[idx + 1].id;
+    target.quality = cappedQ;
     upCount++;
   }
   if(target.quality === PET_QUALITIES[PET_QUALITIES.length - 1].id) target.exp = 0;
@@ -2090,24 +2246,25 @@ const PERMA_TREE_2 = [
 ];
 
 const ALL_NODES = TREE.concat(PERMA_TREE, PERMA_TREE_2);
+const TREE_PRICE_MULT = 10;
 
 const REBIRTH_TIERS = [
   { id:'rebirth', name:'重生', emoji:'🌟', color:'#ffc93c',
-    baseCost:1e7, costGrowth:15, coinBonus:0.75, luckBonus:0.15,
+    baseCost:5e7, costGrowth:15, coinBonus:0.75, luckBonus:0.15,
     desc:'重置金币与普通技能树（永久树保留），获得永久加成',
     req:() => ({ ok:true, txt:'' }) },
   { id:'ascend', name:'进阶重生', emoji:'💫', color:'#ff6bff',
-    baseCost:1e15, costGrowth:50, coinBonus:5, luckBonus:2,
+    baseCost:3e15, costGrowth:50, coinBonus:5, luckBonus:2,
     desc:'重置金币与普通技能树（永久树保留），保留普通重生，获得大幅加成',
     req:() => {
       const need = 5;
       return { ok: state.rebirths >= need, txt:'需要至少 ' + need + ' 次普通重生（当前 ' + state.rebirths + '）' };
     } },
   { id:'transcend', name:'超级重生', emoji:'🌌', color:'#00ffc8',
-    baseCost:1e25, costGrowth:200, coinBonus:50, luckBonus:20,
+    baseCost:2e25, costGrowth:200, coinBonus:50, luckBonus:20,
     desc:'重置金币与普通技能树（永久树保留），保留所有重生，获得巨额加成',
     req:() => {
-      const need = 3;
+      const need = 5;
       return { ok: state.ascends >= need, txt:'需要至少 ' + need + ' 次进阶重生（当前 ' + state.ascends + '）' };
     } }
 ];
@@ -2297,14 +2454,6 @@ const RECHARGE_PACKS = [
   { id:'gem', emoji:'💎', name:'钻石礼包', desc:'立即获得 500~1000 钻石',
     essenceCost:20, limit:99,
     reward:() => { const g = 500 + Math.floor(Math.random()*500); state.gems += g; return '💎+' + g; } },
-  { id:'pet', emoji:'🐾', name:'神宠礼包', desc:'获得一只 GOD 6★ 宠物',
-    essenceCost:100, limit:99,
-    reward:() => {
-      const p = genPet('GOD', rollSpecies());
-      p.star = 6;
-      state.petInv.push(p);
-      return '🐾 GOD 6★ ' + getSpecies(p.species).name;
-    } },
   { id:'pity', emoji:'🛡️', name:'保底重置卡', desc:'保底进度拉满',
     essenceCost:15, limit:99,
     reward:() => {
@@ -2318,16 +2467,6 @@ const RECHARGE_PACKS = [
     reward:() => {
       state.rollCount = state.rollCount - (state.rollCount % DICE_INTERVAL.rainbow) + (DICE_INTERVAL.rainbow - 1);
       return '🌈 已充能';
-    } },
-  { id:'all', emoji:'👑', name:'尊享大礼包', desc:'金币 + 钻石 + 3 只神宠 + 彩虹',
-    essenceCost:300, originCost:800, limit:99,
-    reward:() => {
-      const g = getCoinMult() * 1e8;
-      state.coins += g;
-      state.gems += 10000;
-      for(let i = 0; i < 3; i++){ const p = genPet('GOD', rollSpecies()); p.star = 6; state.petInv.push(p); }
-      state.rollCount = state.rollCount - (state.rollCount % DICE_INTERVAL.rainbow) + (DICE_INTERVAL.rainbow - 1);
-      return '💰+' + fmt(g) + ' · 💎+10000 · 🐾×3 · 🌈';
     } }
 ];
 
@@ -2421,10 +2560,9 @@ function getShopCoinMult(){
   let coinTrait = 0;
   for(const p of top3){
     const sp = getSpecies(p.species);
-    const starMul = 1 + (p.star - 1) * 0.5;
     const formMul = petTierMul(p);
     for(const tr of sp.traits){
-      if(tr.t === 'coin') coinTrait += tr.v * starMul * formMul;
+      if(tr.t === 'coin') coinTrait += tr.v * formMul;
     }
   }
   petAdd += coinTrait;
@@ -2459,10 +2597,9 @@ function getShopLuckMult(){
   const top3 = state.petInv.slice().sort((a, b) => petMult(b) - petMult(a)).slice(0, MAX_PETS);
   for(const p of top3){
     const sp = getSpecies(p.species);
-    const starMul = 1 + (p.star - 1) * 0.5;
     const formMul = petTierMul(p);
     for(const tr of sp.traits){
-      if(tr.t === 'luck') v += tr.v * starMul * formMul;
+      if(tr.t === 'luck') v += tr.v * formMul;
     }
   }
   return Math.max(1, v);
@@ -2633,8 +2770,13 @@ const state = {
     pendingFirstRare: false,
     gearInv: [],
     runGearPicked: [],
-    loadout: { gearUid: null, affix: null, item: null },
+    loadout: { gearUid: null, item: null, skill: null },
     items: [],
+    skills: { active: [], passive: [] },
+    prepTab: 'prep',
+    monsterSeen: {},
+    monsterKilled: {},
+    historyList: [],
     room: null,
     roomOptions: [],
     history: [],
@@ -2741,7 +2883,7 @@ function markDirty(){ saveDirty = true; }
 
 function getSaveData(){
   return {
-    v: 15, ts: Date.now(),
+    v: 16, ts: Date.now(),
     coins: state.coins, gems: state.gems,
     rolls: state.rolls, rollCount: state.rollCount, pity: state.pity,
     tree: state.tree,
@@ -2862,8 +3004,8 @@ function applySaveData(d){
         return {
           uid: p.uid || ('pet_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8)),
           species: sp.id,
-          quality: p.quality,
-          star: Math.max(sp.minStar, Math.min(MAX_STAR, Math.floor(num(p.star, 1)))),
+          quality: capQualityByStar(p.quality, Math.max(sp.minStar, Math.min(sp.maxStar || MAX_STAR, Math.floor(num(p.star, sp.minStar))))),
+          star: Math.max(sp.minStar, Math.min(sp.maxStar || MAX_STAR, Math.floor(num(p.star, sp.minStar)))),
           exp: Math.max(0, Math.floor(num(p.exp, 0))),
           shiny: !!p.shiny,
           rainbow: !!p.rainbow,
@@ -3001,8 +3143,13 @@ function applySaveData(d){
         mult: Math.max(0.1, Math.min(20, Number(g.mult) || 1))
       })).slice(0, 500) : [],
       runGearPicked: [],
-      loadout: { gearUid: null, affix: null, item: null },
+      loadout: { gearUid: null, item: null, skill: null },
       items: [],
+      skills: { active: [], passive: [] },
+      prepTab: 'prep',
+      monsterSeen: (d.dive && d.dive.monsterSeen && typeof d.dive.monsterSeen === 'object') ? d.dive.monsterSeen : {},
+      monsterKilled: (d.dive && d.dive.monsterKilled && typeof d.dive.monsterKilled === 'object') ? d.dive.monsterKilled : {},
+      historyList: Array.isArray(d.dive && d.dive.historyList) ? d.dive.historyList.slice(0, 20) : [],
       withdrawSubtype: null,
       gateInfo: null,
       shopState: null,
@@ -3033,8 +3180,13 @@ function applySaveData(d){
       pendingFirstRare: false,
       gearInv: [],
       runGearPicked: [],
-      loadout: { gearUid: null, affix: null, item: null },
+      loadout: { gearUid: null, item: null, skill: null },
       items: [],
+      skills: { active: [], passive: [] },
+      prepTab: 'prep',
+      monsterSeen: (d.dive && d.dive.monsterSeen && typeof d.dive.monsterSeen === 'object') ? d.dive.monsterSeen : {},
+      monsterKilled: (d.dive && d.dive.monsterKilled && typeof d.dive.monsterKilled === 'object') ? d.dive.monsterKilled : {},
+      historyList: Array.isArray(d.dive && d.dive.historyList) ? d.dive.historyList.slice(0, 20) : [],
       withdrawSubtype: null,
       gateInfo: null,
       shopState: null,
@@ -3258,7 +3410,7 @@ function setNodeLv(n, v){
 
 function nodeCost(n){
   if(n.id === 'root' || n.id === 'PROOT' || n.id === 'P2ROOT') return 0;
-  return Math.floor(n.base * Math.pow(n.growth, nodeLv(n)));
+  return Math.floor(n.base * TREE_PRICE_MULT * Math.pow(n.growth, nodeLv(n)));
 }
 function treeCost(n){ return nodeCost(n); }
 
@@ -3499,9 +3651,15 @@ function affixMult(affixes){
   m *= 1 + treeLv('AF1') * 0.05 + treeLv('AF2') * 0.10 + treeLv('AF3') * 0.20;
   return m;
 }
-function rollFull(){
-  const pmax = getPityMax();
+function rollFull(forDive){
   let base;
+  if(forDive){
+    // 探索战斗独立池：只到 SYM（前 6 档），原始权重，不吃幸运 / 保底
+    const DIVE_RARITY_POOL = RARITIES.slice(0, 6);
+    base = pickFrom(DIVE_RARITY_POOL.map(r => ({ ref: r, w: r.w }))).ref;
+    return { base, affixes: [] };   // 探索战斗不带词条
+  }
+  const pmax = getPityMax();
   if(pmax !== null && state.pity >= pmax){
     base = pickFrom(RARITIES.slice(3).map(r => ({ ref:r, w:r.w }))).ref;
   }else{
@@ -3738,13 +3896,7 @@ function onBossKilled(){
   state.coins += cg;
   state.gems  += gg;
 
-  /* 专属宠物 */
-  const pet = genPet('GOD', rollSpecies());
-  pet.star = 6;
-  pet.shiny = true;
-  state.petInv.push(pet);
-
-  toast('👹 ' + b.name + ' 已被击杀！💰+' + fmt(cg) + ' 💎+' + fmt(gg) + ' + 神宠');
+  toast('👹 ' + b.name + ' 已被击杀！💰+' + fmt(cg) + ' 💎+' + fmt(gg));
   beep(1400, .3, 'sine', .07);
   setTimeout(() => beep(1800, .4, 'sine', .06), 140);
   setTimeout(() => beep(2200, .5, 'sine', .055), 300);
@@ -5341,9 +5493,8 @@ function renderPetInfo(){
       '<div class="sc-badge">' + s.label + '</div>' +
       '<div class="sc-info">' +
         '<div class="sc-name">' + s.star + ' 星</div>' +
-        '<div class="sc-desc">基础倍率</div>' +
+        '<div class="sc-desc">品质上限 ' + (STAR_QUALITY_CAP[s.star] ? getQuality(STAR_QUALITY_CAP[s.star]).name : '—') + '</div>' +
       '</div>' +
-      '<div class="sc-mult">x' + fmt(s.mult) + '</div>' +
     '</div>';
   }
   h += '</div></div>';
@@ -5753,8 +5904,13 @@ function resetForVoid(){
       tempAffixes: [], combatBuffs: [], pendingFirstRare: false,
       gearInv: state.dive && state.dive.gearInv ? state.dive.gearInv : [],
       runGearPicked: [],
-      loadout: { gearUid: null, affix: null, item: null },
+      loadout: { gearUid: null, item: null, skill: null },
       items: [],
+      skills: { active: [], passive: [] },
+      prepTab: 'prep',
+      monsterSeen: (state.dive && state.dive.monsterSeen) ? state.dive.monsterSeen : {},
+      monsterKilled: (state.dive && state.dive.monsterKilled) ? state.dive.monsterKilled : {},
+      historyList: (state.dive && state.dive.historyList) ? state.dive.historyList.slice(0, 20) : [],
       withdrawSubtype: null, gateInfo: null, shopState: null,
       gambleCount: 0, shrineCount: 0, bossUnlocked: false,
       room: null, roomOptions: [], history: state.dive && state.dive.history ? state.dive.history.slice(0, 20) : [],
@@ -5839,7 +5995,9 @@ function startDive(){
   state.dive._diamondTricked = false;
   state.dive.blockedState = null;
   state.dive.pendingGate = false;
-  state.dive.loadout = { gearUid: null, affix: null, item: null };
+  state.dive.loadout = { gearUid: null, item: null, skill: null };
+  state.dive.skills = { active: [], passive: [] };
+  state.dive.prepTab = 'prep';
   state.dive.items = [];
   state.dive.room = null;
   state.dive.roomOptions = [];
@@ -5894,7 +6052,7 @@ function renderDiveHUD(){
   s += '<div class="dive-hud-chip">🏔️ 第 <b>' + d.layer + '</b> 层</div>';
   s += '<div class="dive-hud-chip hp">❤ 生命 <b>' + d.hp + '/' + d.maxHp + '</b></div>';
   s += '<div class="dive-hud-chip">💠 <b>' + fmt(d.essence) + '</b> 印记</div>';
-  s += '<div class="dive-hud-chip">✦ <b>' + d.combatBuffs.length + '</b> 词条</div>';
+  s += '<div class="dive-hud-chip">✦ <b>' + (d.skills.active.length + d.skills.passive.length) + '</b> 技能</div>';
   var eqGear = d.loadout.gearUid ? getGearById(d.loadout.gearUid) : null;
   if(eqGear){
     s += '<div class="dive-hud-chip" style="border-color:' + getDiveGearColor(eqGear.rarity) + '">' +
@@ -5912,6 +6070,10 @@ function renderDiveSlot(label, slot, value){
   if(value && value.rarity){
     emoji = value.emoji || '🗡️';
     name = value.name + '（' + getDiveGearRarityName(value.rarity) + ' ×' + value.mult + '）';
+  }
+  else if(value && value.id && value.type){
+    emoji = value.emoji;
+    name = value.name + '（' + (value.type === 'active' ? '主动' : '被动') + '）';
   }
   else if(value && value.name) name = value.name;
   else if(value && value.species){
@@ -5968,15 +6130,16 @@ function divePickList(slot){
         color: getDiveGearColor(g.rarity)
       });
     }
-  } else if(slot === 'affix'){
-    for(var j = 0; j < AFFIXES.length; j++){
-      var a = AFFIXES[j];
-      out.push({ affix: a, emoji: a.emoji, name: a.name, tag: 'x' + a.mult });
-    }
   } else if(slot === 'item'){
     for(var m = 0; m < state.diveItems.length; m++){
       var it = state.diveItems[m];
       out.push({ item: it, emoji: it.emoji || '🔑', name: it.name || '道具', tag: '×1', color: it.color });
+    }
+  } else if(slot === 'skill'){
+    for(var si = 0; si < SKILLS.length; si++){
+      var sk = SKILLS[si];
+      if(!sk.availableAtPrep) continue;
+      out.push({ skill: sk, emoji: sk.emoji, name: sk.name + '（' + (sk.type === 'active' ? '主动' : '被动') + '）', tag: sk.type === 'active' ? '主动' : '被动', color: sk.color });
     }
   }
   return out;
@@ -5999,6 +6162,20 @@ function startDiveRun(){
     state.dive.loadout.item = null;
   }
   if(!state.dive.loadout.gearUid){ toast('⚠️ 至少需要携带 1 件装备'); beep(220, .12, 'square', .04); return; }
+  // 装载战备页选中的技能
+  if(state.dive.loadout.skill){
+    var sk = state.dive.loadout.skill;
+    if(sk.type === 'active'){
+      var inst = Object.assign({}, sk);
+      inst.uses = 0;
+      state.dive.skills.active.push(inst);
+    } else {
+      var inst2 = Object.assign({}, sk);
+      inst2.uses = 0;
+      state.dive.skills.passive.push(inst2);
+    }
+    state.dive.loadout.skill = null;
+  }
   state.dive.phase = 'map';
   rollDiveRooms();
   renderAbyssPage();
@@ -6006,11 +6183,36 @@ function startDiveRun(){
 
 function renderDivePrep(){
   var d = state.dive;
+  var tab = d.prepTab || 'prep';
+
   var h = '<div class="page-title"><h2>🌊 深渊探索 · 战备</h2><p>搜打撤 · Roguelike</p></div>';
-  h += '<div style="max-width:520px;margin:0 auto">';
+
+  // 顶部 tab 条
+  h += '<div class="dive-prep-tabs">' +
+    '<button class="dpt' + (tab === 'prep'   ? ' on' : '') + '" data-prep-tab="prep">⚔️ 战备</button>' +
+    '<button class="dpt' + (tab === 'codex'  ? ' on' : '') + '" data-prep-tab="codex">📖 图鉴</button>' +
+    '<button class="dpt' + (tab === 'record' ? ' on' : '') + '" data-prep-tab="record">📜 战绩</button>' +
+    '<button class="dpt' + (tab === 'shop'   ? ' on' : '') + '" data-prep-tab="shop">🛒 商店</button>' +
+    '<button class="dpt' + (tab === 'bag'    ? ' on' : '') + '" data-prep-tab="bag">🎒 背包</button>' +
+    '<button class="dpt' + (tab === 'task'   ? ' on' : '') + '" data-prep-tab="task">📋 任务</button>' +
+  '</div>';
+
+  if(tab === 'prep')       h += renderDivePrepContent();
+  else if(tab === 'codex') h += renderDiveCodex();
+  else if(tab === 'record')h += renderDiveRecord();
+  else if(tab === 'shop')  h += renderDivePrepPlaceholder('🛒 局外商店', '用源质/印记购买跨局道具与装备。等道具系统支线完成后开放。');
+  else if(tab === 'bag')   h += renderDivePrepPlaceholder('🎒 局外背包', '存放跨局道具与装备。等道具系统支线完成后开放。');
+  else if(tab === 'task')  h += renderDivePrepPlaceholder('📋 探索任务', '每日/周常探索任务。等任务系统完成后开放。');
+
+  return h;
+}
+
+function renderDivePrepContent(){
+  var d = state.dive;
+  var h = '<div style="max-width:520px;margin:0 auto">';
   h += renderDiveSlot('出战装备', 'gear', d.loadout.gearUid ? getGearById(d.loadout.gearUid) : null);
-  h += renderDiveSlot('临时词条', 'affix', d.loadout.affix);
   h += renderDiveSlot('道具', 'item', d.loadout.item);
+  h += renderDiveSlot('技能', 'skill', d.loadout.skill);
   h += '<div style="display:flex;gap:10px;margin-top:10px">';
   h += '<button class="btn auto-btn" id="diveBackBtn" data-dive-back="1" style="flex:1;max-width:none">返 回</button>';
   h += '<button class="btn roll-btn" id="diveStartBtn" data-dive-start="1" style="flex:2;max-width:none"' +
@@ -6020,9 +6222,115 @@ function renderDivePrep(){
   return h;
 }
 
+function renderDiveCodex(){
+  var h = '<div class="dive-codex">';
+
+  // 玩法说明
+  h += '<div class="codex-sec">' +
+    '<div class="cs-head">🎯 玩法说明</div>' +
+    '<div class="cs-body">' +
+      '<b>基本流程</b>：进入深渊 → 战备（带装备/道具/技能）→ 地图选房间 → 战斗/事件 → 撤离。<br>' +
+      '<b>生命机制</b>：几百点 HP，敌人每回合攻击会扣。<br>' +
+      '<b>回合制</b>：抽卡 = 普攻；主动技能 = 消耗一回合；敌人每 N 回合行动。<br>' +
+      '<b>撤离</b>：普通撤离（无代价）/ 丢包撤离（丢拾获，保印记）/ 大门撤离（打赢才能走）。<br>' +
+      '<b>商人房</b>：用印记 + 源质买装备、钥匙。<br>' +
+      '<b>赌徒房</b>：押印记博倍率，全负期望。<br>' +
+      '<b>祭坛房</b>：献祭最大生命 / 印记换 buff / 解锁隐藏 boss。<br>' +
+      '<b>上锁房间</b>：需消耗 1 把钥匙，含隐藏 boss（虚影沙杨马）。<br>' +
+      '<b>伪装房</b>：无战斗房时的逃生阀，商人/赌徒堵路，钻石可糊弄一次。<br>' +
+      '<b>死亡</b>：本局拾获装备、道具全丢；出战装备会丢。<br>' +
+    '</div>' +
+  '</div>';
+
+  // 词条图鉴
+  h += '<div class="codex-sec">' +
+    '<div class="cs-head">✨ 技能 / 词条</div>' +
+    '<div class="cs-grid">';
+  for(var i = 0; i < SKILLS.length; i++){
+    var sk = SKILLS[i];
+    var tag = sk.type === 'active' ? '主动' : '被动';
+    var prep = sk.availableAtPrep ? '（战备可选）' : '（局内专属）';
+    h += '<div class="codex-card" style="--cc:' + sk.color + '">' +
+      '<div class="cc-emoji">' + sk.emoji + '</div>' +
+      '<div class="cc-name">' + esc(sk.name) + '</div>' +
+      '<div class="cc-tag">' + tag + ' ' + prep + '</div>' +
+      '<div class="cc-desc">' + esc(sk.desc) + '</div>' +
+    '</div>';
+  }
+  h += '</div></div>';
+
+  // 怪物图鉴
+  h += '<div class="codex-sec">' +
+    '<div class="cs-head">👹 怪物</div>' +
+    '<div class="cs-grid">';
+  for(var j = 0; j < DIVE_ENEMIES.length; j++){
+    var e = DIVE_ENEMIES[j];
+    var seen = !!(state.dive.monsterSeen && state.dive.monsterSeen[e.id]);
+    var killed = !!(state.dive.monsterKilled && state.dive.monsterKilled[e.id]);
+    var cls = killed ? ' killed' : (seen ? ' seen' : ' locked');
+    h += '<div class="codex-card enemy' + cls + '">' +
+      '<div class="cc-emoji">' + (seen ? e.emoji : '❓') + '</div>' +
+      '<div class="cc-name">' + (seen ? esc(e.name) : '未遇见') + '</div>' +
+      '<div class="cc-tag">' + (killed ? '已击杀' : (seen ? '已遇见' : '未解锁')) + '</div>' +
+    '</div>';
+  }
+  h += '</div></div>';
+
+  h += '</div>';
+  return h;
+}
+
+function renderDiveRecord(){
+  var d = state.dive;
+  var h = '<div class="dive-record">';
+
+  // 最佳成绩
+  h += '<div class="codex-sec">' +
+    '<div class="cs-head">🏆 生涯最佳</div>' +
+    '<div class="cs-body">' +
+      '最深 <b style="color:#c8a8ff">' + d.best.layer + '</b> 层 · ' +
+      '最富 <b style="color:#c8a8ff">' + (d.best.essence > 0 ? fmt(d.best.essence) : '—') + '</b> 印记' +
+    '</div>' +
+  '</div>';
+
+  // 历史记录
+  h += '<div class="codex-sec">' +
+    '<div class="cs-head">📜 最近 ' + (d.historyList || []).length + ' 局</div>';
+  if(!d.historyList || !d.historyList.length){
+    h += '<div class="cs-body" style="text-align:center;color:#7c89a5">还没有探索记录</div>';
+  } else {
+    h += '<div class="cs-body" style="padding:0">';
+    for(var i = 0; i < d.historyList.length; i++){
+      var r = d.historyList[i];
+      var icon = r.result === 'dead' ? '💀' : (r.result === 'win' ? '🎉' : '🚪');
+      var rtxt = r.result === 'dead' ? '死亡' : (r.result === 'win' ? '撤离' : '放弃');
+      var ts = r.time ? new Date(r.time).toLocaleString('zh-CN', { month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' }) : '';
+      h += '<div class="rec-row">' +
+        '<span class="rr-icon">' + icon + '</span>' +
+        '<span class="rr-main">第 <b>' + (r.layer || 0) + '</b> 层 · 💠 <b>' + fmt(r.essence || 0) + '</b></span>' +
+        '<span class="rr-tag">' + rtxt + '</span>' +
+        '<span class="rr-time">' + ts + '</span>' +
+      '</div>';
+    }
+    h += '</div>';
+  }
+  h += '</div>';
+
+  h += '</div>';
+  return h;
+}
+
+function renderDivePrepPlaceholder(title, desc){
+  return '<div class="dive-prep-ph">' +
+    '<div style="font-size:48px;line-height:1;margin-bottom:12px">🚧</div>' +
+    '<div style="font-size:16px;font-weight:900;color:#c8a8ff;letter-spacing:.06em;margin-bottom:8px">' + title + '</div>' +
+    '<div style="font-size:12.5px;color:#8b98ad;line-height:1.8">' + desc + '</div>' +
+  '</div>';
+}
+
 const DIVE_ROOMS = [
   { id:'battle',  name:'战斗房', emoji:'🗡️', w:80, desc:'抽卡对决，赢了继续' },
-  { id:'elite',   name:'精英房', emoji:'💀', w:30, desc:'更强，必掉临时词条', minLayer:3 },
+  { id:'elite',   name:'精英房', emoji:'💀', w:30, desc:'更强，必掉装备', minLayer:3 },
   { id:'shop',    name:'商人房', emoji:'🧳', w:30, desc:'用印记买临时强化' },
   { id:'gamble',  name:'赌徒房', emoji:'🎲', w:8,  desc:'押印记，赢翻倍' },
   { id:'shrine',  name:'祭坛房', emoji:'🕯️', w:8,  desc:'献祭生命换永久增益' },
@@ -6072,6 +6380,35 @@ const ONSEN_ESSENCES = [
   { id:'high_deep',   name:'高级深层源质',  emoji:'🔷', color:'#9fc4ff', size:2, score:10, value: 2, cap: 2, w: 12 },
   { id:'deep_void',   name:'深层虚空源质',  emoji:'🌑', color:'#5a1bb8', size:2, score:-10,value:-2, cap: 0, w: 6 }
 ];
+
+/* ═══ 阶段 5-3 · 技能表 ═══ */
+/* type: 'active' 主动 / 'passive' 被动
+ * availableAtPrep: true = 战备页可选（其余为局内三选一专属）
+ */
+const SKILLS = [
+  // ── 12 词条 ──
+  { id:'shiny',    name:'闪耀', emoji:'✨', type:'active',  availableAtPrep:true,  color:'#fff9a8', desc:'伤害 ×0.5 + 下次闪避 +50%' },
+  { id:'golden',   name:'黄金', emoji:'🟡', type:'passive', availableAtPrep:true,  color:'#ffc93c', desc:'局内付费 -25%' },
+  { id:'rainbow',  name:'彩虹', emoji:'🌈', type:'active',  availableAtPrep:true,  color:'#ff6bff', desc:'回血 15% + 伤害 ×0.3' },
+  { id:'dark',     name:'暗黑', emoji:'🌑', type:'active',  availableAtPrep:true,  color:'#8b3dff', desc:'消耗 20% HP → 伤害 ×2.5' },
+  { id:'imaginary',name:'虚数', emoji:'🌀', type:'active',  availableAtPrep:true,  color:'#00c2ff', desc:'敌人下回合受伤 +80%' },
+  { id:'divine',   name:'圣辉', emoji:'✝️', type:'active',  availableAtPrep:false, color:'#ffe600', desc:'秒杀精英（一局一次，boss 无效）' },
+  { id:'quantum',  name:'量子', emoji:'⚛️', type:'passive', availableAtPrep:true,  color:'#b6ff00', desc:'受伤 -20% + 闪避 5~25%' },
+  { id:'temporal', name:'时之', emoji:'⏳', type:'active',  availableAtPrep:true,  color:'#ff8a00', desc:'回 75% 已损耗血量' },
+  { id:'spatial',  name:'空之', emoji:'🌌', type:'active',  availableAtPrep:true,  color:'#c56cf0', desc:'本局免疫 debuff' },
+  { id:'chaotic',  name:'混沌', emoji:'💥', type:'active',  availableAtPrep:true,  color:'#ff2d2d', desc:'随机挂 1 种 debuff' },
+  { id:'infinite', name:'无限', emoji:'♾️', type:'active',  availableAtPrep:false, color:'#ff00e6', desc:'敌人 <25% 时 45% 概率秒杀（boss 有效）' },
+  { id:'genesis',  name:'创世', emoji:'🌟', type:'active',  availableAtPrep:true,  color:'#ffffff', desc:'逃到新房间，层数 +1（单局 2 次）' },
+  // ── 5 特质（全部 passive，局内专属）──
+  { id:'sharp',    name:'锐',  emoji:'🗡️', type:'passive', availableAtPrep:false, color:'#ff8a8a', desc:'战斗伤害 ×1.15' },
+  { id:'greedy',   name:'贪',  emoji:'💰', type:'passive', availableAtPrep:false, color:'#ffd86b', desc:'击杀印记 +40%' },
+  { id:'mad',      name:'狂',  emoji:'😡', type:'passive', availableAtPrep:false, color:'#ff5f5f', desc:'回合越久伤害越高' },
+  { id:'vampire',  name:'吸血',emoji:'💚', type:'passive', availableAtPrep:false, color:'#8ff0c4', desc:'击杀回血' },
+  { id:'foresee',  name:'预',  emoji:'🔮', type:'passive', availableAtPrep:false, color:'#c8a8ff', desc:'下场首抽至少 SR' }
+];
+
+/* 技能冲突表（互斥爆率用，5-3C 消费） */
+const SKILL_CONFLICTS = [['vampire','dark'], ['rainbow','temporal'], ['shiny','quantum']];
 
 const DIVE_HIDDEN_BOSS = {
   id: 'sym_shadow',
@@ -6273,10 +6610,8 @@ function startHiddenBossCombat(){
     var gear = getGearById(d.loadout.gearUid);
     if(gear) gearMult = gear.mult;
   }
-  var affixMult = 1;
-  if(d.loadout.affix && d.loadout.affix.mult){
-    affixMult = Math.min(8.0, d.loadout.affix.mult);
-  }
+  if(!state.dive.monsterSeen) state.dive.monsterSeen = {};
+  state.dive.monsterSeen[DIVE_HIDDEN_BOSS.id] = true;
 
   d.combat = {
     enemyId: boss.id,
@@ -6290,13 +6625,21 @@ function startHiddenBossCombat(){
     isHiddenBoss: true,
     drawCount: 0,
     gearMult: gearMult,
-    affixMult: affixMult,
     tempBuffs: d.combatBuffs,
     pickOptions: [],
     phase: 'fighting',
     _fired: false,
     isGate: false,
     isGateBoss: false,
+    round: 0,
+    enemyActing: false,
+    enemyCharging: false,
+    enemyLastAction: '',
+    lastRoll: null,
+    playerDodgeBuff: 0,
+    playerDodgeBuffRolled: false,
+    enemyVulnerable: 0,
+    enemyDebuffs: [],
     gateRemaining: 0
   };
   d.phase = 'combat';
@@ -6319,10 +6662,8 @@ function startDiveCombat(room){
     var gear = getGearById(d.loadout.gearUid);
     if(gear) gearMult = gear.mult;
   }
-  var affixMult = 1;
-  if(d.loadout.affix && d.loadout.affix.mult){
-    affixMult = Math.min(8.0, d.loadout.affix.mult);  // 上限锁 8x
-  }
+  if(!state.dive.monsterSeen) state.dive.monsterSeen = {};
+  state.dive.monsterSeen[enemy.id] = true;
 
   d.combat = {
     enemyId: enemy.id,
@@ -6335,13 +6676,21 @@ function startDiveCombat(room){
     isElite: isElite,
     drawCount: 0,
     gearMult: gearMult,
-    affixMult: affixMult,
     tempBuffs: d.combatBuffs,
     pickOptions: [],
     phase: 'fighting',
     _fired: false,
     isGate: false,
     isGateBoss: false,
+    round: 0,
+    enemyActing: false,
+    enemyCharging: false,
+    enemyLastAction: '',
+    lastRoll: null,
+    playerDodgeBuff: 0,
+    playerDodgeBuffRolled: false,
+    enemyVulnerable: 0,
+    enemyDebuffs: [],
     gateRemaining: 0
   };
   // 🏛️ 大门战斗：按 gateInfo 覆盖敌人与剩余数
@@ -6373,43 +6722,69 @@ function resolveDiveCombatRoll(result){
   c._fired = true;
 
   var base = result.base;
+  c.lastRoll = base;
   var idx = RARITIES.indexOf(base);
 
   // 「预」：下一场首抽至少 SR（idx >= 3）
-  if(d.pendingFirstRare){
+  if(d.pendingFirstRare || hasPassive('foresee')){
     idx = Math.max(3, idx);
     d.pendingFirstRare = false;
   }
 
-  var dmg = (idx + 1) * 10;                             // 稀有度线性：N=10, R=20, ..., 8FQ=260
+  var dmg = (idx + 1) * 27;                             // 独立池后补偿系数
   dmg *= 1 + Math.min(2.0, c.drawCount * 0.10);         // 同场抽数加成，上限 ×3
   dmg *= c.gearMult;                                     // 装备倍率
-  dmg *= c.affixMult;                                    // 战备词条倍率（锁 8x）
 
-  // 「锐」×1.15
+  // 「锐」×1.15（旧 buff 或新被动都生效）
+  var hasSharp = hasPassive('sharp');
   for(var i = 0; i < c.tempBuffs.length; i++){
-    if(c.tempBuffs[i].id === '锐'){ dmg *= 1.15; break; }
+    if(c.tempBuffs[i].id === '锐'){ hasSharp = true; break; }
   }
-  // 「狂」每抽 +4%，上限 +40%
+  if(hasSharp) dmg *= 1.15;
+  // 「狂」回合越久伤害越高（每回合 +4%，上限 +40%）
+  var hasMad = hasPassive('mad');
   for(var k = 0; k < c.tempBuffs.length; k++){
-    if(c.tempBuffs[k].id === '狂'){
-      dmg *= (1 + Math.min(0.40, c.drawCount * 0.04));
-      break;
-    }
+    if(c.tempBuffs[k].id === '狂'){ hasMad = true; break; }
+  }
+  if(hasMad){
+    dmg *= (1 + Math.min(0.40, c.round * 0.04));
   }
   dmg = Math.floor(dmg);
 
+  // 虚数：敌人下回合受伤 +80%
+  if(c.enemyVulnerable > 0){
+    dmg = Math.floor(dmg * (1 + c.enemyVulnerable));
+    c.enemyVulnerable = 0;
+    toast('🌀 虚数加成生效', '#00c2ff');
+  }
   c.enemyHp -= dmg;
+  applyVampireHeal(c, dmg);
+  // 敌人 debuff（燃烧/中毒等，先简单扣血）
+  if(c.enemyDebuffs && c.enemyDebuffs.length){
+    for(var di = c.enemyDebuffs.length - 1; di >= 0; di--){
+      var db = c.enemyDebuffs[di];
+      if(db.id === 'burn'){ c.enemyHp -= Math.floor(c.enemyMaxHp * 0.03); }
+      if(db.id === 'poison'){ c.enemyHp -= Math.floor(c.enemyMaxHp * 0.02); }
+      if(db.id === 'bleed'){ c.enemyHp -= Math.floor(c.enemyMaxHp * 0.025); }
+      db.duration--;
+      if(db.duration <= 0) c.enemyDebuffs.splice(di, 1);
+    }
+  }
+  c.round++;
   c.drawCount++;
   burst('#22c98a', 26, innerWidth / 2, innerHeight / 2);
   toast('🗡️ 造成 ' + fmt(dmg) + ' 伤害', '#22c98a');
 
   if(c.enemyHp <= 0){
+    if(!state.dive.monsterKilled) state.dive.monsterKilled = {};
+    state.dive.monsterKilled[c.enemyId] = true;
     // 「贪」印记 +40%（仅战斗房）
     var essenceGain = Math.floor((c.isElite ? 6 : 2.5) * c.playerMaxHp);
+    var hasGreedy = hasPassive('greedy');
     for(var e = 0; e < c.tempBuffs.length; e++){
-      if(c.tempBuffs[e].id === '贪'){ essenceGain = Math.floor(essenceGain * 1.4); break; }
+      if(c.tempBuffs[e].id === '贪'){ hasGreedy = true; break; }
     }
+    if(hasGreedy) essenceGain = Math.floor(essenceGain * 1.4);
     d.essence += essenceGain;
     // 精英房 100% 掉装备
     if(c.isElite){
@@ -6439,6 +6814,7 @@ function resolveDiveCombatRoll(result){
       c.enemyEmoji = ne.emoji;
       c.enemyHp = c.enemyMaxHp = (80 + d.layer * 40) * 3;   // 精英 HP
       c.drawCount = 0;
+      c.round = 0;
       c.phase = 'fighting';
       toast('🏛️ 守卫倒下！还剩 ' + c.gateRemaining + ' 位', '#c8a8ff');
       renderAbyssPage();
@@ -6481,20 +6857,17 @@ function resolveDiveCombatRoll(result){
     c.phase = 'won';
     c.pickOptions = pickDiveBuffChoices(3);
   } else {
-    // 反击：每 5 抽（持有「稳」则为 4 抽）掉 1 心
-    var interval = 5;
-    for(var s = 0; s < c.tempBuffs.length; s++){
-      if(c.tempBuffs[s].id === '稳'){ interval = 4; break; }
-    }
-    var counterDmg = Math.max(5, Math.floor(c.playerMaxHp * 0.06));
-    if(c.drawCount % interval === 0){
-      c.playerHp -= counterDmg;
-      if(c.playerHp <= 0){
-        c.playerHp = 0;
-        c.phase = 'lost';
-      } else {
-        toast('💢 敌人反击！-' + counterDmg + ' HP', '#ff8a8a');
-      }
+    // 敌人回合判断（小怪每回合 / 精英+大门+隐藏 boss 每 2 回合）
+    var isBossLike = c.isElite || c.isHiddenBoss;
+    var needEnemyTurn = !isBossLike || (c.round % 2 === 0);
+    if(needEnemyTurn){
+      c.enemyActing = true;
+      renderAbyssPage();
+      setTimeout(function(){ enemyTurn(c); }, 800);
+    } else {
+      c.enemyLastAction = 'watch';
+      toast('👁️ 敌人观望不动', '#8b98ad');
+      renderAbyssPage();
     }
   }
   renderAbyssPage();
@@ -6576,6 +6949,8 @@ function enterDiveRoom(room){
   var d = state.dive;
   if(d._entering) return;
   d._entering = true;
+  // 一定时间后自动复位，防止提前 return 跳过
+  setTimeout(function(){ if(state.dive) state.dive._entering = false; }, 120);
   d.room = room;
   // 记录"进入时的层数"，用于判定 history 中的相邻房间是否为同层（跨层不算连续）
   d.history.push({ id: room.id, layer: d.layer });
@@ -6638,7 +7013,6 @@ function enterDiveRoom(room){
     d.phase = 'room';
   }
   renderAbyssPage();
-  setTimeout(function(){ d._entering = false; }, 120);
   beep(700, .08, 'sine', .04);
 }
 
@@ -6823,16 +7197,16 @@ function rollShopItems(){
     kind: 'gear',
     uid: 'item_' + items.length + '_' + Math.random().toString(36).slice(2, 7),
     gear: g1,
-    mark: 100 + layer * 20,
-    source: 20 + layer * 3
+    mark: Math.floor((100 + layer * 20) * (hasPassive('golden') ? 0.75 : 1)),
+    source: Math.floor((20 + layer * 3) * (hasPassive('golden') ? 0.75 : 1))
   });
   // 槽 2：付费撤（概率）
   if(state.dive._forcePayWithdraw || Math.random() < getPayWithdrawChance(layer)){
     items.push({
       kind: 'pay',
       uid: 'item_' + items.length + '_' + Math.random().toString(36).slice(2, 7),
-      mark: 500 + layer * 80,
-      source: 100 + layer * 15,
+      mark: Math.floor((500 + layer * 80) * (hasPassive('golden') ? 0.75 : 1)),
+      source: Math.floor((100 + layer * 15) * (hasPassive('golden') ? 0.75 : 1)),
       gift: layer <= 20
     });
   }
@@ -6842,16 +7216,16 @@ function rollShopItems(){
     kind: 'gear',
     uid: 'item_' + items.length + '_' + Math.random().toString(36).slice(2, 7),
     gear: g2,
-    mark: 100 + layer * 20,
-    source: 20 + layer * 3
+    mark: Math.floor((100 + layer * 20) * (hasPassive('golden') ? 0.75 : 1)),
+    source: Math.floor((20 + layer * 3) * (hasPassive('golden') ? 0.75 : 1))
   });
   // 🔑 bossUnlocked 时必刷 1 把钥匙
   if(state.dive.bossUnlocked){
     items.push({
       kind: 'key',
       uid: 'item_key_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
-      mark: 300 + layer * 50,
-      source: 60 + layer * 8,
+      mark: Math.floor((300 + layer * 50) * (hasPassive('golden') ? 0.75 : 1)),
+      source: Math.floor((60 + layer * 8) * (hasPassive('golden') ? 0.75 : 1)),
       key: { id:'key', name:'深渊钥匙', emoji:'🔑', color:'#ffd86b' }
     });
   }
@@ -7960,9 +8334,9 @@ function renderDiveShrine(){
     h2 += '<div class="page-title"><h2>🕯️ 祭坛授予</h2><p>三选一</p></div>';
     h2 += '<div style="max-width:620px;margin:0 auto">';
     h2 += '<div class="dive-room-grid" style="grid-template-columns:1fr;gap:10px">';
-    h2 += '<div class="dive-room-card" data-shrine-reward="buff" style="cursor:pointer"><div class="drc-emoji">✦</div><div class="drc-info"><div class="drc-name">随机本局 buff</div><div class="drc-desc">锐 / 贪 / 稳 / 狂 / 愈 / 预 中随机一个</div></div></div>';
-    h2 += '<div class="dive-room-card" data-shrine-reward="affix" data-shrine-payload="shiny" style="cursor:pointer"><div class="drc-emoji">🌀</div><div class="drc-info"><div class="drc-name">闪耀词条（占位）</div><div class="drc-desc">4b-2 先固定给闪耀，后续可加多选</div></div></div>';
-    h2 += '<div class="dive-room-card" data-shrine-reward="boss" style="cursor:pointer"><div class="drc-emoji">🔒</div><div class="drc-info"><div class="drc-name">解锁隐藏 boss</div><div class="drc-desc">地图上刷出上锁房间（4b-3 实装）</div></div></div>';
+    h2 += '<div class="dive-room-card" data-shrine-reward="buff" style="cursor:pointer"><div class="drc-emoji">✦</div><div class="drc-info"><div class="drc-name">随机技能</div><div class="drc-desc">锐 / 贪 / 狂 / 吸血 / 预 中随机一个</div></div></div>';
+    h2 += '<div class="dive-room-card" data-shrine-reward="affix" data-shrine-payload="shiny" style="cursor:pointer"><div class="drc-emoji">🌀</div><div class="drc-info"><div class="drc-name">指定技能</div><div class="drc-desc">从 12 技能里选一个</div></div></div>';
+    h2 += '<div class="dive-room-card" data-shrine-reward="boss" style="cursor:pointer"><div class="drc-emoji">🔒</div><div class="drc-info"><div class="drc-name">解锁隐藏 boss</div><div class="drc-desc">地图上刷出上锁房间</div></div></div>';
     h2 += '</div></div>';
     return h2;
   }
@@ -7991,8 +8365,8 @@ function renderDiveShrine(){
   h += '<div class="dive-room-card" data-dive-shrine-sac="hp" style="cursor:pointer">';
   h += '<div class="drc-emoji">❤️</div>';
   h += '<div class="drc-info">';
-  h += '<div class="drc-name">献祭 1 点最大生命</div>';
-  h += '<div class="drc-desc">当前 ' + d.hp + '/' + d.maxHp + ' → ' + Math.max(1, d.hp - 1) + '/' + Math.max(1, d.maxHp - 1) + '</div>';
+  h += '<div class="drc-name">献祭 20% 最大生命</div>';
+  h += '<div class="drc-desc">当前 ' + d.hp + '/' + d.maxHp + ' → ' + Math.max(20, d.hp - Math.floor(d.maxHp * 0.2)) + '/' + Math.max(20, d.maxHp - Math.floor(d.maxHp * 0.2)) + '</div>';
   h += '</div></div>';
 
   // 献祭 2：印记
@@ -8009,9 +8383,9 @@ function renderDiveShrine(){
   h += '<div class="card" style="margin-bottom:12px"><div class="card-body">';
   h += '<div style="font-size:11.5px;color:#9aa8c4;font-weight:800;margin-bottom:8px">献祭后从以下奖励中三选一</div>';
   h += '<div style="font-size:11.5px;color:#7c89a5;line-height:1.7">';
-  h += '· 一个随机本局 buff（锐 / 贪 / 稳 / 狂 / 愈 / 预）<br>';
-  h += '· 一个指定词条（从 12 词条里选）<br>';
-  h += '· 解锁隐藏 boss（本局地图上刷出上锁房间，4b-3 实装）';
+  h += '· 一个随机技能（锐 / 贪 / 狂 / 吸血 / 预）<br>';
+  h += '· 一个指定技能（从 12 技能里选）<br>';
+  h += '· 解锁隐藏 boss（本局地图上刷出上锁房间）';
   h += '</div></div></div>';
 
   h += '<div style="text-align:center;margin-top:14px"><button class="abyss-btn" data-dive-shrine-leave="1" style="max-width:200px;background:linear-gradient(180deg,#4a5875,#2a3550);color:#e8eefc">离 开</button></div>';
@@ -8074,6 +8448,307 @@ function renderDiveShop(){
   return h;
 }
 
+/* ═══ 阶段 5-2 · 敌人回合 ═══ */
+/* ═══ 阶段 5-3 · 主动技能使用 ═══ */
+function useDiveSkill(idx){
+  var d = state.dive;
+  var c = d.combat;
+  if(!c || c.phase !== 'fighting'){ return; }
+  if(c.enemyActing){ toast('敌人行动中', 'bad'); return; }
+  if(state.rolling){ return; }
+  var sk = d.skills.active[idx];
+  if(!c.lastRoll){
+    toast('需要先抽一次卡才能释放技能', 'bad');
+    return;
+  }
+  if(!sk){ return; }
+
+  // 一局一次的技能判断
+  var oncePerRun = (sk.id === 'divine');
+  var maxUses = (sk.id === 'genesis') ? 2 : (oncePerRun ? 1 : Infinity);
+  if(sk.uses >= maxUses){
+    toast('该技能本局已用尽', 'bad');
+    return;
+  }
+
+  // 执行效果（函数返回 true = 消耗回合，false = 未消耗 / 无法使用）
+  var consumed = applyActiveSkill(c, sk);
+  if(!consumed){ return; }
+
+  // 消耗上一抽（CD 机制）
+  c.lastRoll = null;
+
+  sk.uses++;
+
+  // 触发敌人回合
+  var needEnemyTurn = !c.isElite && !c.isHiddenBoss || (c.round % 2 === 0);
+  if(needEnemyTurn){
+    c.enemyActing = true;
+    renderAbyssPage();
+    setTimeout(function(){ enemyTurn(c); }, 800);
+  } else {
+    c.enemyLastAction = 'watch';
+    toast('👁️ 敌人观望不动', '#8b98ad');
+    renderAbyssPage();
+  }
+}
+
+/* 技能效果派发（返回是否消耗回合） */
+function applyActiveSkill(c, sk){
+  var d = state.dive;
+  var id = sk.id;
+  var idx = RARITIES.indexOf(c.lastRoll) >= 0 ? RARITIES.indexOf(c.lastRoll) : 2;
+  var baseDmg = (idx + 1) * 27 * (1 + Math.min(2.0, c.drawCount * 0.10)) * c.gearMult;
+  // 「锐」×1.15（技能伤害也吃锐）
+  if(hasPassive('sharp')) baseDmg *= 1.15;
+
+  if(id === 'shiny'){
+    // 闪耀：伤害 ×0.5 + 下次闪避 +50%
+    var dmg = Math.floor(baseDmg * 0.5);
+    c.enemyHp -= dmg;
+    c.playerDodgeBuff = 0.5;
+    c.playerDodgeBuffRolled = false;
+    toast('✨ 闪耀 · -' + fmt(dmg) + ' HP · 下次闪避 +50%', '#fff9a8');
+  }
+  else if(id === 'rainbow'){
+    // 彩虹：回血 15% + 伤害 ×0.3
+    var healR = Math.floor(c.playerMaxHp * 0.15);
+    c.playerHp = Math.min(c.playerMaxHp, c.playerHp + healR);
+    var dmgR = Math.floor(baseDmg * 0.3);
+    c.enemyHp -= dmgR;
+    toast('🌈 彩虹 · +' + healR + ' HP · -' + fmt(dmgR) + ' HP', '#ff6bff');
+  }
+  else if(id === 'dark'){
+    // 暗黑：消耗 20% 当前 HP → 伤害 ×2.5
+    var costD = Math.floor(c.playerHp * 0.2);
+    if(c.playerHp <= costD + 1){ toast('血量不足，无法施放暗黑', 'bad'); return false; }
+    c.playerHp -= costD;
+    var dmgD = Math.floor(baseDmg * 2.5);
+    c.enemyHp -= dmgD;
+    toast('🌑 暗黑 · -' + costD + ' HP → -' + fmt(dmgD) + ' HP', '#8b3dff');
+  }
+  else if(id === 'imaginary'){
+    // 虚数：敌人下回合受伤 +80%
+    c.enemyVulnerable = 0.8;
+    toast('🌀 虚数 · 敌人下回合受伤 +80%', '#00c2ff');
+  }
+  else if(id === 'divine'){
+    // 圣辉：秒杀精英（boss 无效）
+    if(c.isHiddenBoss || c.isGateBoss){
+      toast('✝️ 圣辉对 boss 无效', 'bad');
+      return false;
+    }
+    c.enemyHp = 0;
+    toast('✝️ 圣辉 · 秒杀！', '#ffe600');
+  }
+  else if(id === 'temporal'){
+    // 时之：回 75% 已损耗血量
+    var lost = c.playerMaxHp - c.playerHp;
+    var healT = Math.floor(lost * 0.75);
+    c.playerHp = Math.min(c.playerMaxHp, c.playerHp + healT);
+    toast('⏳ 时之 · +' + healT + ' HP', '#ff8a00');
+  }
+  else if(id === 'spatial'){
+    // 空之：本局免疫 debuff
+    c.playerDebuffImmune = true;
+    toast('🌌 空之 · 本局免疫 debuff', '#c56cf0');
+  }
+  else if(id === 'chaotic'){
+    // 混沌：随机挂 1 种 debuff（挂敌人）
+    var debuffs = ['burn', 'poison', 'bleed'];
+    var pick = debuffs[Math.floor(Math.random() * debuffs.length)];
+    c.enemyDebuffs.push({ id: pick, duration: 3 });
+    toast('💥 混沌 · 敌人被挂 ' + pick, '#ff2d2d');
+  }
+  else if(id === 'infinite'){
+    // 无限：敌人 <25% 时 45% 概率秒杀（boss 有效）
+    var hpPct = c.enemyMaxHp > 0 ? c.enemyHp / c.enemyMaxHp : 1;
+    if(hpPct > 0.25){ toast('♾️ 敌人 HP >25%，无法触发', 'bad'); return false; }
+    if(Math.random() < 0.45){
+      c.enemyHp = 0;
+      toast('♾️ 无限 · 秒杀！', '#ff00e6');
+    } else {
+      var dmgI = Math.floor(baseDmg * 0.5);
+      c.enemyHp -= dmgI;
+      toast('♾️ 无限 · 未触发秒杀（-' + fmt(dmgI) + ' HP）', '#ff00e6');
+    }
+  }
+  else if(id === 'genesis'){
+    // 创世：逃到新房间，层数 +1
+    d.layer++;
+    rollDiveRooms();
+    d.combat = null;
+    d.phase = 'map';
+    toast('🌟 创世 · 逃往第 ' + d.layer + ' 层', '#ffffff');
+    renderAbyssPage();
+    return false;   // 不走敌人回合（已经跳层）
+  }
+  else {
+    // 未实现的技能
+    toast('技能效果开发中', 'bad');
+    return false;
+  }
+
+  // 敌人被击杀判断
+  if(c.enemyHp <= 0){
+    onDiveEnemyKilled(c);
+  } else {
+    c.round++;
+  }
+  renderAbyssPage();
+  return true;
+}
+
+/* 敌人被技能击杀后走和抽卡击杀一样的路径 */
+function onDiveEnemyKilled(c){
+  var d = state.dive;
+  if(!state.dive.monsterKilled) state.dive.monsterKilled = {};
+  state.dive.monsterKilled[c.enemyId] = true;
+  var essenceGain = Math.floor((c.isElite ? 6 : 2.5) * c.playerMaxHp);
+  var hasGreedy = hasPassive('greedy');
+  for(var e = 0; e < c.tempBuffs.length; e++){
+    if(c.tempBuffs[e].id === '贪'){ hasGreedy = true; break; }
+  }
+  if(hasGreedy) essenceGain = Math.floor(essenceGain * 1.4);
+  d.essence += essenceGain;
+  if(c.isElite){
+    var eg = rollDiveGear(d.layer);
+    state.dive.runGearPicked.push(eg);
+    toast('💀 精英掉落 ' + eg.emoji + ' ' + eg.name, getDiveGearColor(eg.rarity));
+  }
+  if(c.isGate && c.gateRemaining > 1){
+    c.gateRemaining--;
+    var ni = Math.min(DIVE_ENEMIES.length - 1, Math.floor((d.layer - 1) / 2));
+    var ne = DIVE_ENEMIES[ni];
+    c.enemyName = ne.name;
+    c.enemyEmoji = ne.emoji;
+    c.enemyHp = c.enemyMaxHp = (80 + d.layer * 40) * 3;
+    c.drawCount = 0;
+    c.round = 0;
+    c.phase = 'fighting';
+    toast('🏛️ 守卫倒下！还剩 ' + c.gateRemaining + ' 位', '#c8a8ff');
+    return;
+  }
+  if(c.isGate){
+    d.withdrawSubtype = 'gate';
+    d.phase = 'withdraw';
+    d.combat = null;
+    return;
+  }
+  if(c.isHiddenBoss){
+    var hbMark = Math.floor(30 * c.playerMaxHp);
+    var hbEss = 200 + d.layer * 20;
+    d.essence += hbMark;
+    state.essence += hbEss;
+    var mythNames = DIVE_GEAR_NAMES.myth;
+    var mPick = mythNames[Math.floor(Math.random() * mythNames.length)];
+    d.runGearPicked.push({
+      uid: 'gear_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+      rarity: 'myth', name: mPick[0], emoji: mPick[1], mult: 6.0
+    });
+    toast('🌑 隐藏 boss 已击杀！', 'gold');
+    d.hp = c.playerHp;
+    d.combat = null;
+    d.phase = 'boss_choice';
+    return;
+  }
+  c.phase = 'won';
+  c.pickOptions = pickDiveBuffChoices(3);
+}
+
+function enemyTurn(c){
+  if(!c){ return; }
+  if(c.phase !== 'fighting'){ c.enemyActing = false; return; }
+
+  // 蓄力中 → 强制攻击（伤害翻倍）
+  if(c.enemyCharging){
+    c.enemyCharging = false;
+    c.enemyLastAction = 'attack_charged';
+    doEnemyAttack(c, 2.0);
+    c.enemyActing = false;
+    if(state.page === 'abyss') renderAbyssPage();
+    return;
+  }
+
+  var roll = Math.random();
+  var hpPct = c.enemyMaxHp > 0 ? (c.enemyHp / c.enemyMaxHp) : 1;
+
+  // 治疗：HP < 70% 且掷中
+  if(roll < 0.15 && hpPct < 0.7){
+    c.enemyLastAction = 'heal';
+    var heal = Math.floor(c.enemyMaxHp * 0.15);
+    c.enemyHp = Math.min(c.enemyMaxHp, c.enemyHp + heal);
+    toast('💚 敌人治疗 +' + heal, '#8ff0c4');
+  }
+  // 蓄力
+  else if(roll < 0.15 + 0.25){
+    c.enemyLastAction = 'charge';
+    c.enemyCharging = true;
+    toast('⚡ 敌人蓄力！下回合攻击翻倍', '#ff9f43');
+  }
+  // 攻击
+  else {
+    c.enemyLastAction = 'attack';
+    doEnemyAttack(c, 1.0);
+  }
+
+  c.enemyActing = false;
+  if(state.page === 'abyss') renderAbyssPage();
+}
+
+/* vampire 吸血（按伤害百分比回血） */
+function applyVampireHeal(c, dmg){
+  if(!hasPassive('vampire')) return;
+  var heal = Math.floor(dmg * 0.05);
+  if(heal <= 0) return;
+  c.playerHp = Math.min(c.playerMaxHp, c.playerHp + heal);
+  toast('💚 吸血 +' + heal + ' HP', '#8ff0c4');
+}
+
+function doEnemyAttack(c, mult){
+  // 闪避判定（闪耀优先，取大值；量子被动一直生效）
+  var dodgeRate = 0;
+  if(c.playerDodgeBuff > 0 && !c.playerDodgeBuffRolled){
+    dodgeRate = c.playerDodgeBuff;
+    c.playerDodgeBuffRolled = true;
+  }
+  // 量子被动
+  for(var i = 0; i < state.dive.skills.passive.length; i++){
+    if(state.dive.skills.passive[i].id === 'quantum'){
+      dodgeRate = Math.max(dodgeRate, 0.15);
+    }
+  }
+  if(dodgeRate > 0 && Math.random() < dodgeRate){
+    c.playerDodgeBuff = 0;
+    c.playerDodgeBuffRolled = false;
+    toast('💨 闪避成功！', '#7dffe0');
+    return;
+  }
+  c.playerDodgeBuff = 0;
+  c.playerDodgeBuffRolled = false;
+
+  var isBossLike = c.isElite || c.isHiddenBoss;
+  var base = isBossLike ? 0.15 : 0.10;
+  var dmg = Math.max(1, Math.floor(c.playerMaxHp * base * mult));
+
+  // 量子被动减伤 20%
+  for(var j = 0; j < state.dive.skills.passive.length; j++){
+    if(state.dive.skills.passive[j].id === 'quantum'){
+      dmg = Math.floor(dmg * 0.8);
+      break;
+    }
+  }
+  c.playerHp -= dmg;
+  if(c.playerHp <= 0){
+    c.playerHp = 0;
+    c.phase = 'lost';
+    toast('💀 你被击败了', '#ff8a8a');
+  } else {
+    var txt = mult > 1 ? ('💥 敌人重击 -' + dmg + ' HP') : ('⚔️ 敌人攻击 -' + dmg + ' HP');
+    toast(txt, '#ff8a8a');
+  }
+}
+
 function renderDiveCombat(){
   var d = state.dive;
   var c = d.combat;
@@ -8089,7 +8764,7 @@ function renderDiveCombat(){
         (c.isHiddenBoss ? ' <span style="color:#c85aff">[隐藏]</span>' :
          c.isGateBoss ? ' <span style="color:#ffd86b">[BOSS]</span>' :
          c.isElite ? ' <span style="color:#ff9bd8">[精英]</span>' : '') + '</span>' +
-      '<span style="margin-left:auto;font-size:11px;color:#8b98ad;font-weight:800">已抽 ' + c.drawCount + '</span>' +
+      '<span style="margin-left:auto;font-size:11px;color:#8b98ad;font-weight:800">回合 ' + c.round + ' · 已抽 ' + c.drawCount + '</span>' +
     '</div>' +
     '<div class="enemy-hp-bar"><i style="width:' + hpPct + '%"></i></div>' +
     '<div class="enemy-hp-text">' + fmt(Math.max(0, c.enemyHp)) + ' / ' + fmt(c.enemyMaxHp) + '</div>' +
@@ -8106,8 +8781,57 @@ function renderDiveCombat(){
   '</div>';
 
   if(c.phase === 'fighting'){
-    h += '<div class="abyss-actions" style="max-width:420px;margin:0 auto 14px">' +
-      '<button class="abyss-btn primary" id="diveCombatRollBtn">抽 取 · 攻 击</button>' +
+    // 技能槽（4 主动 + 3 被动）
+  // 稀有度 display
+  h += '<div class="dive-roll-display" id="diveRollDisplay">';
+  if(c.lastRoll){
+    h += '<div class="drd-card" style="--rc:' + c.lastRoll.color + '">' +
+      '<span class="drd-id">' + c.lastRoll.id + '</span>' +
+      '<span class="drd-name">' + esc(c.lastRoll.name) + '沙杨马</span>' +
+    '</div>';
+  } else {
+    h += '<div class="drd-card empty">需要抽取才能释放技能</div>';
+  }
+  h += '</div>';
+
+  h += '<div class="dive-skills">';
+  h += '<div class="ds-row ds-active">';
+  for(var ai = 0; ai < 4; ai++){
+    var aSk = d.skills.active[ai];
+    if(aSk){
+      var onceRun = (aSk.id === 'divine');
+      var maxU = (aSk.id === 'genesis') ? 2 : (onceRun ? 1 : Infinity);
+      var used = aSk.uses >= maxU;
+      var noRoll = !c.lastRoll;
+      var disCls = used ? ' used' : (noRoll ? ' no-roll' : '');
+      h += '<div class="ds-slot filled' + disCls + '" data-skill-slot="active" data-skill-idx="' + ai + '" style="--sc:' + aSk.color + '">' +
+        '<div class="ds-emoji">' + aSk.emoji + '</div>' +
+        '<div class="ds-name">' + esc(aSk.name) + (isFinite(maxU) ? ' ' + aSk.uses + '/' + maxU : '') + '</div>' +
+      '</div>';
+    } else {
+      h += '<div class="ds-slot empty">主动 ' + (ai + 1) + '</div>';
+    }
+  }
+  h += '</div>';
+  h += '<div class="ds-row ds-passive">';
+  for(var pi = 0; pi < 3; pi++){
+    var pSk = d.skills.passive[pi];
+    if(pSk){
+      h += '<div class="ds-slot small filled" style="--sc:' + pSk.color + '">' +
+        '<div class="ds-emoji">' + pSk.emoji + '</div>' +
+        '<div class="ds-name">' + esc(pSk.name) + '</div>' +
+      '</div>';
+    } else {
+      h += '<div class="ds-slot small empty">被 ' + (pi + 1) + '</div>';
+    }
+  }
+  h += '</div>';
+  h += '</div>';
+
+  h += '<div class="abyss-actions" style="max-width:420px;margin:0 auto 14px">' +
+      '<button class="abyss-btn primary" id="diveCombatRollBtn"' + (c.enemyActing ? ' disabled' : '') + '>' +
+        (c.enemyActing ? '敌 人 行 动 中…' : '抽 取 · 攻 击') +
+      '</button>' +
     '</div>';
   }
 
@@ -9053,6 +9777,7 @@ function showDiceTag(key, mult){
   el.classList.add('show');
 }
 function doRoll(){
+  if(state.dive && state.dive.combat && state.dive.combat.enemyActing) return;
   if(state.rolling) return;
   if(state.page !== 'roll' && state.page !== 'abyss' && state.page !== 'boss') return;
   state.rolling = true;
@@ -9074,13 +9799,13 @@ function doRoll(){
     clearInterval(flick);
     const el2 = $('#display');
     if(el2) el2.classList.remove('rolling');
-    resolveRoll(rollFull());
+    resolveRoll(rollFull(state.dive.active && state.dive.combat));
 
     const chance = getMultiRollChance();
     let extra = 0;
     while(extra < 5 && Math.random() < chance) extra++;
     if(extra > 0){
-      for(let i = 0; i < extra; i++) resolveRoll(rollFull());
+      for(let i = 0; i < extra; i++) resolveRoll(rollFull(state.dive.active && state.dive.combat));
       toast('🎰 多重抽奖触发！额外 +' + extra + ' 抽');
       burst('#ff6bff', 60);
       shake(3 + extra);
@@ -9212,7 +9937,7 @@ function resolveRoll(result){
 
   /* 💎 SVIP：骰子触发额外再抽一次 */
   if(diceKey && state.vip === 2 && !result.__svipExtra){
-    const extraResult = rollFull();
+    const extraResult = rollFull(state.dive.active && state.dive.combat);
     extraResult.__svipExtra = true;
     resolveSVIPExtra(extraResult);
   }
@@ -9376,7 +10101,7 @@ function buyNode(id){
 // 计算节点在第 lv 级时的升级花费（不依赖当前真实等级，便于批量预演）
 function nodeCostAt(n, lv){
   if(n.id === 'root' || n.id === 'PROOT' || n.id === 'P2ROOT') return 0;
-  return Math.floor(n.base * Math.pow(n.growth, lv));
+  return Math.floor(n.base * TREE_PRICE_MULT * Math.pow(n.growth, lv));
 }
 
 function drawPets(count){
@@ -9389,13 +10114,16 @@ function drawPets(count){
   state.gems -= cost;
   let results = [];
   for(let i = 0; i < count; i++){
-    const q = rollPetQuality();
-    results.push(genPet(q, rollSpecies()));
+    const spId = rollSpecies();
+    const sp = getSpecies(spId);
+    const range = (sp.maxStar || sp.minStar) - sp.minStar + 1;
+    const star = sp.minStar + Math.floor(Math.random() * range);
+    const q = rollPetQualityForStar(star);
+    results.push(genPet(q, spId, star));
   }
   // ═══ 虚空模式：25%概率吞噬 → 整批替换为蚕大蛇 ═══
   if(rollDevoured()){
-    var wormPet = { species:'worm', quality:'N', star:1, exp:0, shiny:false, rainbow:false, richPup:false,
-                    uid:'pet_worm_' + Date.now() };
+    var wormPet = genPet('N', 'worm', 1);
     results = [wormPet];
     state.petInv.push(wormPet);
     setTimeout(function(){
@@ -9441,6 +10169,32 @@ function drawPets(count){
   updateHUD();
   renderPetPage();
   checkAchievements();
+}
+
+/* 按星级压品质上限 */
+function capQualityByStar(qualityId, star){
+  const ORDER = ['N', 'R', 'SR', 'SSR', 'UR', 'GOD'];
+  const cap = STAR_QUALITY_CAP[star] || 'GOD';
+  const qi = ORDER.indexOf(qualityId);
+  const ci = ORDER.indexOf(cap);
+  if(qi < 0) return 'N';
+  return ORDER[Math.min(qi, ci)];
+}
+
+/* 按星级抽品质：品质池 = [N, 上限] */
+function rollPetQualityForStar(star){
+  const ORDER = ['N', 'R', 'SR', 'SSR', 'UR', 'GOD'];
+  const cap = STAR_QUALITY_CAP[star] || 'GOD';
+  const capIdx = ORDER.indexOf(cap);
+  const allowed = ORDER.slice(0, capIdx + 1);
+  const luck = getTotalPetDrawLuck();
+  const luckMul = 1 + luck / 100;
+  const list = allowed.map((qid, i) => {
+    const base = PET_QUALITY_WEIGHTS[qid] || 0;
+    const boost = Math.pow(luckMul, i);
+    return { ref: qid, w: base * boost };
+  });
+  return pickFrom(list).ref;
 }
 
 function rollPetQuality(){
@@ -9848,8 +10602,13 @@ function doRebirth(tierId){
   const cost = getTierCost(tier);
   if(state.coins < cost){ toast('金币不足，需要 💰' + fmt(cost)); beep(200, .12, 'square', .04); return; }
   openConfirm(tier.emoji, '确认' + tier.name,
-    '将清空金币与普通技能树等级（永久树保留），获得永久加成。此操作不可撤销。', () => {
+    '将清空金币与普通技能树等级（永久树保留），获得永久加成。' +
+    (tier.id === 'ascend' || tier.id === 'transcend' ? '⚠️ 钻石也会被清空。' : '') +
+    '此操作不可撤销。', () => {
     state.coins = 0;
+    if(tier.id === 'ascend' || tier.id === 'transcend'){
+      state.gems = 0;
+    }
     state.tree = { root:1 };
     if(tier.id === 'rebirth') state.rebirths++;
     else if(tier.id === 'ascend') state.ascends++;
@@ -10020,6 +10779,12 @@ document.addEventListener('click', e => {
   }
 
   // ═══ 深渊探索 ═══
+  var skillSlotEl = e.target.closest('[data-skill-slot]');
+  if(skillSlotEl){
+    var si2 = parseInt(skillSlotEl.dataset.skillIdx, 10);
+    useDiveSkill(si2);
+    return;
+  }
   const diveSlot = e.target.closest('[data-dive-slot]');
   if(diveSlot){
     openDiveSlotPicker(diveSlot.dataset.diveSlot);
@@ -10033,10 +10798,16 @@ document.addEventListener('click', e => {
     if(dpList[dpIdx]){
       var dpIt = dpList[dpIdx];
       if(dpIt.gear)     state.dive.loadout.gearUid = dpIt.gear.uid;
-      else if(dpIt.affix) state.dive.loadout.affix = dpIt.affix;
       else if(dpIt.item) state.dive.loadout.item = dpIt.item;
+      else if(dpIt.skill) state.dive.loadout.skill = dpIt.skill;
     }
     state.dive.pickingSlot = null;
+    renderAbyssPage();
+    return;
+  }
+  var prepTabBtn = e.target.closest('[data-prep-tab]');
+  if(prepTabBtn){
+    state.dive.prepTab = prepTabBtn.dataset.prepTab;
     renderAbyssPage();
     return;
   }
@@ -10072,6 +10843,14 @@ document.addEventListener('click', e => {
       state.dive.active = false;
       state.dive.phase = 'idle';
       updateNavVisibility();
+      if(!state.dive.historyList) state.dive.historyList = [];
+      state.dive.historyList.unshift({
+        time: Date.now(),
+        layer: state.dive.layer,
+        essence: state.dive.essence,
+        result: 'giveup'
+      });
+      if(state.dive.historyList.length > 20) state.dive.historyList.pop();
       buildNav(); updateHUD(); renderAbyssPage();
     });
     return;
@@ -10143,7 +10922,7 @@ document.addEventListener('click', e => {
         toast('💀 出战装备已丢失', '#ff8a8a');
       }
     }
-    state.dive.loadout = { gearUid: null, affix: null, item: null };
+    state.dive.loadout = { gearUid: null, item: null, skill: null };
     state.dive.items = [];
     state.dive.runGearPicked = [];
     state.dive.withdrawSubtype = null;
@@ -10152,6 +10931,17 @@ document.addEventListener('click', e => {
     state.dive.active = false;
     state.dive.phase = 'idle';
     updateNavVisibility();
+    // 记录本局
+    if(!state.dive.historyList) state.dive.historyList = [];
+    var lastResult = (state.dive.phase === 'combat' && state.dive.combat && state.dive.combat.phase === 'lost')
+      ? 'dead' : 'win';
+    state.dive.historyList.unshift({
+      time: Date.now(),
+      layer: state.dive.layer,
+      essence: state.dive.essence,
+      result: lastResult
+    });
+    if(state.dive.historyList.length > 20) state.dive.historyList.pop();
     buildNav(); updateHUD(); renderAbyssPage();
     saveGame();
     return;
@@ -10374,7 +11164,7 @@ document.addEventListener('click', e => {
           state.dive.shopState = null;
           state.dive.withdrawSubtype = null;
           state.dive.gateInfo = null;
-          state.dive.loadout = { gearUid: null, affix: null, item: null };
+          state.dive.loadout = { gearUid: null, item: null, skill: null };
           state.dive.runGearPicked = [];
           state.dive.combat = null;
           state.dive.active = false;
@@ -12488,7 +13278,7 @@ function restore(s){ if(!s) return; try{ applySaveData(JSON.parse(s)); }catch(e)
   state.petInv.push({ uid:'__tp3', species:'dog', quality:'GOD', star:6, exp:0, shiny:false, rainbow:false, richPup:false });
 
   // 带 3 只 6★ GOD 宠物，抽一次记伤害
-  state.dive.loadout = { gearUid: '__tg_a', affix: null, item: null };
+  state.dive.loadout = { gearUid: '__tg_a', item: null };
   state.dive.layer = 1;
   startDiveCombat({ id:'battle' });
   var c1 = state.dive.combat;
@@ -12516,7 +13306,7 @@ function restore(s){ if(!s) return; try{ applySaveData(JSON.parse(s)); }catch(e)
   var D = { uid:'__g_D', rarity:'legend', name:'D', emoji:'🐉', mult:4 };
   var E = { uid:'__g_E', rarity:'myth',   name:'E', emoji:'🌑', mult:6 };
   state.dive.gearInv = [A, B, C];
-  state.dive.loadout = { gearUid: '__g_A', affix: null, item: null };
+  state.dive.loadout = { gearUid: '__g_A', item: null };
   state.dive.runGearPicked = [D, E];
   state.dive.phase = 'withdraw';
   state.dive.active = true;
@@ -12551,7 +13341,7 @@ function restore(s){ if(!s) return; try{ applySaveData(JSON.parse(s)); }catch(e)
   var D = { uid:'__g_D', rarity:'legend', name:'D', emoji:'🐉', mult:4 };
   var E = { uid:'__g_E', rarity:'myth',   name:'E', emoji:'🌑', mult:6 };
   state.dive.gearInv = [A, B, C];
-  state.dive.loadout = { gearUid: '__g_A', affix: null, item: null };
+  state.dive.loadout = { gearUid: '__g_A', item: null };
   state.dive.runGearPicked = [D, E];
   state.dive.active = true;
   state.dive.phase = 'combat';
@@ -12635,7 +13425,7 @@ function restore(s){ if(!s) return; try{ applySaveData(JSON.parse(s)); }catch(e)
   var D = { uid:'__g_D', rarity:'legend', name:'D', emoji:'🐉', mult:4 };
   var E = { uid:'__g_E', rarity:'myth',   name:'E', emoji:'🌑', mult:6 };
   state.dive.gearInv = [A];
-  state.dive.loadout = { gearUid: '__g_A', affix: null, item: null };
+  state.dive.loadout = { gearUid: '__g_A', item: null };
   state.dive.runGearPicked = [D, E];
   state.dive.withdrawSubtype = 'drop';
   state.dive.phase = 'withdraw';
@@ -12670,7 +13460,7 @@ function restore(s){ if(!s) return; try{ applySaveData(JSON.parse(s)); }catch(e)
   var D = { uid:'__g_D', rarity:'legend', name:'D', emoji:'🐉', mult:4 };
   var E = { uid:'__g_E', rarity:'myth',   name:'E', emoji:'🌑', mult:6 };
   state.dive.gearInv = [A, B];
-  state.dive.loadout = { gearUid: '__g_A', affix: null, item: null };
+  state.dive.loadout = { gearUid: '__g_A', item: null };
   state.dive.runGearPicked = [D, E];
   state.dive.withdrawSubtype = 'gate';
   state.dive.active = true;
