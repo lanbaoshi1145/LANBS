@@ -1613,6 +1613,8 @@ body{
  * v16.2.0 → v16.2.1：修狂基准（round→playerActs）+ 预改一次性首抽；彩虹重做（即时 0.3× 伤害 + 3 回合 DOT 回血 5%，DOT 期间彩虹 CD）；空之加锁主动槽
  * v16.2.1 → v16.2.2：钻石产出源收紧（Boss 击杀 10万→150；删常规商城"钻石放大器"；神秘礼盒钻石 20~100→20~50；源质商店首充 1000→500、钻石礼包 500~1000→50~100）
  * v16.2.2 → v16.2.3：源质温泉结算不再发源质（纯休闲排名）
+ * v16.2.3 → v16.2.4：宠物品质倍率改"加成值"语义（N/R/SR/SSR/UR/GOD = 0.25/0.5/1/3/10/50；petMult = 1 + q.mult × 形态倍率）
+ * v16.2.4 → v16.2.5：钻石收益不再受词条倍率影响（只受骰子倍率 + 宠物 gem 加成）
  * v15.7.0 → v15.8.0：支线 0 —— 删「临时词条」槽（战斗移除 affixMult 层）；战备页改 hub（6 tab：战备/图鉴/战绩/商店/背包/任务）；图鉴（玩法/技能/怪物）；战绩历史（最近 20 局）；商店/背包/任务占位
  */
 
@@ -1690,7 +1692,7 @@ body{
 .cc-notice a:hover{color:#9fc4ff}
 
 body::after{
-  content: "v16.2.3";
+  content: "v16.2.5";
   position: fixed;
   left: 8px;
   top: 8px;
@@ -1906,12 +1908,12 @@ const RARITY_LORE = {
 };
 
 const PET_QUALITIES = [
-  { id:'N',   name:'普通', color:'#8b98ad', mult:2   },
-  { id:'R',   name:'稀有', color:'#3fa9ff', mult:4   },
-  { id:'SR',  name:'史诗', color:'#a45cff', mult:10  },
-  { id:'SSR', name:'传说', color:'#ffb020', mult:30  },
-  { id:'UR',  name:'神话', color:'#ff3d6e', mult:100 },
-  { id:'GOD', name:'创世', color:'#00ffc8', mult:500 }
+  { id:'N',   name:'普通', color:'#8b98ad', mult:0.25 },
+  { id:'R',   name:'稀有', color:'#3fa9ff', mult:0.5  },
+  { id:'SR',  name:'史诗', color:'#a45cff', mult:1    },
+  { id:'SSR', name:'传说', color:'#ffb020', mult:3    },
+  { id:'UR',  name:'神话', color:'#ff3d6e', mult:10   },
+  { id:'GOD', name:'创世', color:'#00ffc8', mult:50   }
 ];
 const PET_STARS = [
   { star:1, mult:1,    label:'★'       },
@@ -2016,7 +2018,7 @@ function petMult(pet){
   const t = petTier(pet);
   if(t === 2)      m *= PET_RAINBOW_MULT;
   else if(t === 1) m *= PET_SHINY_MULT;
-  return m;
+  return 1 + m;
 }
 
 /* ═══ 阶段 5-3B-2A · 被动查询 ═══ */
@@ -9902,7 +9904,7 @@ function resolveRoll(result){
   const totalMult = getCoinMult() * diceMult * aMult;
   const pt = getPetTraits();
   const gainCoins = base.coins * totalMult;
-  const gainGems  = base.gems * diceMult * aMult * (1 + pt.gem);
+  const gainGems  = base.gems * diceMult * (1 + pt.gem);
   state.coins += gainCoins;
   state.gems  += gainGems;
 
@@ -10025,7 +10027,7 @@ function resolveSVIPExtra(result){
   const totalMult = getCoinMult() * aMult;   /* 不叠骰子倍率 */
   const pt = getPetTraits();
   const gainCoins = base.coins * totalMult;
-  const gainGems  = base.gems * aMult * (1 + pt.gem);
+  const gainGems  = base.gems * (1 + pt.gem);
   state.coins += gainCoins;
   state.gems  += gainGems;
 
