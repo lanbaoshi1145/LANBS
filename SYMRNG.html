@@ -1610,6 +1610,8 @@ body{
  * v16.0.2 → v16.1.0：重生系统重塑（三棵升级树价格 ×10；普通重生 ×5 / 进阶 ×3 / 超级 ×2；超级重生需 5 次进阶；进阶+超级重生清空钻石）
  * v16.1.0 → v16.1.1：钻石获取彻底重做（SYM 及以上 21 档 gems 从天文数字重排为等差 10~210；N/R/SR/SSR/UR 五档不动）
  * v16.1.1 → v16.2.0：阶段 5-3B-2A 被动效果（黄金 25% off；锐 ×1.15；贪 +40%；狂 每回合+4%上限+40%；vampire 5% 吸血；预 下场首抽≥SR）
+ * v16.2.0 → v16.2.1：修狂基准（round→playerActs）+ 预改一次性首抽；彩虹重做（即时 0.3× 伤害 + 3 回合 DOT 回血 5%，DOT 期间彩虹 CD）；空之加锁主动槽
+ * v16.2.1 → v16.2.2：钻石产出源收紧（Boss 击杀 10万→150；删常规商城"钻石放大器"；神秘礼盒钻石 20~100→20~50；源质商店首充 1000→500、钻石礼包 500~1000→50~100）
  * v15.7.0 → v15.8.0：支线 0 —— 删「临时词条」槽（战斗移除 affixMult 层）；战备页改 hub（6 tab：战备/图鉴/战绩/商店/背包/任务）；图鉴（玩法/技能/怪物）；战绩历史（最近 20 局）；商店/背包/任务占位
  */
 
@@ -1687,7 +1689,7 @@ body{
 .cc-notice a:hover{color:#9fc4ff}
 
 body::after{
-  content: "v16.2.0";
+  content: "v16.2.2";
   position: fixed;
   left: 8px;
   top: 8px;
@@ -2412,17 +2414,11 @@ const SHOP_POOL = [
     apply:() => { state.rollCount = state.rollCount - (state.rollCount % DICE_INTERVAL.gold) + (DICE_INTERVAL.gold - 1); toast('🎲 下次抽奖必触发黄金骰子！'); } },
   { id:'pity',    emoji:'🛡️', name:'保底加速', desc:'保底进度 +10',            basePrice:2000, gemCost:5,  limit:5, weight:150,
     apply:() => { state.pity += 10; toast('🛡️ 保底进度 +10'); } },
-  { id:'gems',    emoji:'💎', name:'钻石放大器', desc:'花少量钻石兑换大量钻石（净赚 4 倍）', basePrice:4000, gemCost:10, limit:3, weight:100,
-    apply:() => {
-      const gain = Math.floor(50 * Math.pow(getShopWealthMult(), 0.2));
-      state.gems += gain;
-      toast('💎 +' + fmt(gain) + ' 钻石');
-    } },
   { id:'box',     emoji:'🎁', name:'神秘礼盒', desc:'随机奖励（金币/钻石/宠物）', basePrice:3500, gemCost:10, limit:5, weight:120,
     apply:() => {
       const r = Math.random();
       if(r < 0.50){ const g = getCoinMult() * 5000; state.coins += g; toast('🎁 开出 💰' + fmt(g)); }
-      else if(r < 0.85){ const g = Math.floor(20 + Math.random() * 80); state.gems += g; toast('🎁 开出 💎' + g); }
+      else if(r < 0.85){ const g = Math.floor(20 + Math.random() * 31); state.gems += g; toast('🎁 开出 💎' + g); }
       else { state.petInv.push(genPet(rollPetQuality(), rollSpecies())); toast('🎁 开出宠物！'); }
     } },
   { id:'egg',     emoji:'🥚', name:'宠物扭蛋', desc:'随机 1 只宠物（品级随机）', basePrice:5000, gemCost:12, limit:3, weight:80,
@@ -2444,16 +2440,16 @@ const RECHARGE_PACKS = [
     reward:() => {
       const g = getCoinMult() * 1e6;
       state.coins += g;
-      state.gems += 1000;
+      state.gems += 500;
       state.rollCount = state.rollCount - (state.rollCount % DICE_INTERVAL.rainbow) + (DICE_INTERVAL.rainbow - 1);
-      return '💰+' + fmt(g) + ' · 💎+1000 · 🌈充能';
+      return '💰+' + fmt(g) + ' · 💎+500 · 🌈充能';
     } },
   { id:'coin', emoji:'💰', name:'金币礼包', desc:'立即获得巨额金币',
     essenceCost:10, limit:99,
     reward:() => { const g = getCoinMult() * 1e5; state.coins += g; return '💰+' + fmt(g); } },
-  { id:'gem', emoji:'💎', name:'钻石礼包', desc:'立即获得 500~1000 钻石',
+  { id:'gem', emoji:'💎', name:'钻石礼包', desc:'立即获得 50~100 钻石',
     essenceCost:20, limit:99,
-    reward:() => { const g = 500 + Math.floor(Math.random()*500); state.gems += g; return '💎+' + g; } },
+    reward:() => { const g = 50 + Math.floor(Math.random() * 51); state.gems += g; return '💎+' + g; } },
   { id:'pity', emoji:'🛡️', name:'保底重置卡', desc:'保底进度拉满',
     essenceCost:15, limit:99,
     reward:() => {
@@ -3892,7 +3888,7 @@ function onBossKilled(){
   b.weekKills++;          // ✅ 新增
 
   const cg = getCoinMult() * 1e9;
-  const gg = 100000;
+  const gg = 150;
   state.coins += cg;
   state.gems  += gg;
 
@@ -6636,6 +6632,10 @@ function startHiddenBossCombat(){
     enemyCharging: false,
     enemyLastAction: '',
     lastRoll: null,
+    playerActs: 0,
+    _foreseeReady: hasPassive('foresee'),
+    activeLocked: false,
+    rainbowDot: null,
     playerDodgeBuff: 0,
     playerDodgeBuffRolled: false,
     enemyVulnerable: 0,
@@ -6687,6 +6687,10 @@ function startDiveCombat(room){
     enemyCharging: false,
     enemyLastAction: '',
     lastRoll: null,
+    playerActs: 0,
+    _foreseeReady: hasPassive('foresee'),
+    activeLocked: false,
+    rainbowDot: null,
     playerDodgeBuff: 0,
     playerDodgeBuffRolled: false,
     enemyVulnerable: 0,
@@ -6726,9 +6730,10 @@ function resolveDiveCombatRoll(result){
   var idx = RARITIES.indexOf(base);
 
   // 「预」：下一场首抽至少 SR（idx >= 3）
-  if(d.pendingFirstRare || hasPassive('foresee')){
+  if(d.pendingFirstRare || c._foreseeReady){
     idx = Math.max(3, idx);
     d.pendingFirstRare = false;
+    c._foreseeReady = false;
   }
 
   var dmg = (idx + 1) * 27;                             // 独立池后补偿系数
@@ -6747,7 +6752,7 @@ function resolveDiveCombatRoll(result){
     if(c.tempBuffs[k].id === '狂'){ hasMad = true; break; }
   }
   if(hasMad){
-    dmg *= (1 + Math.min(0.40, c.round * 0.04));
+    dmg *= (1 + Math.min(0.40, c.playerActs * 0.04));
   }
   dmg = Math.floor(dmg);
 
@@ -6770,12 +6775,14 @@ function resolveDiveCombatRoll(result){
       if(db.duration <= 0) c.enemyDebuffs.splice(di, 1);
     }
   }
+  c.playerActs++;
+  tickRainbowDot(c);
   c.round++;
   c.drawCount++;
   burst('#22c98a', 26, innerWidth / 2, innerHeight / 2);
   toast('🗡️ 造成 ' + fmt(dmg) + ' 伤害', '#22c98a');
 
-  if(c.enemyHp <= 0){
+  if(c.enemyHp <= 0 && !c._dotKilled){
     if(!state.dive.monsterKilled) state.dive.monsterKilled = {};
     state.dive.monsterKilled[c.enemyId] = true;
     // 「贪」印记 +40%（仅战斗房）
@@ -8454,6 +8461,10 @@ function useDiveSkill(idx){
   var d = state.dive;
   var c = d.combat;
   if(!c || c.phase !== 'fighting'){ return; }
+  if(c.activeLocked){
+    toast('主动槽已被空之封印，本局无法使用其他主动技能', 'bad');
+    return;
+  }
   if(c.enemyActing){ toast('敌人行动中', 'bad'); return; }
   if(state.rolling){ return; }
   var sk = d.skills.active[idx];
@@ -8477,6 +8488,8 @@ function useDiveSkill(idx){
 
   // 消耗上一抽（CD 机制）
   c.lastRoll = null;
+  c.playerActs++;
+  tickRainbowDot(c);
 
   sk.uses++;
 
@@ -8511,12 +8524,20 @@ function applyActiveSkill(c, sk){
     toast('✨ 闪耀 · -' + fmt(dmg) + ' HP · 下次闪避 +50%', '#fff9a8');
   }
   else if(id === 'rainbow'){
-    // 彩虹：回血 15% + 伤害 ×0.3
-    var healR = Math.floor(c.playerMaxHp * 0.15);
-    c.playerHp = Math.min(c.playerMaxHp, c.playerHp + healR);
-    var dmgR = Math.floor(baseDmg * 0.3);
-    c.enemyHp -= dmgR;
-    toast('🌈 彩虹 · +' + healR + ' HP · -' + fmt(dmgR) + ' HP', '#ff6bff');
+    // 彩虹：DOT 未走完 → 冷却中
+    if(c.rainbowDot){
+      toast('🌈 彩虹冷却中（DOT 未走完）', 'bad');
+      return false;
+    }
+    // 即时伤害 ×0.3 + 上 3 回合 DOT
+    var dmgR0 = Math.floor(baseDmg * 0.3);
+    c.enemyHp -= dmgR0;
+    c.rainbowDot = {
+      turnsLeft: 3,
+      dmg: dmgR0,
+      healPct: 0.05
+    };
+    toast('🌈 彩虹 · 即时 -' + fmt(dmgR0) + ' HP · 3 回合 DOT', '#ff6bff');
   }
   else if(id === 'dark'){
     // 暗黑：消耗 20% 当前 HP → 伤害 ×2.5
@@ -8549,9 +8570,10 @@ function applyActiveSkill(c, sk){
     toast('⏳ 时之 · +' + healT + ' HP', '#ff8a00');
   }
   else if(id === 'spatial'){
-    // 空之：本局免疫 debuff
+    // 空之：本局免疫 debuff + 锁主动槽
     c.playerDebuffImmune = true;
-    toast('🌌 空之 · 本局免疫 debuff', '#c56cf0');
+    c.activeLocked = true;
+    toast('🌌 空之 · 本局免疫 debuff，主动槽已封锁', '#c56cf0');
   }
   else if(id === 'chaotic'){
     // 混沌：随机挂 1 种 debuff（挂敌人）
@@ -8696,6 +8718,20 @@ function enemyTurn(c){
   if(state.page === 'abyss') renderAbyssPage();
 }
 
+/* 彩虹 DOT：每回合回血 + 扣敌人血 */
+function tickRainbowDot(c){
+  if(!c.rainbowDot) return;
+  var dot = c.rainbowDot;
+  var heal = Math.floor(c.playerMaxHp * dot.healPct);
+  c.playerHp = Math.min(c.playerMaxHp, c.playerHp + heal);
+  c.enemyHp -= dot.dmg;
+  toast('🌈 彩虹 · +' + heal + ' HP · -' + fmt(dot.dmg) + ' HP', '#ff6bff');
+  dot.turnsLeft--;
+  if(dot.turnsLeft <= 0) c.rainbowDot = null;
+  // 若因 DOT 击杀
+  if(c.enemyHp <= 0){ c._dotKilled = true; onDiveEnemyKilled(c); }
+}
+
 /* vampire 吸血（按伤害百分比回血） */
 function applyVampireHeal(c, dmg){
   if(!hasPassive('vampire')) return;
@@ -8802,7 +8838,9 @@ function renderDiveCombat(){
       var onceRun = (aSk.id === 'divine');
       var maxU = (aSk.id === 'genesis') ? 2 : (onceRun ? 1 : Infinity);
       var used = aSk.uses >= maxU;
-      var noRoll = !c.lastRoll;
+      var lockedBySpatial = !!c.activeLocked;
+      var rainbowCD = (aSk.id === 'rainbow' && c.rainbowDot);
+      var noRoll = !c.lastRoll || lockedBySpatial || rainbowCD;
       var disCls = used ? ' used' : (noRoll ? ' no-roll' : '');
       h += '<div class="ds-slot filled' + disCls + '" data-skill-slot="active" data-skill-idx="' + ai + '" style="--sc:' + aSk.color + '">' +
         '<div class="ds-emoji">' + aSk.emoji + '</div>' +
